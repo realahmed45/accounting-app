@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { accountService } from "../services/api";
+import { accountService, memberService } from "../services/api";
 import { useAuth } from "./AuthContext";
 
 const AccountContext = createContext();
@@ -13,12 +13,27 @@ export const useAccount = () => {
 };
 
 export const AccountProvider = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [accounts, setAccounts] = useState([]);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [people, setPeople] = useState([]);
+  const [currentMember, setCurrentMember] = useState(null);
+
+  // Derived permission helper — true if owner or permission is granted
+  // Falls back to true if the user is the account creator and no member record exists yet
+  const hasPermission = (perm) => {
+    if (!currentMember) {
+      // Legacy fallback: if user is the account creator, treat as owner
+      if (user && currentAccount && currentAccount.userId?.toString() === user._id?.toString()) {
+        return true;
+      }
+      return false;
+    }
+    if (currentMember.role === "owner") return true;
+    return !!currentMember.permissions?.[perm];
+  };
 
   // Load accounts when user is authenticated
   useEffect(() => {
@@ -29,6 +44,7 @@ export const AccountProvider = ({ children }) => {
       setCurrentAccount(null);
       setCategories([]);
       setPeople([]);
+      setCurrentMember(null);
     }
   }, [isAuthenticated]);
 
@@ -66,9 +82,10 @@ export const AccountProvider = ({ children }) => {
 
   const loadAccountData = async (accountId) => {
     try {
-      const [categoriesRes, peopleRes] = await Promise.all([
+      const [categoriesRes, peopleRes, memberRes] = await Promise.all([
         accountService.getCategories(accountId),
         accountService.getPeople(accountId),
+        memberService.getMe(accountId).catch(() => null),
       ]);
 
       if (categoriesRes.success) {
@@ -77,6 +94,12 @@ export const AccountProvider = ({ children }) => {
 
       if (peopleRes.success) {
         setPeople(peopleRes.data);
+      }
+
+      if (memberRes?.success) {
+        setCurrentMember(memberRes.data);
+      } else {
+        setCurrentMember(null);
       }
     } catch (error) {
       console.error("Failed to load account data:", error);
@@ -94,14 +117,8 @@ export const AccountProvider = ({ children }) => {
 
   const createAccount = async (accountData) => {
     try {
-      // Map frontend fields to backend fields
-      const backendData = {
-        accountName: accountData.name,
-        currency: accountData.currency,
-        timezone: accountData.timezone,
-      };
-
-      const response = await accountService.create(backendData);
+      // Pass the account data directly to backend
+      const response = await accountService.create(accountData);
       if (response.success) {
         await loadAccounts();
         // Auto-switch to new account
@@ -200,6 +217,8 @@ export const AccountProvider = ({ children }) => {
     loading,
     categories,
     people,
+    currentMember,
+    hasPermission,
     switchAccount,
     createAccount,
     updateAccount,

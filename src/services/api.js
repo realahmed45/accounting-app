@@ -79,6 +79,11 @@ export const authService = {
     return response.data;
   },
 
+  verifyPassword: async (password) => {
+    const response = await api.post("/auth/verify-password", { password });
+    return response.data;
+  },
+
   updatePassword: async (passwords) => {
     const response = await api.put("/auth/updatepassword", passwords);
     if (response.data.success) {
@@ -143,6 +148,38 @@ export const accountService = {
   },
 };
 
+// ==================== BANK ACCOUNT SERVICES ====================
+
+export const bankAccountService = {
+  getAll: async (accountId) => {
+    const response = await api.get(`/accounts/${accountId}/bank-accounts`);
+    return response.data;
+  },
+
+  create: async (accountId, data) => {
+    const response = await api.post(
+      `/accounts/${accountId}/bank-accounts`,
+      data,
+    );
+    return response.data;
+  },
+
+  update: async (accountId, bankId, data) => {
+    const response = await api.put(
+      `/accounts/${accountId}/bank-accounts/${bankId}`,
+      data,
+    );
+    return response.data;
+  },
+
+  delete: async (accountId, bankId) => {
+    const response = await api.delete(
+      `/accounts/${accountId}/bank-accounts/${bankId}`,
+    );
+    return response.data;
+  },
+};
+
 // ==================== WEEK SERVICES ====================
 
 export const weekService = {
@@ -173,6 +210,22 @@ export const weekService = {
 
   delete: async (id) => {
     const response = await api.delete(`/weeks/${id}`);
+    return response.data;
+  },
+
+  transferBankToCash: async (weekId, transferData) => {
+    const response = await api.post(
+      `/weeks/${weekId}/transfer-bank-to-cash`,
+      transferData,
+    );
+    return response.data;
+  },
+
+  addCash: async (weekId, amount, note) => {
+    const response = await api.post(`/weeks/${weekId}/add-cash`, {
+      amount,
+      note,
+    });
     return response.data;
   },
 };
@@ -208,6 +261,118 @@ export const expenseService = {
 
   delete: async (id) => {
     const response = await api.delete(`/expenses/${id}`);
+    return response.data;
+  },
+};
+
+// ==================== MEMBER SERVICES ====================
+
+export const memberService = {
+  getAll: async (accountId) => {
+    const response = await api.get(`/accounts/${accountId}/members`);
+    return response.data;
+  },
+
+  getMe: async (accountId) => {
+    const response = await api.get(`/accounts/${accountId}/members/me`);
+    return response.data;
+  },
+
+  add: async (accountId, data) => {
+    const response = await api.post(`/accounts/${accountId}/members`, data);
+    return response.data;
+  },
+
+  update: async (accountId, memberId, data) => {
+    const response = await api.put(
+      `/accounts/${accountId}/members/${memberId}`,
+      data,
+    );
+    return response.data;
+  },
+
+  remove: async (accountId, memberId) => {
+    const response = await api.delete(
+      `/accounts/${accountId}/members/${memberId}`,
+    );
+    return response.data;
+  },
+
+  transferOwnership: async (accountId, data) => {
+    // data: { toEmail, toWhatsApp, toTelegram }
+    const response = await api.post(
+      `/accounts/${accountId}/members/transfer-ownership`,
+      data,
+    );
+    return response.data;
+  },
+
+  requestOwnershipCorrection: async (accountId, data) => {
+    const response = await api.post(
+      `/accounts/${accountId}/ownership-correction`,
+      data,
+    );
+    return response.data;
+  },
+
+  getTransferStatus: async (accountId) => {
+    const response = await api.get(
+      `/accounts/${accountId}/ownership-transfer-status`,
+    );
+    return response.data;
+  },
+
+  getInvitations: async (accountId) => {
+    const response = await api.get(`/accounts/${accountId}/invitations`);
+    return response.data;
+  },
+
+  cancelInvitation: async (accountId, invId) => {
+    const response = await api.delete(
+      `/accounts/${accountId}/invitations/${invId}`,
+    );
+    return response.data;
+  },
+};
+
+// ==================== INVITATION SERVICES (public) ====================
+
+export const invitationService = {
+  getDetails: async (token) => {
+    const response = await api.get(`/invitations/${token}`);
+    return response.data;
+  },
+
+  accept: async (token, data) => {
+    const response = await api.post(`/invitations/${token}/accept`, data);
+    return response.data;
+  },
+
+  getAccountInvitations: async (accountId) => {
+    const response = await api.get(`/accounts/${accountId}/invitations`);
+    return response.data;
+  },
+
+  cancelInvitation: async (accountId, invId) => {
+    const response = await api.delete(
+      `/accounts/${accountId}/invitations/${invId}`,
+    );
+    return response.data;
+  },
+
+  resend: async (invitationId) => {
+    const response = await api.post("/invitations/resend", { invitationId });
+    return response.data;
+  },
+};
+
+// ==================== ACTIVITY SERVICES ====================
+
+export const activityService = {
+  getLog: async (accountId, { page = 1, limit = 50, action } = {}) => {
+    const params = new URLSearchParams({ page, limit });
+    if (action) params.set("action", action);
+    const response = await api.get(`/accounts/${accountId}/activity?${params}`);
     return response.data;
   },
 };

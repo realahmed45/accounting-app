@@ -226,9 +226,11 @@ function App() {
   const [editDisplayName, setEditDisplayName] = useState("");
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editError, setEditError] = useState("");
-  const [transferOwnershipTarget, setTransferOwnershipTarget] = useState("");
   const [transferOwnershipConfirm, setTransferOwnershipConfirm] =
     useState(false);
+  const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [categorySubmitting, setCategorySubmitting] = useState(false);
 
   // Form States
   const [addCashAmount, setAddCashAmount] = useState("");
@@ -581,6 +583,27 @@ function App() {
       alert(err.response?.data?.message || "Failed to cancel invitation");
     }
   };
+
+  const handleAddCategory = async () => runIfAllowed(async () => {
+    if (!newCategoryName.trim()) {
+      alert("Category name is required");
+      return;
+    }
+    setCategorySubmitting(true);
+    try {
+      const res = await addCategory(newCategoryName.trim());
+      if (res.success) {
+        setNewCategoryName("");
+        setShowAddCategoryForm(false);
+      } else {
+        alert(res.message || "Failed to add category");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to add category");
+    } finally {
+      setCategorySubmitting(false);
+    }
+  });
 
   // Accept invitation form submit
   const handleAcceptInvite = async () => {
@@ -3839,9 +3862,58 @@ function App() {
             {/* ── Categories Screen ── */}
             {settingsSection === "categories" && (
               <div className="max-w-xl mx-auto px-6 py-10">
-                <p className="text-sm text-gray-500 mb-6">
-                  {categories.length} categories defined for this account.
-                </p>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Expense Categories</h2>
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      {categories.length} categories defined for this account.
+                    </p>
+                  </div>
+                  {hasPermission("addCategories") && !showAddCategoryForm && (
+                    <button
+                      onClick={() => setShowAddCategoryForm(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Category
+                    </button>
+                  )}
+                </div>
+
+                {showAddCategoryForm && (
+                  <div className="mb-6 p-4 border border-purple-100 bg-purple-50">
+                    <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">
+                      New Category Name
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="e.g. Marketing, Maintenance..."
+                        className="flex-1 px-3 py-2 border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                        onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
+                      />
+                      <button
+                        onClick={handleAddCategory}
+                        disabled={categorySubmitting || !newCategoryName.trim()}
+                        className="px-4 py-2 bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                      >
+                        {categorySubmitting ? "Adding..." : "Add"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowAddCategoryForm(false);
+                          setNewCategoryName("");
+                        }}
+                        className="px-3 py-2 border border-gray-300 text-gray-600 text-sm hover:bg-gray-100 bg-white transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="divide-y divide-gray-100 border border-gray-200">
                   {categories.length === 0 ? (
                     <div className="px-6 py-12 text-center text-gray-400">
@@ -3851,27 +3923,19 @@ function App() {
                     categories.map((cat) => (
                       <div
                         key={cat._id}
-                        className="flex items-center justify-between px-6 py-4 hover:bg-gray-50"
+                        className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
                       >
-                        <span className="font-medium text-gray-800">
-                          {cat.name}
-                        </span>
-                        <button
-                          disabled
-                          className="text-gray-300 cursor-not-allowed p-1"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+                          <span className="font-medium text-gray-800">
+                            {cat.name}
+                          </span>
+                        </div>
+                        {/* Potential for delete/edit here later */}
                       </div>
                     ))
                   )}
                 </div>
-                <button
-                  disabled
-                  className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-dashed border-gray-300 text-gray-400 cursor-not-allowed font-medium"
-                >
-                  <Plus className="w-4 h-4" /> Add Category — Coming Soon
-                </button>
               </div>
             )}
 

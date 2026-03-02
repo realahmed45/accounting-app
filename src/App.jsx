@@ -15,6 +15,7 @@ import {
   weekService,
   expenseService,
   photoService,
+  bankAccountService,
 } from "./services/api";
 import {
   BUSINESS_CATEGORIES,
@@ -41,6 +42,7 @@ import {
   AlertCircle,
   History,
   Calendar,
+  CalendarDays,
   Camera,
   LogOut,
   User,
@@ -215,7 +217,6 @@ function App() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [passwordGateOpen, setPasswordGateOpen] = useState(false);
 
-
   // Initialize form with first category when it loads
   useEffect(() => {
     if (categories.length > 0 && !expenseForm.category) {
@@ -241,7 +242,6 @@ function App() {
     }
   };
 
-
   const runIfAllowed = (fn) => {
     if (currentMember?.viewOnly) {
       setPendingGateAction(() => fn);
@@ -250,8 +250,6 @@ function App() {
       fn();
     }
   };
-
-
 
   // Load expenses when week changes
   useEffect(() => {
@@ -402,7 +400,6 @@ function App() {
     }
     setLoading(false);
   };
-
 
   // Show auth screen if not logged in
   if (!isAuthenticated) {
@@ -701,259 +698,265 @@ function App() {
 
   // No additional helper needed, using runIfAllowed defined above.
 
-  const handleAddCash = async () => runIfAllowed(async () => {
-    const amount = parseFloat(addCashAmount);
-    if (isNaN(amount) || amount <= 0) {
-      setError("Please enter a valid amount");
-      return;
-    }
+  const handleAddCash = async () =>
+    runIfAllowed(async () => {
+      const amount = parseFloat(addCashAmount);
+      if (isNaN(amount) || amount <= 0) {
+        setError("Please enter a valid amount");
+        return;
+      }
 
-    try {
-      const response = await weekService.addCash(
-        currentWeek._id,
-        amount,
-        addCashNote.trim(),
+      try {
+        const response = await weekService.addCash(
+          currentWeek._id,
+          amount,
+          addCashNote.trim(),
+        );
+
+        if (response.success) {
+          const updatedWeeks = [...weeks];
+          updatedWeeks[currentWeekIndex] = response.data;
+          setWeeks(updatedWeeks);
+          setAddCashAmount("");
+          setAddCashNote("");
+          setActiveModal(null);
+          setSuccess("Cash added successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to add cash");
+      }
+    });
+
+  const handleTransferToCash = async () =>
+    runIfAllowed(async () => {
+      const amount = parseFloat(transferAmount);
+      if (isNaN(amount) || amount <= 0) {
+        setError("Please enter a valid amount");
+        return;
+      }
+
+      if (!selectedBankAccountForTransfer) {
+        setError("Please select a bank account");
+        return;
+      }
+
+      const selectedBank = bankAccounts.find(
+        (ba) => ba._id === selectedBankAccountForTransfer,
       );
-
-      if (response.success) {
-        const updatedWeeks = [...weeks];
-        updatedWeeks[currentWeekIndex] = response.data;
-        setWeeks(updatedWeeks);
-        setAddCashAmount("");
-        setAddCashNote("");
-        setActiveModal(null);
-        setSuccess("Cash added successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+      if (selectedBank && amount > selectedBank.balance) {
+        setError("Insufficient bank account balance");
+        return;
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to add cash");
-    }
-  });
 
-  const handleTransferToCash = async () => runIfAllowed(async () => {
-    const amount = parseFloat(transferAmount);
-    if (isNaN(amount) || amount <= 0) {
-      setError("Please enter a valid amount");
-      return;
-    }
+      try {
+        const response = await weekService.transferBankToCash(currentWeek._id, {
+          bankAccountId: selectedBankAccountForTransfer,
+          amount: amount,
+        });
 
-    if (!selectedBankAccountForTransfer) {
-      setError("Please select a bank account");
-      return;
-    }
+        if (response.success) {
+          // Update week
+          const updatedWeeks = [...weeks];
+          updatedWeeks[currentWeekIndex] = response.data.week;
+          setWeeks(updatedWeeks);
 
-    const selectedBank = bankAccounts.find(
-      (ba) => ba._id === selectedBankAccountForTransfer,
-    );
-    if (selectedBank && amount > selectedBank.balance) {
-      setError("Insufficient bank account balance");
-      return;
-    }
+          // Update bank accounts list
+          await loadBankAccounts();
 
-    try {
-      const response = await weekService.transferBankToCash(currentWeek._id, {
-        bankAccountId: selectedBankAccountForTransfer,
-        amount: amount,
-      });
-
-      if (response.success) {
-        // Update week
-        const updatedWeeks = [...weeks];
-        updatedWeeks[currentWeekIndex] = response.data.week;
-        setWeeks(updatedWeeks);
-
-        // Update bank accounts list
-        await loadBankAccounts();
-
-        setTransferAmount("");
-        setSelectedBankAccountForTransfer("");
-        setActiveModal(null);
-        setSuccess("Transfer completed!");
-        setTimeout(() => setSuccess(""), 3000);
+          setTransferAmount("");
+          setSelectedBankAccountForTransfer("");
+          setActiveModal(null);
+          setSuccess("Transfer completed!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to transfer");
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to transfer");
-    }
-  });
+    });
 
   const handleAddExpense = async (e) => {
     if (e) e.preventDefault();
     runIfAllowed(async () => {
-
-    const amount = parseFloat(expenseForm.amount);
-    if (isNaN(amount) || amount <= 0) {
-      setError("Please enter a valid amount");
-      return;
-    }
-
-    if (!expenseForm.category) {
-      setError("Please select category");
-      return;
-    }
-
-    // Determine payment source
-    const paymentSource = expenseForm.bankAccountId ? "bank" : "cash";
-
-    try {
-      const response = await expenseService.create({
-        accountId: currentAccount._id,
-        weekId: currentWeek._id,
-        date: expenseForm.date,
-        amount: amount,
-        category: expenseForm.category,
-        note: expenseForm.note,
-        paymentSource: paymentSource,
-        bankAccountId: expenseForm.bankAccountId || null,
-      });
-
-      if (response.success) {
-        setExpenses([response.data, ...expenses]);
-
-        // Reload week and bank accounts to reflect updated balances
-        await loadWeeks();
-        await loadBankAccounts();
-
-        setExpenseForm({
-          date: formatDate(new Date()),
-          amount: "",
-          note: "",
-          category: categories[0]?.name || "",
-          bankAccountId: "",
-        });
-        setActiveModal(null);
-        setSuccess("Expense added successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+      const amount = parseFloat(expenseForm.amount);
+      if (isNaN(amount) || amount <= 0) {
+        setError("Please enter a valid amount");
+        return;
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to add expense");
-    }
+
+      if (!expenseForm.category) {
+        setError("Please select category");
+        return;
+      }
+
+      // Determine payment source
+      const paymentSource = expenseForm.bankAccountId ? "bank" : "cash";
+
+      try {
+        const response = await expenseService.create({
+          accountId: currentAccount._id,
+          weekId: currentWeek._id,
+          date: expenseForm.date,
+          amount: amount,
+          category: expenseForm.category,
+          note: expenseForm.note,
+          paymentSource: paymentSource,
+          bankAccountId: expenseForm.bankAccountId || null,
+        });
+
+        if (response.success) {
+          setExpenses([response.data, ...expenses]);
+
+          // Reload week and bank accounts to reflect updated balances
+          await loadWeeks();
+          await loadBankAccounts();
+
+          setExpenseForm({
+            date: formatDate(new Date()),
+            amount: "",
+            note: "",
+            category: categories[0]?.name || "",
+            bankAccountId: "",
+          });
+          setActiveModal(null);
+          setSuccess("Expense added successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to add expense");
+      }
     }); // end runIfAllowed
   };
 
-  const handleDeleteExpense = async (expenseId) => runIfAllowed(async () => {
-    if (!window.confirm("Are you sure you want to delete this expense?")) {
-      return;
-    }
-
-    try {
-      const response = await expenseService.delete(expenseId);
-      if (response.success) {
-        setExpenses(expenses.filter((exp) => exp._id !== expenseId));
-
-        // Reload week and bank accounts to reflect updated balances
-        await loadWeeks();
-        await loadBankAccounts();
-
-        setSuccess("Expense deleted successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+  const handleDeleteExpense = async (expenseId) =>
+    runIfAllowed(async () => {
+      if (!window.confirm("Are you sure you want to delete this expense?")) {
+        return;
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to delete expense");
-    }
-  });
 
-  const handleLockWeek = async () => runIfAllowed(async () => {
-    if (unlockCode !== unlockWeekCode) {
-      setError("Invalid unlock code");
-      return;
-    }
+      try {
+        const response = await expenseService.delete(expenseId);
+        if (response.success) {
+          setExpenses(expenses.filter((exp) => exp._id !== expenseId));
 
-    try {
-      const response = await weekService.lock(currentWeek._id);
-      if (response.success) {
-        const updatedWeeks = [...weeks];
-        updatedWeeks[currentWeekIndex] = response.data;
-        setWeeks(updatedWeeks);
-        setUnlockWeekCode("");
-        setActiveModal(null);
-        setSuccess("Week locked successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+          // Reload week and bank accounts to reflect updated balances
+          await loadWeeks();
+          await loadBankAccounts();
+
+          setSuccess("Expense deleted successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to delete expense");
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to lock week");
-    }
-  });
+    });
 
-  const createNewWeek = async () => runIfAllowed(async () => {
-    if (!currentWeek) return;
-
-    const lastEndDate = new Date(currentWeek.endDate);
-    const newStartDate = new Date(lastEndDate);
-    newStartDate.setDate(newStartDate.getDate() + 1);
-    const newEndDate = new Date(newStartDate);
-    newEndDate.setDate(newEndDate.getDate() + 6);
-
-    try {
-      const response = await weekService.create({
-        accountId: currentAccount._id,
-        startDate: formatDate(newStartDate),
-        endDate: formatDate(newEndDate),
-        cashBoxBalance: getExpectedCashAmount(),
-      });
-
-      if (response.success) {
-        setWeeks([response.data, ...weeks]);
-        setCurrentWeekIndex(0);
-        setSuccess("New week created!");
-        setTimeout(() => setSuccess(""), 3000);
+  const handleLockWeek = async () =>
+    runIfAllowed(async () => {
+      if (unlockCode !== unlockWeekCode) {
+        setError("Invalid unlock code");
+        return;
       }
-    } catch (error) {
-      setError(error.response?.data?.message || "Failed to create week");
-    }
-  });
+
+      try {
+        const response = await weekService.lock(currentWeek._id);
+        if (response.success) {
+          const updatedWeeks = [...weeks];
+          updatedWeeks[currentWeekIndex] = response.data;
+          setWeeks(updatedWeeks);
+          setUnlockWeekCode("");
+          setActiveModal(null);
+          setSuccess("Week locked successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to lock week");
+      }
+    });
+
+  const createNewWeek = async () =>
+    runIfAllowed(async () => {
+      if (!currentWeek) return;
+
+      const lastEndDate = new Date(currentWeek.endDate);
+      const newStartDate = new Date(lastEndDate);
+      newStartDate.setDate(newStartDate.getDate() + 1);
+      const newEndDate = new Date(newStartDate);
+      newEndDate.setDate(newEndDate.getDate() + 6);
+
+      try {
+        const response = await weekService.create({
+          accountId: currentAccount._id,
+          startDate: formatDate(newStartDate),
+          endDate: formatDate(newEndDate),
+          cashBoxBalance: getExpectedCashAmount(),
+        });
+
+        if (response.success) {
+          setWeeks([response.data, ...weeks]);
+          setCurrentWeekIndex(0);
+          setSuccess("New week created!");
+          setTimeout(() => setSuccess(""), 3000);
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to create week");
+      }
+    });
 
   const handleSaveBankAccount = async (e) => {
     if (e) e.preventDefault();
     runIfAllowed(async () => {
-
-    if (!bankAccountForm.name.trim()) {
-      setError("Account name is required");
-      return;
-    }
-
-    if (
-      bankAccountForm.lastFourDigits &&
-      !/^\d{1,4}$/.test(bankAccountForm.lastFourDigits)
-    ) {
-      setError("Last 4 digits must be numeric (max 4 characters)");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const payload = {
-        name: bankAccountForm.name.trim(),
-        bankName: bankAccountForm.bankName.trim(),
-        accountType: bankAccountForm.accountType,
-        lastFourDigits: bankAccountForm.lastFourDigits.trim(),
-        balance: parseFloat(bankAccountForm.balance) || 0,
-        currency: bankAccountForm.currency || "USD",
-      };
-
-      const res = await bankAccountService.create(currentAccount._id, payload);
-
-      if (res.success) {
-        await loadBankAccounts();
-        setBankAccountForm({
-          name: "",
-          bankName: "",
-          accountType: "checking",
-          lastFourDigits: "",
-          balance: "",
-          currency: "USD",
-        });
-        setActiveModal(null);
-        setSuccess("Bank account added successfully!");
-        setTimeout(() => setSuccess(""), 3000);
-      } else {
-        setError(res.message || "Failed to save");
+      if (!bankAccountForm.name.trim()) {
+        setError("Account name is required");
+        return;
       }
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to save bank account");
-    }
-    setLoading(false);
+
+      if (
+        bankAccountForm.lastFourDigits &&
+        !/^\d{1,4}$/.test(bankAccountForm.lastFourDigits)
+      ) {
+        setError("Last 4 digits must be numeric (max 4 characters)");
+        return;
+      }
+
+      setLoading(true);
+      setError("");
+
+      try {
+        const payload = {
+          name: bankAccountForm.name.trim(),
+          bankName: bankAccountForm.bankName.trim(),
+          accountType: bankAccountForm.accountType,
+          lastFourDigits: bankAccountForm.lastFourDigits.trim(),
+          balance: parseFloat(bankAccountForm.balance) || 0,
+          currency: bankAccountForm.currency || "USD",
+        };
+
+        const res = await bankAccountService.create(
+          currentAccount._id,
+          payload,
+        );
+
+        if (res.success) {
+          await loadBankAccounts();
+          setBankAccountForm({
+            name: "",
+            bankName: "",
+            accountType: "checking",
+            lastFourDigits: "",
+            balance: "",
+            currency: "USD",
+          });
+          setActiveModal(null);
+          setSuccess("Bank account added successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        } else {
+          setError(res.message || "Failed to save");
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to save bank account");
+      }
+      setLoading(false);
     }); // end runIfAllowed
   };
 
@@ -1006,20 +1009,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        user={user} 
-        currentMember={currentMember} 
-        hasPermission={hasPermission} 
-        setShowSettings={setShowSettings} 
-        logout={logout} 
+      <Header
+        user={user}
+        currentMember={currentMember}
+        hasPermission={hasPermission}
+        setShowSettings={setShowSettings}
+        logout={logout}
       />
-
-      <NotificationBanner 
-        success={success} 
-        error={error} 
-        setError={setError} 
-      />
-
+      <NotificationBanner success={success} error={error} setError={setError} />
       {/* Main Content */}
       {/* Main Content */}
       <div className="w-full px-6 xl:px-12 py-6">
@@ -1275,7 +1272,7 @@ function App() {
               </div>
             </div>
 
-            <FinancialOverview 
+            <FinancialOverview
               bankAccounts={bankAccounts}
               currentWeek={currentWeek}
               hasPermission={hasPermission}
@@ -1286,7 +1283,7 @@ function App() {
               expenses={expenses}
             />
 
-            <DailyBreakdown 
+            <DailyBreakdown
               weekDates={weekDates}
               formatDate={formatDate}
               formatDateReadable={formatDateReadable}
@@ -2394,8 +2391,7 @@ function App() {
           getExpectedBankAmount={getExpectedBankAmount}
           runIfAllowed={runIfAllowed}
         />
-      )}
-{" "}
+      )}{" "}
       {/* end settings */}
       {/* ==================== MODALS ==================== */}
       <PasswordGate

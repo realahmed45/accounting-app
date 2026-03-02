@@ -166,6 +166,7 @@ function App() {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [expandedDays, setExpandedDays] = useState([formatDate(new Date())]);
   const [expenses, setExpenses] = useState([]);
+  const [bankAccounts, setBankAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // Modal States

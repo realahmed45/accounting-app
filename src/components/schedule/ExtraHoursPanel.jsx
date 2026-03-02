@@ -48,25 +48,64 @@ const ExtraHoursPanel = ({ accountId, currentMember }) => {
     }
   };
 
+  const isImageTooLarge = (base64String, maxSizeMB = 5) => {
+    const stringLength = base64String.length;
+    const sizeInBytes = (stringLength * 3) / 4;
+    const sizeInMB = sizeInBytes / (1024 * 1024);
+    return sizeInMB > maxSizeMB;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError("");
     try {
+      // 1. Get GPS Position
       const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
+        navigator.geolocation.getCurrentPosition(resolve, reject, { 
+          enableHighAccuracy: true,
+          timeout: 10000 
+        });
       });
 
+      // 2. Capture Real Photo
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      await video.play();
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0);
+      
+      const imageData = canvas.toDataURL("image/jpeg", 0.7);
+
+      if (isImageTooLarge(imageData)) {
+        throw new Error("Proof image is too large (max 5MB).");
+      }
+
+      stream.getTracks().forEach(track => track.stop());
+
+      // 3. Submit
       await overtimeService.submit(accountId, {
         ...formData,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-        imageData: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        imageData
       });
+      
       setShowSubmitModal(false);
       loadRecords();
     } catch (err) {
-      setError(err.response?.data?.message || "Transmission error");
+      if (err.name === "NotAllowedError") {
+        setError("Camera/Location permission denied.");
+      } else if (err.name === "NotFoundError") {
+        setError("No camera device found.");
+      } else {
+        setError(err.response?.data?.message || err.message || "Sequence Transmission Failure");
+      }
     } finally {
       setSubmitting(false);
     }

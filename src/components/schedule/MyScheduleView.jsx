@@ -19,6 +19,7 @@ const MyScheduleView = ({ accountId }) => {
   const [timeOff, setTimeOff] = useState(null);
   const [loading, setLoading] = useState(true);
   const [checkingIn, setCheckingIn] = useState(null); 
+  const [checkingOut, setCheckingOut] = useState(null); 
   
   useEffect(() => {
     loadMyData();
@@ -40,27 +41,116 @@ const MyScheduleView = ({ accountId }) => {
     }
   };
 
+  const isImageTooLarge = (base64String, maxSizeMB = 5) => {
+    const stringLength = base64String.length;
+    const sizeInBytes = (stringLength * 3) / 4;
+    const sizeInMB = sizeInBytes / (1024 * 1024);
+    return sizeInMB > maxSizeMB;
+  };
+
   const handleCheckIn = async (shift) => {
     setCheckingIn(shift._id);
     try {
+      // 1. Get GPS Position
       const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
+        navigator.geolocation.getCurrentPosition(resolve, reject, { 
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
       });
 
-      const imageData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+      // 2. Capture Real Photo
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      await video.play();
 
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0);
+      
+      const imageData = canvas.toDataURL("image/jpeg", 0.7);
+
+      if (isImageTooLarge(imageData)) {
+        throw new Error("Proof image is too large (max 5MB). Try again.");
+      }
+
+      // Stop all tracks
+      stream.getTracks().forEach(track => track.stop());
+
+      // 3. Submit to API
       await shiftService.checkIn(accountId, shift._id, {
         imageData,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-        locationLabel: "Neural GPS Verified"
+        locationLabel: `GPS: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`
       });
 
       loadMyData();
     } catch (err) {
-      alert("Verification Failed: " + (err.message || "Environment signal too weak."));
+      let msg = "Verification Failed. ";
+      if (err.name === "NotAllowedError") msg += "Camera or Location permission denied.";
+      else if (err.name === "NotFoundError") msg += "No camera detected.";
+      else msg += (err.message || "Network or hardware signal too weak.");
+      alert(msg);
     } finally {
       setCheckingIn(null);
+    }
+  };
+
+  const handleCheckOut = async (shift) => {
+    setCheckingOut(shift._id);
+    try {
+      // 1. Get GPS Position
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, { 
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
+      });
+
+      // 2. Capture Real Photo
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      await video.play();
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0);
+      
+      const imageData = canvas.toDataURL("image/jpeg", 0.7);
+
+      if (isImageTooLarge(imageData)) {
+        throw new Error("Proof image is too large (max 5MB). Try again.");
+      }
+
+      // Stop all tracks
+      stream.getTracks().forEach(track => track.stop());
+
+      // 3. Submit to API
+      await shiftService.checkOut(accountId, shift._id, {
+        imageData,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        locationLabel: `GPS: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`
+      });
+
+      loadMyData();
+    } catch (err) {
+      let msg = "Checkout Failed. ";
+      if (err.name === "NotAllowedError") msg += "Camera or Location permission denied.";
+      else if (err.name === "NotFoundError") msg += "No camera detected.";
+      else msg += (err.message || "Network or hardware signal too weak.");
+      alert(msg);
+    } finally {
+      setCheckingOut(null);
     }
   };
 
@@ -168,21 +258,43 @@ const MyScheduleView = ({ accountId }) => {
 
                     <div className="flex items-center justify-end">
                       {isToday ? (
-                        <button
-                          disabled={checkingIn === shift._id}
-                          onClick={() => handleCheckIn(shift)}
-                          className="group relative flex items-center gap-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 text-white px-10 py-5 rounded-[2rem] font-black text-lg transition-all shadow-2xl shadow-indigo-900 active:scale-95 overflow-hidden"
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
-                          {checkingIn === shift._id ? (
-                            <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              <Camera className="w-6 h-6 transition-transform group-hover:rotate-12" />
-                              INITIATE PROOF
-                            </>
-                          )}
-                        </button>
+                        shift.hasCheckedOut ? (
+                          <div className="px-8 py-4 bg-green-500/10 rounded-2xl border border-green-500/20 text-green-400 font-black text-sm flex items-center gap-3">
+                            <CheckCircle2 className="w-5 h-5" /> COMPLETED
+                          </div>
+                        ) : shift.hasCheckedIn ? (
+                          <button
+                            disabled={checkingOut === shift._id}
+                            onClick={() => handleCheckOut(shift)}
+                            className="group relative flex items-center gap-4 bg-rose-600 hover:bg-rose-500 disabled:bg-gray-800 text-white px-10 py-5 rounded-[2rem] font-black text-lg transition-all shadow-2xl shadow-rose-900 active:scale-95 overflow-hidden"
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                            {checkingOut === shift._id ? (
+                              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <>
+                                <Camera className="w-6 h-6 transition-transform group-hover:rotate-12" />
+                                CHECK OUT
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          <button
+                            disabled={checkingIn === shift._id}
+                            onClick={() => handleCheckIn(shift)}
+                            className="group relative flex items-center gap-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 text-white px-10 py-5 rounded-[2rem] font-black text-lg transition-all shadow-2xl shadow-indigo-900 active:scale-95 overflow-hidden"
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                            {checkingIn === shift._id ? (
+                              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <>
+                                <Camera className="w-6 h-6 transition-transform group-hover:rotate-12" />
+                                INITIATE PROOF
+                              </>
+                            )}
+                          </button>
+                        )
                       ) : (
                         <div className="px-8 py-4 bg-white/5 rounded-2xl border border-white/5 text-gray-400 font-bold text-sm flex items-center gap-3 italic">
                            Scheduled for {shiftDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}

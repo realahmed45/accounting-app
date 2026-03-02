@@ -63,6 +63,14 @@ export const shiftService = {
     const res = await axios.get(`${API_URL}/accounts/${accountId}/schedule/shifts/${shiftId}/checkin`, getAuthHeader());
     return res.data;
   },
+  checkOut: async (accountId, shiftId, data) => {
+    const res = await axios.post(`${API_URL}/accounts/${accountId}/schedule/shifts/${shiftId}/checkout`, data, getAuthHeader());
+    return res.data;
+  },
+  getCheckOut: async (accountId, shiftId) => {
+    const res = await axios.get(`${API_URL}/accounts/${accountId}/schedule/shifts/${shiftId}/checkout`, getAuthHeader());
+    return res.data;
+  },
 };
 
 export const overtimeService = {
@@ -121,10 +129,10 @@ export const workLogService = {
 };
 
 export const reportService = {
-  getMonthly: async (accountId, month) => {
+  getMonthlySummary: async (accountId, year, month) => {
     const res = await axios.get(`${API_URL}/accounts/${accountId}/schedule/reports/monthly`, {
       ...getAuthHeader(),
-      params: { month },
+      params: { month: `${year}-${month}` },
     });
     return res.data;
   },

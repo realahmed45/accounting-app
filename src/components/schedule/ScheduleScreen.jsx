@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Plus,
   Users,
+  UserCheck,
   History,
   ClipboardList,
   AlertCircle,

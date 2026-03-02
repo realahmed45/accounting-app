@@ -2376,7 +2376,7 @@ function App() {
           onClose={() => setSelectedExpenseForPhoto(null)}
         />
       )}
-      {/* ==================== SETTINGS SCREEN ==================== */}
+      {/* ==================== SETTINGS SCREENnn ==================== */}
       {showSettings && (
         <SettingsScreen
           user={user}

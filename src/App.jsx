@@ -42,7 +42,6 @@ import {
   AlertCircle,
   History,
   Calendar,
-  CalendarDays,
   Camera,
   LogOut,
   User,
@@ -1039,7 +1038,7 @@ function App() {
             onClick={() => setShowSchedule(true)}
             className="px-6 py-3 transition-all flex items-center gap-2 font-semibold shadow-md bg-white text-gray-700 hover:bg-gray-50 hover:shadow-xl"
           >
-            <CalendarDays className="w-5 h-5 text-indigo-600" />
+            <Calendar className="w-5 h-5 text-indigo-600" />
             Schedule
           </button>
         </div>

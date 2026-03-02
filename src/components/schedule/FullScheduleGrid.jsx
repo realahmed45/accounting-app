@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Users, 
-  Plus, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  Users,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
   Calendar as CalendarIcon,
   Clock,
   MoreVertical,
@@ -13,7 +13,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Shapes,
-  Gamepad2
+  Gamepad2,
 } from "lucide-react";
 import { shiftService, shiftTypeService } from "../../services/scheduleApi";
 import { memberService } from "../../services/api";
@@ -29,7 +29,7 @@ const FullScheduleGrid = ({ accountId }) => {
   const [shiftTypes, setShiftTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
@@ -38,14 +38,21 @@ const FullScheduleGrid = ({ accountId }) => {
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
-    loadData();
-  }, [weeksOffset]);
+    if (accountId) {
+      loadData();
+    }
+  }, [weeksOffset, accountId]);
 
   const loadData = async () => {
     setLoading(true);
     try {
       const startOfWeek = new Date();
-      startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1 + (weeksOffset * 7));
+      startOfWeek.setDate(
+        startOfWeek.getDate() -
+          (startOfWeek.getDay() || 7) +
+          1 +
+          weeksOffset * 7,
+      );
       startOfWeek.setHours(0, 0, 0, 0);
 
       const weekDays = [];
@@ -62,7 +69,7 @@ const FullScheduleGrid = ({ accountId }) => {
       const [shiftsRes, membersRes, typesRes] = await Promise.all([
         shiftService.getRange(accountId, { from, to }),
         memberService.getAll(accountId),
-        shiftTypeService.getAll(accountId)
+        shiftTypeService.getAll(accountId),
       ]);
 
       setShifts(shiftsRes.data);
@@ -76,28 +83,34 @@ const FullScheduleGrid = ({ accountId }) => {
   };
 
   const getShiftsForDayAndMember = (day, memberId) => {
-    return shifts.filter(s => {
+    return shifts.filter((s) => {
       const sDate = new Date(s.date);
-      return sDate.toDateString() === day.toDateString() && s.assignedMemberId?._id === memberId;
+      return (
+        sDate.toDateString() === day.toDateString() &&
+        s.assignedMemberId?._id === memberId
+      );
     });
   };
 
   const getUnassignedShiftsForDay = (day) => {
-    return shifts.filter(s => {
+    return shifts.filter((s) => {
       const sDate = new Date(s.date);
       return sDate.toDateString() === day.toDateString() && !s.assignedMemberId;
     });
   };
 
-  if (loading) return (
-    <div className="flex flex-col items-center justify-center py-40">
-      <div className="w-16 h-16 relative">
-         <div className="absolute inset-0 bg-indigo-500 rounded-full blur-2xl opacity-20 animate-pulse" />
-         <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin relative z-10" />
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center py-40">
+        <div className="w-16 h-16 relative">
+          <div className="absolute inset-0 bg-indigo-500 rounded-full blur-2xl opacity-20 animate-pulse" />
+          <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin relative z-10" />
+        </div>
+        <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-[10px] mt-8">
+          Parsing Neural Grid...
+        </p>
       </div>
-      <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-[10px] mt-8">Parsing Neural Grid...</p>
-    </div>
-  );
+    );
 
   return (
     <div className="w-full space-y-8 animate-in fade-in duration-1000">
@@ -126,25 +139,34 @@ const FullScheduleGrid = ({ accountId }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="flex items-center gap-6">
           <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-xl">
-            <button 
-              onClick={() => setWeeksOffset(v => v - 1)}
+            <button
+              onClick={() => setWeeksOffset((v) => v - 1)}
               className="p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
               <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-white" />
             </button>
             <div className="px-6 py-2 flex items-center gap-3 text-sm font-black text-white">
               <CalendarIcon className="w-4 h-4 text-indigo-400" />
-              {days[0]?.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} — {days[6]?.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              {days[0]?.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+              })}{" "}
+              —{" "}
+              {days[6]?.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
             </div>
-            <button 
-              onClick={() => setWeeksOffset(v => v + 1)}
+            <button
+              onClick={() => setWeeksOffset((v) => v + 1)}
               className="p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-white" />
             </button>
           </div>
           {weeksOffset !== 0 && (
-            <button 
+            <button
               onClick={() => setWeeksOffset(0)}
               className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-indigo-300 hover:text-white uppercase tracking-widest transition-all"
             >
@@ -153,11 +175,14 @@ const FullScheduleGrid = ({ accountId }) => {
           )}
         </div>
 
-        <button 
+        <button
           onClick={() => setShowCreateModal(true)}
           className="group relative px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-sm transition-all shadow-2xl hover:-translate-y-1 active:scale-95 overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"
+            style={{ backgroundSize: "200% 100%" }}
+          />
           <div className="flex items-center gap-3 relative z-10">
             <Plus className="w-5 h-5" />
             Initialize Shift
@@ -172,21 +197,35 @@ const FullScheduleGrid = ({ accountId }) => {
             <thead>
               <tr className="grid-header">
                 <th className="w-64 sticky left-0 z-30 grid-header p-8 text-left">
-                  <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">Staff Matrix</span>
+                  <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">
+                    Staff Matrix
+                  </span>
                 </th>
                 {days.map((day, i) => {
-                  const isToday = day.toDateString() === new Date().toDateString();
+                  const isToday =
+                    day.toDateString() === new Date().toDateString();
                   return (
-                    <th key={i} className={`p-8 text-center day-cell ${isToday ? "current-day" : ""}`}>
+                    <th
+                      key={i}
+                      className={`p-8 text-center day-cell ${isToday ? "current-day" : ""}`}
+                    >
                       <div className="flex flex-col items-center">
                         <span className="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3">
-                          {day.toLocaleDateString(undefined, { weekday: 'long' })}
+                          {day.toLocaleDateString(undefined, {
+                            weekday: "long",
+                          })}
                         </span>
                         <div className="relative">
-                          {isToday && <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-40 animate-pulse" />}
-                          <span className={`relative text-2xl font-black w-12 h-12 flex items-center justify-center rounded-2xl ${
-                            isToday ? "bg-indigo-600 text-white shadow-xl shadow-indigo-900" : "text-white"
-                          }`}>
+                          {isToday && (
+                            <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-40 animate-pulse" />
+                          )}
+                          <span
+                            className={`relative text-2xl font-black w-12 h-12 flex items-center justify-center rounded-2xl ${
+                              isToday
+                                ? "bg-indigo-600 text-white shadow-xl shadow-indigo-900"
+                                : "text-white"
+                            }`}
+                          >
                             {day.getDate()}
                           </span>
                         </div>
@@ -205,32 +244,40 @@ const FullScheduleGrid = ({ accountId }) => {
                       <Shapes className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="text-sm font-black text-white leading-none">Open Clusters</div>
-                      <div className="text-[9px] text-orange-500 font-black uppercase mt-2 tracking-widest">Awaiting Command</div>
+                      <div className="text-sm font-black text-white leading-none">
+                        Open Clusters
+                      </div>
+                      <div className="text-[9px] text-orange-500 font-black uppercase mt-2 tracking-widest">
+                        Awaiting Command
+                      </div>
                     </div>
                   </div>
                 </td>
                 {days.map((day, i) => {
                   const dayShifts = getUnassignedShiftsForDay(day);
-                  const isToday = day.toDateString() === new Date().toDateString();
+                  const isToday =
+                    day.toDateString() === new Date().toDateString();
                   return (
-                    <td key={i} className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}>
+                    <td
+                      key={i}
+                      className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}
+                    >
                       <div className="space-y-3 min-h-[100px]">
-                        {dayShifts.map(shift => (
-                           <ShiftCard 
-                             key={shift._id} 
-                             shift={shift} 
-                             isUnassigned 
-                             onClick={() => {
-                               setSelectedShift(shift);
-                               setShowAssignModal(true);
-                             }}
-                           />
+                        {dayShifts.map((shift) => (
+                          <ShiftCard
+                            key={shift._id}
+                            shift={shift}
+                            isUnassigned
+                            onClick={() => {
+                              setSelectedShift(shift);
+                              setShowAssignModal(true);
+                            }}
+                          />
                         ))}
                         {dayShifts.length === 0 && (
                           <div className="h-20 flex flex-col items-center justify-center gap-2 opacity-5">
-                             <div className="w-px h-10 bg-white" />
-                             <div className="w-1 h-1 bg-white rounded-full" />
+                            <div className="w-px h-10 bg-white" />
+                            <div className="w-1 h-1 bg-white rounded-full" />
                           </div>
                         )}
                       </div>
@@ -240,8 +287,11 @@ const FullScheduleGrid = ({ accountId }) => {
               </tr>
 
               {/* Personnel Rows */}
-              {members.map(member => (
-                <tr key={member._id} className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors">
+              {members.map((member) => (
+                <tr
+                  key={member._id}
+                  className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-8">
                     <div className="flex items-center gap-4">
                       <div className="relative">
@@ -262,23 +312,27 @@ const FullScheduleGrid = ({ accountId }) => {
                   </td>
                   {days.map((day, i) => {
                     const dayShifts = getShiftsForDayAndMember(day, member._id);
-                    const isToday = day.toDateString() === new Date().toDateString();
+                    const isToday =
+                      day.toDateString() === new Date().toDateString();
                     return (
-                      <td key={i} className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}>
+                      <td
+                        key={i}
+                        className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}
+                      >
                         <div className="space-y-3 min-h-[100px]">
-                          {dayShifts.map(shift => (
-                             <ShiftCard 
-                               key={shift._id} 
-                               shift={shift} 
-                               onClick={() => {
-                                 setSelectedShift(shift);
-                                 setShowProofModal(true);
-                               }}
-                             />
+                          {dayShifts.map((shift) => (
+                            <ShiftCard
+                              key={shift._id}
+                              shift={shift}
+                              onClick={() => {
+                                setSelectedShift(shift);
+                                setShowProofModal(true);
+                              }}
+                            />
                           ))}
                           {dayShifts.length === 0 && (
                             <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-5 transition-opacity">
-                               <Plus className="w-10 h-10 text-white" />
+                              <Plus className="w-10 h-10 text-white" />
                             </div>
                           )}
                         </div>
@@ -328,35 +382,46 @@ const FullScheduleGrid = ({ accountId }) => {
 };
 
 const ShiftCard = ({ shift, isUnassigned, onClick }) => {
-  const label = shift.shiftTypeId ? shift.shiftTypeId.name : (shift.adHocLabel || "Custom");
+  const label = shift.shiftTypeId
+    ? shift.shiftTypeId.name
+    : shift.adHocLabel || "Custom";
   const color = shift.shiftTypeId ? shift.shiftTypeId.color : "#6366f1";
-  const start = shift.shiftTypeId ? shift.shiftTypeId.startTime : shift.adHocStart;
+  const start = shift.shiftTypeId
+    ? shift.shiftTypeId.startTime
+    : shift.adHocStart;
   const end = shift.shiftTypeId ? shift.shiftTypeId.endTime : shift.adHocEnd;
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className={`relative p-4 rounded-3xl text-white shadow-2xl transition-all duration-300 hover:scale-[1.05] hover:-rotate-1 cursor-pointer group/card overflow-hidden border border-white/10 ${
-        isUnassigned ? "ring-2 ring-orange-500/50 ring-offset-4 ring-offset-[#0a0a0f]" : ""
-      }`} style={{ backgroundColor: `${color}cc`, backdropFilter: 'blur(10px)' }}>
-      
+        isUnassigned
+          ? "ring-2 ring-orange-500/50 ring-offset-4 ring-offset-[#0a0a0f]"
+          : ""
+      }`}
+      style={{ backgroundColor: `${color}cc`, backdropFilter: "blur(10px)" }}
+    >
       <div className="absolute top-0 right-0 p-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
         <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
-           <MoreVertical className="w-4 h-4" />
+          <MoreVertical className="w-4 h-4" />
         </div>
       </div>
 
       <div className="flex flex-col gap-3 relative z-10">
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{label}</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
+          {label}
+        </span>
         <div className="flex items-center gap-2 text-md font-black">
           <Clock className="w-4 h-4 text-white/60" />
           {start} — {end}
         </div>
-        
+
         {isUnassigned && (
           <div className="mt-2 pt-2 border-t border-white/10 flex items-center gap-2">
-             <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
-             <span className="text-[8px] font-black uppercase tracking-widest text-orange-200">Unassigned</span>
+            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
+            <span className="text-[8px] font-black uppercase tracking-widest text-orange-200">
+              Unassigned
+            </span>
           </div>
         )}
       </div>

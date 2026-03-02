@@ -43,6 +43,8 @@ import {
   History,
   Calendar,
   Camera,
+  Lock,
+  FileText,
   LogOut,
   User,
   Users,
@@ -157,6 +159,7 @@ function App() {
     hasPermission,
     switchAccount,
     createAccount,
+    addCategory,
     loading: accountLoading,
   } = useAccount();
 
@@ -213,6 +216,9 @@ function App() {
   const [unlockWeekCode, setUnlockWeekCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [pendingGateAction, setPendingGateAction] = useState(null);
+  const [baCurrencyOpen, setBaCurrencyOpen] = useState(false);
+  const [baCurrencySearch, setBaCurrencySearch] = useState("");
 
   const [showSchedule, setShowSchedule] = useState(false);
   const [passwordGateOpen, setPasswordGateOpen] = useState(false);
@@ -1112,7 +1118,7 @@ function App() {
                         return (
                           <div
                             key={idx}
-                            className="bg-gradient-to-r from-gray-50 to-white border border-gray-200 p-4 hover:shadow-md border border-gray-200 transition-all"
+                            className="bg-gradient-to-r from-gray-50 to-white border border-gray-200 p-4 hover:shadow-md transition-all"
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">

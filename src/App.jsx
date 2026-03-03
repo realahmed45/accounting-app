@@ -49,6 +49,7 @@ import {
   User,
   Users,
   Search,
+  Edit,
 } from "lucide-react";
 
 // ==================== CURRENCIES ====================
@@ -201,6 +202,7 @@ function App() {
     newBalance: "",
     reason: "",
   });
+  const [bulkBalanceUpdates, setBulkBalanceUpdates] = useState({});
   const [accountKind, setAccountKind] = useState(""); // "personal" | "business"
   const [personalDescription, setPersonalDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -1006,6 +1008,48 @@ function App() {
         }
       } catch (err) {
         setError(err.response?.data?.message || "Failed to adjust balance");
+      }
+      setLoading(false);
+    });
+
+  const handleBulkBalanceUpdate = async () =>
+    runIfAllowed(async () => {
+      const updates = Object.entries(bulkBalanceUpdates).filter(
+        ([bankId, data]) =>
+          data.newBalance !== undefined && data.newBalance !== "",
+      );
+
+      if (updates.length === 0) {
+        setError("No changes to save");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Update all bank accounts sequentially
+        for (const [bankId, data] of updates) {
+          const newBalance = parseFloat(data.newBalance);
+          if (isNaN(newBalance) || newBalance < 0) {
+            setError(`Invalid balance for account`);
+            setLoading(false);
+            return;
+          }
+
+          await bankAccountService.adjustBalance(
+            currentAccount._id,
+            bankId,
+            newBalance,
+            data.reason || "Bulk balance update",
+          );
+        }
+
+        await loadBankAccounts();
+        setBulkBalanceUpdates({});
+        setActiveModal(null);
+        setSuccess("All bank balances updated successfully!");
+        setTimeout(() => setSuccess(""), 3000);
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to update balances");
       }
       setLoading(false);
     });
@@ -2122,6 +2166,186 @@ function App() {
                   setError("");
                 }}
                 className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeModal === "updateBankBalances" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white shadow-xl max-w-4xl w-full my-8">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-blue-600">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2.5 rounded-lg backdrop-blur">
+                  <Edit className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">
+                    Update Bank Balances
+                  </h3>
+                  <p className="text-xs text-white/80 mt-1">
+                    Adjust balances for reconciliation, deposits, or corrections
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setBulkBalanceUpdates({});
+                  setError("");
+                }}
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {error && (
+              <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+
+            <div className="px-6 py-5 max-h-[60vh] overflow-y-auto">
+              <div className="space-y-4">
+                {bankAccounts.map((ba) => {
+                  const updateData = bulkBalanceUpdates[ba._id] || {};
+                  const newBalance =
+                    updateData.newBalance !== undefined
+                      ? parseFloat(updateData.newBalance)
+                      : ba.balance;
+                  const difference = newBalance - ba.balance;
+
+                  return (
+                    <div
+                      key={ba._id}
+                      className="bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-blue-600 p-3 rounded-xl">
+                            <Building2 className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-lg text-gray-900">
+                              {ba.name}
+                              {ba.lastFourDigits && (
+                                <span className="text-gray-400 font-normal ml-2 text-sm">
+                                  ···{ba.lastFourDigits}
+                                </span>
+                              )}
+                            </div>
+                            {ba.bankName && (
+                              <div className="text-sm text-gray-600 mt-0.5">
+                                {ba.bankName}{" "}
+                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded capitalize ml-2">
+                                  {ba.accountType}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-gray-500 mb-1">
+                            Current Balance
+                          </div>
+                          <div className="text-xl font-bold text-gray-900">
+                            ${ba.balance.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            New Balance
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={
+                              updateData.newBalance !== undefined
+                                ? updateData.newBalance
+                                : ba.balance
+                            }
+                            onChange={(e) =>
+                              setBulkBalanceUpdates({
+                                ...bulkBalanceUpdates,
+                                [ba._id]: {
+                                  ...updateData,
+                                  newBalance: e.target.value,
+                                },
+                              })
+                            }
+                            placeholder="0.00"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                          {Math.abs(difference) > 0.01 && (
+                            <div className="mt-2 text-sm">
+                              <span
+                                className={`font-bold ${
+                                  difference >= 0
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }`}
+                              >
+                                {difference >= 0 ? "+" : ""}$
+                                {difference.toFixed(2)}
+                              </span>
+                              <span className="text-gray-600 ml-1">
+                                from current
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Reason (optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={updateData.reason || ""}
+                            onChange={(e) =>
+                              setBulkBalanceUpdates({
+                                ...bulkBalanceUpdates,
+                                [ba._id]: {
+                                  ...updateData,
+                                  reason: e.target.value,
+                                },
+                              })
+                            }
+                            placeholder="e.g., Reconciliation, Deposit..."
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={handleBulkBalanceUpdate}
+                disabled={
+                  loading || Object.keys(bulkBalanceUpdates).length === 0
+                }
+                className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-6 py-4 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all font-bold text-lg shadow-lg hover:shadow-xl uppercase tracking-wide"
+              >
+                {loading ? "Updating..." : "Save All Changes"}
+              </button>
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setBulkBalanceUpdates({});
+                  setError("");
+                }}
+                className="px-8 py-4 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-semibold rounded-lg"
               >
                 Cancel
               </button>

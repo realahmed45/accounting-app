@@ -57,6 +57,7 @@ const SettingsScreen = ({
     addUser: false,
     addCategories: false,
     addBankAccount: false,
+    updateBankBalance: false,
     makeExpense: true,
     createAccountDownward: false,
     createAccountUpward: false,
@@ -191,6 +192,7 @@ const SettingsScreen = ({
             addUser: false,
             addCategories: false,
             addBankAccount: false,
+            updateBankBalance: false,
             makeExpense: true,
             createAccountDownward: false,
             createAccountUpward: false,
@@ -537,6 +539,10 @@ const SettingsScreen = ({
                               key: "addBankAccount",
                               label: "Manage / Create Bank Accounts",
                             },
+                            {
+                              key: "updateBankBalance",
+                              label: "Update Bank Balances",
+                            },
                           ].map(({ key, label }) => (
                             <label
                               key={key}
@@ -553,7 +559,8 @@ const SettingsScreen = ({
                                     next.accessSettings = !!(
                                       next.addUser ||
                                       next.addCategories ||
-                                      next.addBankAccount
+                                      next.addBankAccount ||
+                                      next.updateBankBalance
                                     );
                                     return next;
                                   });
@@ -781,6 +788,10 @@ const SettingsScreen = ({
                                   label: "Manage Bank Accounts",
                                 },
                                 {
+                                  key: "updateBankBalance",
+                                  label: "Update Bank Balances",
+                                },
+                                {
                                   key: "createAccountDownward",
                                   label: "Sub-Accounts",
                                 },
@@ -807,7 +818,8 @@ const SettingsScreen = ({
                                         next.accessSettings = !!(
                                           next.addUser ||
                                           next.addCategories ||
-                                          next.addBankAccount
+                                          next.addBankAccount ||
+                                          next.updateBankBalance
                                         );
                                         return next;
                                       });

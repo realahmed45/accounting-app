@@ -1,5 +1,13 @@
 import React from "react";
-import { Building2, Wallet, Receipt, Plus, ArrowRightLeft, DollarSign } from "lucide-react";
+import {
+  Building2,
+  Wallet,
+  Receipt,
+  Plus,
+  ArrowRightLeft,
+  DollarSign,
+  Edit,
+} from "lucide-react";
 
 const FinancialOverview = ({
   bankAccounts,
@@ -45,6 +53,17 @@ const FinancialOverview = ({
         </button>
 
         <div className="space-y-2">
+          {!currentWeek.isLocked &&
+            hasPermission("updateBankBalance") &&
+            bankAccounts.length > 0 && (
+              <button
+                onClick={() => setActiveModal("updateBankBalances")}
+                className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-4 py-3 transition-all flex items-center justify-center gap-2 font-bold shadow-lg hover:shadow-xl text-sm uppercase tracking-wide"
+              >
+                <Edit className="w-5 h-5" />
+                Update Bank Balances
+              </button>
+            )}
           {!currentWeek.isLocked && hasPermission("addBankAccount") && (
             <button
               onClick={() => setActiveModal("addBankAccount")}
@@ -75,17 +94,13 @@ const FinancialOverview = ({
             <div className="bg-green-600 p-2 rounded-lg">
               <Wallet className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-medium text-gray-700">
-              Cash Box
-            </span>
+            <span className="text-sm font-medium text-gray-700">Cash Box</span>
           </div>
         </div>
         <div className="text-4xl font-bold text-gray-900 mb-2">
           ${getExpectedCashAmount().toFixed(2)}
         </div>
-        <div className="text-xs text-gray-600 mb-4">
-          Current balance
-        </div>
+        <div className="text-xs text-gray-600 mb-4">Current balance</div>
         {!currentWeek.isLocked && hasPermission("calculateCash") && (
           <button
             onClick={() => setActiveModal("addCash")}

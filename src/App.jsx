@@ -1245,24 +1245,24 @@ function App() {
         ) : (
           <>
             {/* Week Navigation */}
-            <div className="bg-gradient-to-r from-white to-gray-50 shadow-xl p-6 mb-6 border border-gray-200">
+            <div className="bg-white border-b border-slate-200 p-6 mb-0">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-3 rounded-xl shadow-lg">
+                  <div className="bg-emerald-600 p-3 rounded-xl">
                     <Calendar className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className="text-2xl font-bold text-slate-900">
                       Week {currentWeekIndex + 1} of {weeks.length}
                     </h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-600">
                       {formatDateReadable(weekStartDate)} -{" "}
                       {formatDateReadable(weekEndDate)}
                     </p>
                   </div>
                 </div>
                 {currentWeek.isLocked && (
-                  <span className="flex items-center gap-2 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 px-4 py-2 rounded-xl text-sm font-medium shadow-md">
+                  <span className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-semibold">
                     <Lock className="w-4 h-4" />
                     Locked
                   </span>
@@ -1275,7 +1275,7 @@ function App() {
                     setCurrentWeekIndex(Math.max(0, currentWeekIndex - 1))
                   }
                   disabled={currentWeekIndex === 0}
-                  className="px-5 py-2.5 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-gray-300 font-medium shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
                 >
                   <ChevronDown className="w-4 h-4 rotate-90" />
                   Previous Week
@@ -1287,7 +1287,7 @@ function App() {
                     )
                   }
                   disabled={currentWeekIndex === weeks.length - 1}
-                  className="px-5 py-2.5 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-gray-300 font-medium shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
                 >
                   Next Week
                   <ChevronUp className="w-4 h-4 rotate-90" />
@@ -1295,7 +1295,7 @@ function App() {
                 {currentWeekIndex === 0 && !currentWeek.isLocked && (
                   <button
                     onClick={createNewWeek}
-                    className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 flex items-center gap-2 font-medium shadow-md hover:shadow-lg transition-all"
+                    className="px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2 font-semibold rounded-xl transition-all"
                   >
                     <Plus className="w-5 h-5" />
                     New Week
@@ -1304,7 +1304,7 @@ function App() {
                 {!currentWeek.isLocked && hasPermission("makeExpense") && (
                   <button
                     onClick={() => setActiveModal("lockWeek")}
-                    className="px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 flex items-center gap-2 ml-auto font-medium shadow-md hover:shadow-lg transition-all"
+                    className="px-5 py-2.5 bg-yellow-500 text-white hover:bg-yellow-600 flex items-center gap-2 ml-auto font-semibold rounded-xl transition-all"
                   >
                     <Lock className="w-5 h-5" />
                     Lock Week
@@ -1322,6 +1322,8 @@ function App() {
               getExpectedCashAmount={getExpectedCashAmount}
               getTotalExpenses={getTotalExpenses}
               expenses={expenses}
+              currentAccount={currentAccount}
+              formatAmount={formatAmount}
             />
 
             <DailyBreakdown
@@ -1333,6 +1335,8 @@ function App() {
               expandedDays={expandedDays}
               toggleDayExpansion={toggleDayExpansion}
               setSelectedExpenseForPhoto={setSelectedExpenseForPhoto}
+              currentAccount={currentAccount}
+              formatAmount={formatAmount}
               handleDeleteExpense={handleDeleteExpense}
               currentWeek={currentWeek}
               hasPermission={hasPermission}
@@ -2340,7 +2344,7 @@ function App() {
                             Current Balance
                           </div>
                           <div className="text-xl font-bold text-gray-900">
-                            ${ba.balance.toFixed(2)}
+                            {formatAmount(ba.balance, currentAccount?.currency)}
                           </div>
                         </div>
                       </div>
@@ -2379,8 +2383,11 @@ function App() {
                                     : "text-red-600"
                                 }`}
                               >
-                                {difference >= 0 ? "+" : ""}$
-                                {difference.toFixed(2)}
+                                {difference >= 0 ? "+" : ""}
+                                {formatAmount(
+                                  Math.abs(difference),
+                                  currentAccount?.currency,
+                                )}
                               </span>
                               <span className="text-gray-600 ml-1">
                                 from current
@@ -2547,7 +2554,10 @@ function App() {
                     <span
                       className={`text-sm font-bold ${expenseForm.bankAccountId === "" ? "text-white" : "text-gray-900"}`}
                     >
-                      ${getExpectedCashAmount().toFixed(2)}
+                      {formatAmount(
+                        getExpectedCashAmount(),
+                        currentAccount?.currency,
+                      )}
                     </span>
                   </button>
                   {/* Bank accounts */}
@@ -2600,7 +2610,7 @@ function App() {
                         <span
                           className={`text-sm font-bold ${isSelected ? "text-white" : "text-gray-900"}`}
                         >
-                          ${ba.balance.toFixed(2)}
+                          {formatAmount(ba.balance, currentAccount?.currency)}
                         </span>
                       </button>
                     );
@@ -2799,6 +2809,7 @@ function App() {
           setActiveModal={setActiveModal}
           getExpectedBankAmount={getExpectedBankAmount}
           runIfAllowed={runIfAllowed}
+          formatAmount={formatAmount}
         />
       )}{" "}
       {/* end settings */}

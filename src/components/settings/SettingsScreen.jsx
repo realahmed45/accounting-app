@@ -89,6 +89,7 @@ const SettingsScreen = ({
   setActiveModal,
   getExpectedBankAmount,
   runIfAllowed,
+  formatAmount,
 }) => {
   const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "activityLog"
 
@@ -1165,7 +1166,7 @@ const SettingsScreen = ({
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-black text-gray-900">
-                          ${ba.balance.toFixed(2)}
+                          {formatAmount(ba.balance, currentAccount?.currency)}
                         </div>
                         <div className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded inline-block uppercase tracking-tight">
                           {ba.accountType}
@@ -1183,7 +1184,10 @@ const SettingsScreen = ({
                           Total Bank Liquidity
                         </p>
                         <h3 className="text-3xl font-black tracking-tight">
-                          ${getExpectedBankAmount().toFixed(2)}
+                          {formatAmount(
+                            getExpectedBankAmount(),
+                            currentAccount?.currency,
+                          )}
                         </h3>
                       </div>
                       <div className="relative z-10 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">

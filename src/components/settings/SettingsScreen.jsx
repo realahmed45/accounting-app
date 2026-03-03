@@ -326,7 +326,28 @@ const SettingsScreen = ({
         <div className="flex-1 overflow-y-auto">
           {/* Landing: 4 buttons */}
           {!settingsSection && (
-            <div className="max-w-lg mx-auto px-6 py-12 space-y-3">
+            <div className="max-w-lg mx-auto px-6 py-12 space-y-6">
+              {/* Currency Display */}
+              {currentAccount?.currency && (
+                <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl shadow-md">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
+                      <DollarSign className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      Account Currency
+                    </h3>
+                  </div>
+                  <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mt-2">
+                    {currentAccount.currency} - {currentAccount.kind === "personal" ? "Personal" : "Business"} Account
+                  </p>
+                  <p className="text-sm text-gray-600 mt-3 font-medium">
+                    This is your default currency. All bank accounts and transactions use {currentAccount.currency}.
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-3">
               {[
                 {
                   key: "users",
@@ -374,6 +395,7 @@ const SettingsScreen = ({
                   <ChevronDown className="w-5 h-5 text-gray-400 -rotate-90 group-hover:text-gray-700 transition-colors" />
                 </button>
               ))}
+              </div>
             </div>
           )}
 
@@ -1029,32 +1051,6 @@ const SettingsScreen = ({
           {/* Bank Accounts Screen */}
           {settingsSection === "bankAccounts" && (
             <div className="max-w-xl mx-auto px-6 py-8">
-              {/* Currency Display */}
-              {currentAccount?.currency && (
-                <div className="mb-8 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-indigo-600 p-2 rounded-lg">
-                      <DollarSign className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      Account Currency
-                    </h3>
-                  </div>
-                  <p className="text-2xl font-extrabold text-indigo-600 mt-2">
-                    {currentAccount.currency} -{" "}
-                    {currentAccount.kind === "personal"
-                      ? "Personal"
-                      : "Business"}{" "}
-                    Account
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    This is your currency for your {currentAccount.kind}{" "}
-                    account. All bank accounts and transactions will use this
-                    currency.
-                  </p>
-                </div>
-              )}
-
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">

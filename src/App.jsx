@@ -194,7 +194,7 @@ function App() {
     accountType: "checking",
     lastFourDigits: "",
     balance: "",
-    currency: "USD",
+    currency: "",
   });
 
   const [bulkBalanceUpdates, setBulkBalanceUpdates] = useState({});
@@ -331,7 +331,7 @@ function App() {
   };
 
   const resetAccountForm = () => {
-    setAccountKind("");
+    setAccountKind("business");
     setPersonalDescription("");
     setSelectedCategory("");
     setSelectedSubcategory("");
@@ -421,10 +421,10 @@ function App() {
   // Show loading while account data loads
   if (accountLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your accounts...</p>
+          <div className="animate-spin rounded-full h-14 w-14 border-b-3 border-slate-900 mx-auto mb-4"></div>
+          <p className="text-slate-600 text-lg font-medium">Loading your accounts...</p>
         </div>
       </div>
     );
@@ -434,15 +434,15 @@ function App() {
   if (!currentAccount) {
     return (
       <>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="bg-white shadow border border-gray-200 p-8 max-w-md w-full text-center">
-            <div className="bg-indigo-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Building2 className="w-8 h-8 text-indigo-600" />
+        <div className="min-h-screen bg-white flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-12 max-w-lg w-full text-center">
+            <div className="bg-slate-100 rounded-2xl p-5 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+              <Building2 className="w-10 h-10 text-slate-700" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">
               No Accounts Yet
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-600 mb-8 text-lg">
               You need to create an account to start tracking your expenses.
             </p>
 
@@ -495,100 +495,8 @@ function App() {
                 </div>
               )}
 
-              {/* Step 1: choose kind */}
-              {accountKind === "" && (
-                <div className="space-y-4">
-                  <p className="text-sm text-gray-600 mb-6 text-center">
-                    What type of account would you like to create?
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setAccountKind("personal")}
-                    className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
-                  >
-                    <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
-                      <User className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-lg">
-                        Personal Account
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        For personal expense tracking
-                      </p>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAccountKind("business")}
-                    className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
-                  >
-                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
-                      <Building2 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-lg">
-                        Business Account
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        For business and commercial use
-                      </p>
-                    </div>
-                  </button>
-                </div>
-              )}
-
-              {/* Step 2a: Personal */}
-              {accountKind === "personal" && (
-                <form onSubmit={handleCreateAccount} className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Description{" "}
-                      <span className="text-gray-400 font-normal">
-                        (Optional)
-                      </span>
-                    </label>
-                    <input
-                      type="text"
-                      value={personalDescription}
-                      onChange={(e) => setPersonalDescription(e.target.value)}
-                      placeholder="e.g., My personal expenses..."
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-gray-300"
-                      autoFocus
-                    />
-                  </div>
-                  <div className="flex gap-3 pt-3">
-                    <button
-                      type="button"
-                      onClick={() => setAccountKind("")}
-                      className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
-                    >
-                      ← Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                    >
-                      {loading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                          Creating...
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-5 h-5" />
-                          Create Account
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {/* Step 2b: Business */}
-              {accountKind === "business" && (
-                <form onSubmit={handleCreateAccount} className="space-y-5">
+              {/* Business Account Form */}
+              <form onSubmit={handleCreateAccount} className="space-y-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Category <span className="text-red-500">*</span>
@@ -647,18 +555,11 @@ function App() {
                       />
                     </div>
                   )}
-                  <div className="flex gap-3 pt-3">
-                    <button
-                      type="button"
-                      onClick={() => setAccountKind("")}
-                      className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
-                    >
-                      ← Back
-                    </button>
+                  <div className="pt-3">
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       {loading ? (
                         <>
@@ -674,7 +575,6 @@ function App() {
                     </button>
                   </div>
                 </form>
-              )}
             </div>
           </div>
         )}
@@ -934,6 +834,12 @@ function App() {
         return;
       }
 
+      // Require currency when creating first bank account
+      if (bankAccounts.length === 0 && !bankAccountForm.currency) {
+        setError("Please select a currency for your first bank account");
+        return;
+      }
+
       setLoading(true);
       setError("");
 
@@ -944,7 +850,7 @@ function App() {
           accountType: bankAccountForm.accountType,
           lastFourDigits: bankAccountForm.lastFourDigits.trim(),
           balance: parseFloat(bankAccountForm.balance) || 0,
-          currency: bankAccountForm.currency || "USD",
+          currency: bankAccounts.length === 0 ? bankAccountForm.currency : (currentAccount?.currency || "USD"),
         };
 
         const res = await bankAccountService.create(
@@ -960,7 +866,7 @@ function App() {
             accountType: "checking",
             lastFourDigits: "",
             balance: "",
-            currency: "USD",
+            currency: "",
           });
           setActiveModal(null);
           setSuccess("Bank account added successfully!");
@@ -1104,7 +1010,7 @@ function App() {
   const weekDates = getWeekDates(weekStartDate);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Header
         user={user}
         currentMember={currentMember}
@@ -1115,15 +1021,15 @@ function App() {
       <NotificationBanner success={success} error={error} setError={setError} />
       {/* Main Content */}
       {/* Main Content */}
-      <div className="w-full px-6 xl:px-12 py-6">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6">
         {/* Top Action Bar */}
-        <div className="flex justify-end gap-3 mb-6">
+        <div className="flex flex-wrap justify-end gap-3 mb-6">
           <button
             onClick={() => setShowHistoryTab(!showHistoryTab)}
-            className={`px-6 py-3 transition-all flex items-center gap-2 font-semibold shadow-md hover:shadow-xl ${
+            className={`px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-semibold shadow-sm hover:shadow-md ${
               showHistoryTab
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-50"
+                ? "bg-slate-900 text-white"
+                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
             }`}
           >
             <History className="w-5 h-5" />
@@ -1132,17 +1038,17 @@ function App() {
 
           <button
             onClick={() => setShowSchedule(true)}
-            className="px-6 py-3 transition-all flex items-center gap-2 font-semibold shadow-md bg-white text-gray-700 hover:bg-gray-50 hover:shadow-xl"
+            className="px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-semibold shadow-sm bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:shadow-md"
           >
-            <Calendar className="w-5 h-5 text-indigo-600" />
+            <Calendar className="w-5 h-5 text-emerald-600" />
             Schedule
           </button>
         </div>
 
         {showHistoryTab ? (
-          <div className="bg-white shadow-xl p-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-3 rounded-xl">
+          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sm:p-8">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+              <div className="bg-slate-900 p-3 rounded-xl">
                 <History className="w-8 h-8 text-white" />
               </div>
               Activity History
@@ -1153,7 +1059,7 @@ function App() {
               {expenses.length === 0 &&
                 (!currentWeek?.cashTransactions ||
                   currentWeek.cashTransactions.length === 0) && (
-                  <div className="text-center py-16 text-gray-400">
+                  <div className="text-center py-16 text-slate-400">
                     <FileText className="w-20 h-20 mx-auto mb-4 opacity-30" />
                     <p className="text-lg font-medium">No activities yet</p>
                     <p className="text-sm mt-2">
@@ -1187,15 +1093,15 @@ function App() {
               ).map(([date, activities]) => (
                 <div
                   key={date}
-                  className="border-l-4 border-indigo-200 pl-6 pb-6"
+                  className="border-l-4 border-slate-300 pl-6 pb-6"
                 >
                   <div className="sticky top-0 bg-white pb-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <Calendar className="w-5 h-5 text-indigo-600" />
-                      <h3 className="text-lg font-bold text-gray-800">
+                      <Calendar className="w-5 h-5 text-emerald-600" />
+                      <h3 className="text-lg font-bold text-slate-800">
                         {formatDateReadable(new Date(date))}
                       </h3>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-slate-500">
                         ({activities.length} activities)
                       </span>
                     </div>
@@ -1208,15 +1114,15 @@ function App() {
                         return (
                           <div
                             key={idx}
-                            className="bg-gradient-to-r from-gray-50 to-white border border-gray-200 p-4 hover:shadow-md transition-all"
+                            className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-slate-300"
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-red-100 p-2 rounded-lg">
+                                  <div className="bg-red-50 p-2 rounded-lg">
                                     <Receipt className="w-4 h-4 text-red-600" />
                                   </div>
-                                  <span className="font-semibold text-gray-800">
+                                  <span className="font-semibold text-slate-800">
                                     Expense
                                   </span>
                                   <span className="text-xl font-bold text-red-600">
@@ -1224,12 +1130,12 @@ function App() {
                                   </span>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2 ml-10">
-                                  <span className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full font-medium">
+                                  <span className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">
                                     {exp.category}
                                   </span>
                                   {exp.paymentSource === "bank" &&
                                     exp.bankAccountId && (
-                                      <span className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
+                                      <span className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
                                         <CreditCard className="w-3 h-3" />
                                         {bankAccounts.find(
                                           (ba) => ba._id === exp.bankAccountId,
@@ -1237,18 +1143,18 @@ function App() {
                                       </span>
                                     )}
                                   {exp.paymentSource === "cash" && (
-                                    <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full font-medium">
+                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
                                       💵 Cash
                                     </span>
                                   )}
                                 </div>
                                 {exp.note && (
-                                  <p className="text-sm text-gray-600 mt-2 ml-10">
+                                  <p className="text-sm text-slate-600 mt-2 ml-10">
                                     {exp.note}
                                   </p>
                                 )}
                               </div>
-                              <div className="text-xs text-gray-500">
+                              <div className="text-xs text-slate-500">
                                 {formatTime(activity.timestamp)}
                               </div>
                             </div>
@@ -1261,15 +1167,15 @@ function App() {
                         return (
                           <div
                             key={idx}
-                            className="bg-gradient-to-r from-green-50 to-white border border-green-200 p-4 hover:shadow-md transition-all"
+                            className="bg-white border border-emerald-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-emerald-300"
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-green-100 p-2 rounded-lg">
-                                    <Wallet className="w-4 h-4 text-green-600" />
+                                  <div className="bg-emerald-50 p-2 rounded-lg">
+                                    <Wallet className="w-4 h-4 text-emerald-600" />
                                   </div>
-                                  <span className="font-semibold text-gray-800">
+                                  <span className="font-semibold text-slate-800">
                                     Cash Added
                                   </span>
                                   <span className="text-xl font-bold text-green-600">
@@ -1329,7 +1235,7 @@ function App() {
                   onClick={() =>
                     setCurrentWeekIndex(Math.max(0, currentWeekIndex - 1))
                   }
-                  disabled={currentWeekIndex === weeks.length - 1}
+                  disabled={currentWeekIndex === 0}
                   className="px-5 py-2.5 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-gray-300 font-medium shadow-sm hover:shadow-md transition-all flex items-center gap-2"
                 >
                   <ChevronDown className="w-4 h-4 rotate-90" />
@@ -1341,7 +1247,7 @@ function App() {
                       Math.min(weeks.length - 1, currentWeekIndex + 1),
                     )
                   }
-                  disabled={currentWeekIndex === 0}
+                  disabled={currentWeekIndex === weeks.length - 1}
                   className="px-5 py-2.5 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-gray-300 font-medium shadow-sm hover:shadow-md transition-all flex items-center gap-2"
                 >
                   Next Week
@@ -1398,19 +1304,19 @@ function App() {
       </div>
       {/* Modals */}
       {activeModal === "bankAccounts" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white shadow-2xl w-full max-w-xl">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white shadow-2xl rounded-2xl w-full max-w-xl overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+            <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b-2 border-blue-700">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-600 p-2.5 rounded-lg">
-                  <Building2 className="w-5 h-5 text-white" />
+                <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur">
+                  <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-2xl font-bold text-white">
                     Bank Accounts
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-blue-100 font-medium mt-0.5">
                     {bankAccounts.length} account
                     {bankAccounts.length !== 1 ? "s" : ""} linked
                   </p>
@@ -1418,51 +1324,53 @@ function App() {
               </div>
               <button
                 onClick={() => setActiveModal(null)}
-                className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2 transition-colors"
+                className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-200"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Accounts List */}
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
               {bankAccounts.length === 0 ? (
                 <div className="py-16 text-center">
-                  <CreditCard className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500 font-medium">
+                  <div className="bg-blue-50 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                    <CreditCard className="w-10 h-10 text-blue-400" />
+                  </div>
+                  <p className="text-gray-700 font-semibold text-lg">
                     No accounts added yet
                   </p>
-                  <p className="text-sm text-gray-400 mt-1">
-                    Use the Add New Bank button to link an account
+                  <p className="text-sm text-gray-500 mt-2">
+                    Add bank accounts through Settings to get started
                   </p>
                 </div>
               ) : (
                 bankAccounts.map((ba) => (
                   <div
                     key={ba._id}
-                    className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+                    className="flex items-center justify-between px-6 py-5 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 group"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="bg-blue-100 p-2.5 rounded-lg flex-shrink-0">
-                        <CreditCard className="w-5 h-5 text-blue-600" />
+                      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-3 rounded-xl flex-shrink-0 group-hover:from-blue-500 group-hover:to-indigo-500 transition-all duration-200">
+                        <CreditCard className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900 text-base">
+                        <div className="font-bold text-gray-900 text-lg">
                           {ba.name}
                           {ba.lastFourDigits && (
-                            <span className="text-gray-400 font-normal ml-2 text-sm">
+                            <span className="text-gray-400 font-normal ml-2 text-base">
                               ···{ba.lastFourDigits}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-3 mt-0.5">
+                        <div className="flex items-center gap-2 mt-1">
                           {ba.bankName && (
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-600 font-medium">
                               {ba.bankName}
                             </span>
                           )}
                           {ba.accountType && (
-                            <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 capitalize font-medium">
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 capitalize font-bold rounded-full">
                               {ba.accountType}
                             </span>
                           )}
@@ -1470,7 +1378,7 @@ function App() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-gray-900">
+                      <div className="text-2xl font-black text-gray-900 group-hover:text-blue-600 transition-colors">
                         ${ba.balance.toFixed(2)}
                       </div>
                     </div>
@@ -1481,28 +1389,22 @@ function App() {
 
             {/* Total Row */}
             {bankAccounts.length > 0 && (
-              <div className="flex items-center justify-between px-6 py-4 bg-blue-600 text-white">
-                <span className="font-semibold text-base">Total Balance</span>
-                <span className="text-2xl font-bold">
+              <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-inner">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  <span className="font-bold text-lg">Total Balance</span>
+                </div>
+                <span className="text-3xl font-black tracking-tight">
                   ${getExpectedBankAmount().toFixed(2)}
                 </span>
               </div>
             )}
 
             {/* Footer Actions */}
-            <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
-              {!currentWeek.isLocked && (
-                <button
-                  onClick={() => setActiveModal("addBankAccount")}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-colors flex items-center justify-center gap-2 font-medium"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add New Account
-                </button>
-              )}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
               <button
                 onClick={() => setActiveModal(null)}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+                className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 font-semibold rounded-xl"
               >
                 Close
               </button>
@@ -1741,7 +1643,7 @@ function App() {
                     accountType: "checking",
                     lastFourDigits: "",
                     balance: "",
-                    currency: "USD",
+                    currency: "",
                   });
                   setBaCurrencyOpen(false);
                   setBaCurrencySearch("");
@@ -1909,25 +1811,33 @@ function App() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold w-10 text-center text-gray-700 leading-none">
-                          {
-                            CURRENCIES.find(
-                              (c) => c.code === bankAccountForm.currency,
-                            )?.symbol
-                          }
-                        </span>
-                        <div>
-                          <span className="font-semibold text-gray-900">
-                            {bankAccountForm.currency}
+                        {bankAccountForm.currency ? (
+                          <>
+                            <span className="text-2xl font-bold w-10 text-center text-gray-700 leading-none">
+                              {
+                                CURRENCIES.find(
+                                  (c) => c.code === bankAccountForm.currency,
+                                )?.symbol
+                              }
+                            </span>
+                            <div>
+                              <span className="font-semibold text-gray-900">
+                                {bankAccountForm.currency}
+                              </span>
+                              <span className="text-gray-500 text-sm ml-2">
+                                {
+                                  CURRENCIES.find(
+                                    (c) => c.code === bankAccountForm.currency,
+                                  )?.name
+                                }
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <span className="text-gray-400 font-medium">
+                            Select currency...
                           </span>
-                          <span className="text-gray-500 text-sm ml-2">
-                            {
-                              CURRENCIES.find(
-                                (c) => c.code === bankAccountForm.currency,
-                              )?.name
-                            }
-                          </span>
-                        </div>
+                        )}
                       </div>
                       <ChevronDown
                         className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
@@ -2735,100 +2645,8 @@ function App() {
               </div>
             )}
 
-            {/* Step 1: choose kind */}
-            {accountKind === "" && (
-              <div className="space-y-4">
-                <p className="text-sm text-gray-600 mb-6 text-center">
-                  What type of account would you like to create?
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setAccountKind("personal")}
-                  className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
-                >
-                  <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
-                    <User className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900 text-lg">
-                      Personal Account
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      For personal expense tracking
-                    </p>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAccountKind("business")}
-                  className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
-                >
-                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
-                    <Building2 className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900 text-lg">
-                      Business Account
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      For business and commercial use
-                    </p>
-                  </div>
-                </button>
-              </div>
-            )}
-
-            {/* Step 2a: Personal */}
-            {accountKind === "personal" && (
-              <form onSubmit={handleCreateAccount} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Description{" "}
-                    <span className="text-gray-400 font-normal">
-                      (Optional)
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    value={personalDescription}
-                    onChange={(e) => setPersonalDescription(e.target.value)}
-                    placeholder="e.g., My personal expenses..."
-                    className="w-full px-4 py-3 border- 2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-gray-300"
-                    autoFocus
-                  />
-                </div>
-                <div className="flex gap-3 pt-3">
-                  <button
-                    type="button"
-                    onClick={() => setAccountKind("")}
-                    className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
-                  >
-                    ← Back
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="w-5 h-5" />
-                        Create Account
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* Step 2b: Business */}
-            {accountKind === "business" && (
-              <form onSubmit={handleCreateAccount} className="space-y-5">
+            {/* Business Account Form */}
+            <form onSubmit={handleCreateAccount} className="space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Category <span className="text-red-500">*</span>
@@ -2887,18 +2705,11 @@ function App() {
                     />
                   </div>
                 )}
-                <div className="flex gap-3 pt-3">
-                  <button
-                    type="button"
-                    onClick={() => setAccountKind("")}
-                    className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
-                  >
-                    ← Back
-                  </button>
+                <div className="pt-3">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     {loading ? (
                       <>
@@ -2914,7 +2725,6 @@ function App() {
                   </button>
                 </div>
               </form>
-            )}
           </div>
         </div>
       )}

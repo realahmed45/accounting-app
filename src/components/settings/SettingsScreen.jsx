@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Receipt,
   Trash2,
+  DollarSign,
 } from "lucide-react";
 import {
   memberService,
@@ -1028,6 +1029,26 @@ const SettingsScreen = ({
           {/* Bank Accounts Screen */}
           {settingsSection === "bankAccounts" && (
             <div className="max-w-xl mx-auto px-6 py-8">
+              {/* Currency Display */}
+              {currentAccount?.currency && (
+                <div className="mb-8 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="bg-indigo-600 p-2 rounded-lg">
+                      <DollarSign className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      Account Currency
+                    </h3>
+                  </div>
+                  <p className="text-2xl font-extrabold text-indigo-600 mt-2">
+                    {currentAccount.currency} - {currentAccount.kind === "personal" ? "Personal" : "Business"} Account
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    This is your currency for your {currentAccount.kind} account. All bank accounts and transactions will use this currency.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">
@@ -1084,20 +1105,31 @@ const SettingsScreen = ({
                   ))
                 )}
                 {bankAccounts.length > 0 && (
-                  <div className="mt-8 p-6 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl text-white shadow-xl flex items-center justify-between overflow-hidden relative">
-                    <Building2 className="absolute -left-4 -bottom-4 w-32 h-32 opacity-10 rotate-12" />
-                    <div className="relative z-10">
-                      <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">
-                        Total Bank Liquidity
-                      </p>
-                      <h3 className="text-3xl font-black tracking-tight">
-                        ${getExpectedBankAmount().toFixed(2)}
-                      </h3>
+                  <>
+                    <div className="mt-8 p-6 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl text-white shadow-xl flex items-center justify-between overflow-hidden relative">
+                      <Building2 className="absolute -left-4 -bottom-4 w-32 h-32 opacity-10 rotate-12" />
+                      <div className="relative z-10">
+                        <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">
+                          Total Bank Liquidity
+                        </p>
+                        <h3 className="text-3xl font-black tracking-tight">
+                          ${getExpectedBankAmount().toFixed(2)}
+                        </h3>
+                      </div>
+                      <div className="relative z-10 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                        <CreditCard className="w-8 h-8" />
+                      </div>
                     </div>
-                    <div className="relative z-10 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                      <CreditCard className="w-8 h-8" />
-                    </div>
-                  </div>
+                    {hasPermission("updateBankBalance") && (
+                      <button
+                        onClick={() => setActiveModal("topUpBankBalance")}
+                        className="w-full mt-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-4 transition-all flex items-center justify-center gap-3 font-bold shadow-lg hover:shadow-xl text-base uppercase tracking-wide rounded-xl"
+                      >
+                        <Plus className="w-6 h-6" />
+                        Top Up Bank Balance
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>

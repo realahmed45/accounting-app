@@ -54,17 +54,6 @@ const FinancialOverview = ({
 
         <div className="space-y-2">
           {!currentWeek.isLocked &&
-            hasPermission("updateBankBalance") &&
-            bankAccounts.length > 0 && (
-              <button
-                onClick={() => setActiveModal("topUpBankBalance")}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 transition-all flex items-center justify-center gap-2 font-bold shadow-lg hover:shadow-xl text-sm uppercase tracking-wide"
-              >
-                <Plus className="w-5 h-5" />
-                Top Up Bank Balance
-              </button>
-            )}
-          {!currentWeek.isLocked &&
             bankAccounts.length > 0 &&
             hasPermission("calculateCash") && (
               <button
@@ -98,7 +87,7 @@ const FinancialOverview = ({
             className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 transition-all flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
           >
             <DollarSign className="w-4 h-4" />
-            Add Cash
+            Top Up Cash Balance
           </button>
         )}
       </div>

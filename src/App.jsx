@@ -1519,7 +1519,7 @@ function App() {
                   <Wallet className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  Add Cash to Box
+                  Top Up Cash Balance
                 </h3>
               </div>
               <button
@@ -1567,7 +1567,7 @@ function App() {
                 onClick={handleAddCash}
                 className="flex-1 bg-green-600 text-white px-6 py-3 hover:bg-green-700 transition-colors font-semibold"
               >
-                Add Cash
+                Top Up Cash
               </button>
               <button
                 onClick={() => {

@@ -195,6 +195,12 @@ function App() {
     balance: "",
     currency: "USD",
   });
+  const [selectedBankAccountForAdjust, setSelectedBankAccountForAdjust] =
+    useState(null);
+  const [adjustBalanceForm, setAdjustBalanceForm] = useState({
+    newBalance: "",
+    reason: "",
+  });
   const [accountKind, setAccountKind] = useState(""); // "personal" | "business"
   const [personalDescription, setPersonalDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -843,7 +849,10 @@ function App() {
       try {
         const response = await expenseService.delete(expenseId);
         if (response.success) {
-          setExpenses(expenses.filter((exp) => exp._id !== expenseId));
+          // Reload expenses from server to reflect deletion
+          if (currentWeek?._id) {
+            await loadExpenses(currentWeek._id);
+          }
 
           // Reload week and bank accounts to reflect updated balances
           await loadWeeks();
@@ -965,6 +974,41 @@ function App() {
       setLoading(false);
     }); // end runIfAllowed
   };
+
+  const handleAdjustBalance = async () =>
+    runIfAllowed(async () => {
+      const newBalance = parseFloat(adjustBalanceForm.newBalance);
+      if (isNaN(newBalance) || newBalance < 0) {
+        setError("Please enter a valid balance amount");
+        return;
+      }
+
+      if (!selectedBankAccountForAdjust) return;
+
+      setLoading(true);
+      try {
+        const res = await bankAccountService.adjustBalance(
+          currentAccount._id,
+          selectedBankAccountForAdjust._id,
+          newBalance,
+          adjustBalanceForm.reason.trim(),
+        );
+
+        if (res.success) {
+          await loadBankAccounts();
+          setAdjustBalanceForm({ newBalance: "", reason: "" });
+          setSelectedBankAccountForAdjust(null);
+          setActiveModal(null);
+          setSuccess("Bank account balance adjusted successfully!");
+          setTimeout(() => setSuccess(""), 3000);
+        } else {
+          setError(res.message || "Failed to adjust balance");
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to adjust balance");
+      }
+      setLoading(false);
+    });
 
   const toggleDayExpansion = (date) => {
     setExpandedDays((prev) =>
@@ -1383,6 +1427,20 @@ function App() {
                       <div className="text-xl font-bold text-gray-900">
                         ${ba.balance.toFixed(2)}
                       </div>
+                      <button
+                        onClick={() => {
+                          setSelectedBankAccountForAdjust(ba);
+                          setAdjustBalanceForm({
+                            newBalance: ba.balance.toString(),
+                            reason: "",
+                          });
+                          setActiveModal("adjustBalance");
+                        }}
+                        className="mt-1 text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                      >
+                        <Edit className="w-3 h-3" />
+                        Adjust Balance
+                      </button>
                     </div>
                   </div>
                 ))
@@ -1933,6 +1991,141 @@ function App() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {activeModal === "adjustBalance" && selectedBankAccountForAdjust && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-600 p-2.5 rounded-lg">
+                  <Edit className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Adjust Balance
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {selectedBankAccountForAdjust.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setSelectedBankAccountForAdjust(null);
+                  setAdjustBalanceForm({ newBalance: "", reason: "" });
+                  setError("");
+                }}
+                className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {error && (
+              <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+
+            <div className="px-6 py-5 space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-500 mb-1">
+                  Current Balance
+                </div>
+                <div className="text-2xl font-bold text-gray-900">
+                  ${selectedBankAccountForAdjust.balance.toFixed(2)}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  New Balance <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={adjustBalanceForm.newBalance}
+                  onChange={(e) =>
+                    setAdjustBalanceForm({
+                      ...adjustBalanceForm,
+                      newBalance: e.target.value,
+                    })
+                  }
+                  placeholder="0.00"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                />
+                {adjustBalanceForm.newBalance && (
+                  <div className="mt-2 text-sm">
+                    <span
+                      className={`font-medium ${
+                        parseFloat(adjustBalanceForm.newBalance) -
+                          selectedBankAccountForAdjust.balance >=
+                        0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {parseFloat(adjustBalanceForm.newBalance) -
+                        selectedBankAccountForAdjust.balance >=
+                      0
+                        ? "+"
+                        : ""}
+                      $
+                      {(
+                        parseFloat(adjustBalanceForm.newBalance) -
+                        selectedBankAccountForAdjust.balance
+                      ).toFixed(2)}
+                    </span>
+                    <span className="text-gray-500"> from current balance</span>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Reason{" "}
+                  <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <textarea
+                  value={adjustBalanceForm.reason}
+                  onChange={(e) =>
+                    setAdjustBalanceForm({
+                      ...adjustBalanceForm,
+                      reason: e.target.value,
+                    })
+                  }
+                  placeholder="e.g., Reconciliation, deposit, withdrawal, correction..."
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={handleAdjustBalance}
+                disabled={loading}
+                className="flex-1 bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              >
+                {loading ? "Adjusting..." : "Adjust Balance"}
+              </button>
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setSelectedBankAccountForAdjust(null);
+                  setAdjustBalanceForm({ newBalance: "", reason: "" });
+                  setError("");
+                }}
+                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

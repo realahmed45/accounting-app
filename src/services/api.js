@@ -178,6 +178,14 @@ export const bankAccountService = {
     );
     return response.data;
   },
+
+  adjustBalance: async (accountId, bankId, newBalance, reason) => {
+    const response = await api.post(
+      `/accounts/${accountId}/bank-accounts/${bankId}/adjust`,
+      { newBalance, reason },
+    );
+    return response.data;
+  },
 };
 
 // ==================== WEEK SERVICES ====================

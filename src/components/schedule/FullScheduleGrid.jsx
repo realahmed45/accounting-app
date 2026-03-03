@@ -136,17 +136,17 @@ const FullScheduleGrid = ({ accountId }) => {
       `}</style>
 
       {/* Grid Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+        <div className="flex items-center gap-4">
           <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-xl">
             <button
               onClick={() => setWeeksOffset((v) => v - 1)}
-              className="p-3 hover:bg-white/10 rounded-xl transition-all group"
+              className="p-2 md:p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-white" />
+              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white" />
             </button>
-            <div className="px-6 py-2 flex items-center gap-3 text-sm font-black text-white">
-              <CalendarIcon className="w-4 h-4 text-indigo-400" />
+            <div className="px-3 md:px-6 py-2 flex items-center gap-2 md:gap-3 text-xs md:text-sm font-black text-white">
+              <CalendarIcon className="w-3 h-3 md:w-4 md:h-4 text-indigo-400" />
               {days[0]?.toLocaleDateString(undefined, {
                 month: "short",
                 day: "numeric",
@@ -160,32 +160,33 @@ const FullScheduleGrid = ({ accountId }) => {
             </div>
             <button
               onClick={() => setWeeksOffset((v) => v + 1)}
-              className="p-3 hover:bg-white/10 rounded-xl transition-all group"
+              className="p-2 md:p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
-              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-white" />
+              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white" />
             </button>
           </div>
           {weeksOffset !== 0 && (
             <button
               onClick={() => setWeeksOffset(0)}
-              className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-indigo-300 hover:text-white uppercase tracking-widest transition-all"
+              className="px-4 md:px-6 py-2 md:py-3 bg-white/5 border border-white/10 rounded-2xl text-[9px] md:text-[10px] font-black text-indigo-300 hover:text-white uppercase tracking-widest transition-all"
             >
-              Back to Today
+              Today
             </button>
           )}
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="group relative px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-sm transition-all shadow-2xl hover:-translate-y-1 active:scale-95 overflow-hidden"
+          className="group relative px-4 md:px-8 py-3 md:py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-xs md:text-sm transition-all shadow-2xl hover:-translate-y-1 active:scale-95 overflow-hidden"
         >
           <div
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"
             style={{ backgroundSize: "200% 100%" }}
           />
-          <div className="flex items-center gap-3 relative z-10">
-            <Plus className="w-5 h-5" />
-            Initialize Shift
+          <div className="flex items-center gap-2 md:gap-3 relative z-10">
+            <Plus className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="hidden sm:inline">Initialize Shift</span>
+            <span className="sm:hidden">New Shift</span>
           </div>
         </button>
       </div>
@@ -193,7 +194,7 @@ const FullScheduleGrid = ({ accountId }) => {
       {/* The Mega Grid */}
       <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full border-collapse table-fixed min-w-[1200px]">
+          <table className="w-full border-collapse table-fixed lg:min-w-[1200px]">
             <thead>
               <tr className="grid-header">
                 <th className="w-64 sticky left-0 z-30 grid-header p-8 text-left">

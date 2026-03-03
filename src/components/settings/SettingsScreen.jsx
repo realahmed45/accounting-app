@@ -1116,9 +1116,23 @@ const SettingsScreen = ({
                     <option value="expense_created">Expenses Created</option>
                     <option value="expense_updated">Expenses Updated</option>
                     <option value="expense_deleted">Expenses Deleted</option>
-                    <option value="cash_added">Cash Added</option>
-                    <option value="bank_transfer">Bank Transfers</option>
+                    <option value="week_created">Week Actions</option>
+                    <option value="week_locked">Week Locked</option>
+                    <option value="bank_account_added">
+                      Bank Account Added
+                    </option>
+                    <option value="bank_account_removed">
+                      Bank Account Removed
+                    </option>
+                    <option value="account_settings_changed">
+                      Settings Changed
+                    </option>
                     <option value="member_invited">Members Invited</option>
+                    <option value="member_removed">Members Removed</option>
+                    <option value="permission_granted">
+                      Permissions Granted
+                    </option>
+                    <option value="shift_created">Shifts Created</option>
                   </select>
                 </div>
               </div>
@@ -1153,14 +1167,12 @@ const SettingsScreen = ({
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-900">
-                              {log.description}
+                              {log.targetDescription}
                             </p>
                             <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />{" "}
-                                {log.userId?.displayName ||
-                                  log.userId?.email ||
-                                  "System"}
+                                {log.actorDisplayName || "System"}
                               </span>
                               <span>
                                 • {new Date(log.createdAt).toLocaleString()}

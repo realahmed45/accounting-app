@@ -1041,10 +1041,16 @@ const SettingsScreen = ({
                     </h3>
                   </div>
                   <p className="text-2xl font-extrabold text-indigo-600 mt-2">
-                    {currentAccount.currency} - {currentAccount.kind === "personal" ? "Personal" : "Business"} Account
+                    {currentAccount.currency} -{" "}
+                    {currentAccount.kind === "personal"
+                      ? "Personal"
+                      : "Business"}{" "}
+                    Account
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    This is your currency for your {currentAccount.kind} account. All bank accounts and transactions will use this currency.
+                    This is your currency for your {currentAccount.kind}{" "}
+                    account. All bank accounts and transactions will use this
+                    currency.
                   </p>
                 </div>
               )}

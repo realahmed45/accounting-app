@@ -57,22 +57,13 @@ const FinancialOverview = ({
             hasPermission("updateBankBalance") &&
             bankAccounts.length > 0 && (
               <button
-                onClick={() => setActiveModal("updateBankBalances")}
-                className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-4 py-3 transition-all flex items-center justify-center gap-2 font-bold shadow-lg hover:shadow-xl text-sm uppercase tracking-wide"
+                onClick={() => setActiveModal("topUpBankBalance")}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 transition-all flex items-center justify-center gap-2 font-bold shadow-lg hover:shadow-xl text-sm uppercase tracking-wide"
               >
-                <Edit className="w-5 h-5" />
-                Update Bank Balances
+                <Plus className="w-5 h-5" />
+                Top Up Bank Balance
               </button>
             )}
-          {!currentWeek.isLocked && hasPermission("addBankAccount") && (
-            <button
-              onClick={() => setActiveModal("addBankAccount")}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 transition-all flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
-            >
-              <Plus className="w-4 h-4" />
-              Add New Bank
-            </button>
-          )}
           {!currentWeek.isLocked &&
             bankAccounts.length > 0 &&
             hasPermission("calculateCash") && (

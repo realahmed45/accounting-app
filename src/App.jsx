@@ -196,13 +196,11 @@ function App() {
     balance: "",
     currency: "USD",
   });
-  const [selectedBankAccountForAdjust, setSelectedBankAccountForAdjust] =
-    useState(null);
-  const [adjustBalanceForm, setAdjustBalanceForm] = useState({
-    newBalance: "",
-    reason: "",
-  });
+
   const [bulkBalanceUpdates, setBulkBalanceUpdates] = useState({});
+  const [topUpAmount, setTopUpAmount] = useState("");
+  const [topUpReason, setTopUpReason] = useState("");
+  const [selectedBankForTopUp, setSelectedBankForTopUp] = useState(null);
   const [accountKind, setAccountKind] = useState(""); // "personal" | "business"
   const [personalDescription, setPersonalDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -469,10 +467,10 @@ function App() {
 
         {/* Create Account Modal */}
         {showCreateAccountModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white shadow-2xl p-8 max-w-md w-full">
+          <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-800">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   {accountKind === ""
                     ? "Create Account"
                     : accountKind === "personal"
@@ -484,7 +482,7 @@ function App() {
                     setShowCreateAccountModal(false);
                     resetAccountForm();
                   }}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -499,23 +497,23 @@ function App() {
 
               {/* Step 1: choose kind */}
               {accountKind === "" && (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-500 mb-4">
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600 mb-6 text-center">
                     What type of account would you like to create?
                   </p>
                   <button
                     type="button"
                     onClick={() => setAccountKind("personal")}
-                    className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all text-left"
+                    className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
                   >
-                    <div className="bg-green-100 p-3 rounded-lg flex-shrink-0">
-                      <User className="w-6 h-6 text-green-600" />
+                    <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <User className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-bold text-gray-900 text-lg">
                         Personal Account
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-600 mt-1">
                         For personal expense tracking
                       </p>
                     </div>
@@ -523,16 +521,16 @@ function App() {
                   <button
                     type="button"
                     onClick={() => setAccountKind("business")}
-                    className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all text-left"
+                    className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
                   >
-                    <div className="bg-indigo-100 p-3 rounded-lg flex-shrink-0">
-                      <Building2 className="w-6 h-6 text-indigo-600" />
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <Building2 className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-bold text-gray-900 text-lg">
                         Business Account
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-600 mt-1">
                         For business and commercial use
                       </p>
                     </div>
@@ -542,9 +540,9 @@ function App() {
 
               {/* Step 2a: Personal */}
               {accountKind === "personal" && (
-                <form onSubmit={handleCreateAccount} className="space-y-4">
+                <form onSubmit={handleCreateAccount} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Description{" "}
                       <span className="text-gray-400 font-normal">
                         (Optional)
@@ -555,26 +553,26 @@ function App() {
                       value={personalDescription}
                       onChange={(e) => setPersonalDescription(e.target.value)}
                       placeholder="e.g., My personal expenses..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-gray-300"
                       autoFocus
                     />
                   </div>
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-3 pt-3">
                     <button
                       type="button"
                       onClick={() => setAccountKind("")}
-                      className="px-5 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
                     >
                       ← Back
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       {loading ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                           Creating...
                         </>
                       ) : (
@@ -590,9 +588,9 @@ function App() {
 
               {/* Step 2b: Business */}
               {accountKind === "business" && (
-                <form onSubmit={handleCreateAccount} className="space-y-4">
+                <form onSubmit={handleCreateAccount} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Category <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -602,7 +600,7 @@ function App() {
                         setSelectedSubcategory("");
                         setCustomDescription("");
                       }}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                       required
                     >
                       <option value="">Select a category...</option>
@@ -614,14 +612,14 @@ function App() {
                     </select>
                   </div>
                   {selectedCategory && selectedCategory !== "Other" && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="animate-slideDown">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Subcategory <span className="text-red-500">*</span>
                       </label>
                       <select
                         value={selectedSubcategory}
                         onChange={(e) => setSelectedSubcategory(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                         required
                       >
                         <option value="">Select a subcategory...</option>
@@ -634,8 +632,8 @@ function App() {
                     </div>
                   )}
                   {selectedCategory === "Other" && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="animate-slideDown">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Business Description{" "}
                         <span className="text-red-500">*</span>
                       </label>
@@ -644,27 +642,27 @@ function App() {
                         value={customDescription}
                         onChange={(e) => setCustomDescription(e.target.value)}
                         placeholder="Describe your business..."
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
                         required
                       />
                     </div>
                   )}
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-3 pt-3">
                     <button
                       type="button"
                       onClick={() => setAccountKind("")}
-                      className="px-5 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
                     >
                       ← Back
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       {loading ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                           Creating...
                         </>
                       ) : (
@@ -977,41 +975,6 @@ function App() {
     }); // end runIfAllowed
   };
 
-  const handleAdjustBalance = async () =>
-    runIfAllowed(async () => {
-      const newBalance = parseFloat(adjustBalanceForm.newBalance);
-      if (isNaN(newBalance) || newBalance < 0) {
-        setError("Please enter a valid balance amount");
-        return;
-      }
-
-      if (!selectedBankAccountForAdjust) return;
-
-      setLoading(true);
-      try {
-        const res = await bankAccountService.adjustBalance(
-          currentAccount._id,
-          selectedBankAccountForAdjust._id,
-          newBalance,
-          adjustBalanceForm.reason.trim(),
-        );
-
-        if (res.success) {
-          await loadBankAccounts();
-          setAdjustBalanceForm({ newBalance: "", reason: "" });
-          setSelectedBankAccountForAdjust(null);
-          setActiveModal(null);
-          setSuccess("Bank account balance adjusted successfully!");
-          setTimeout(() => setSuccess(""), 3000);
-        } else {
-          setError(res.message || "Failed to adjust balance");
-        }
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to adjust balance");
-      }
-      setLoading(false);
-    });
-
   const handleBulkBalanceUpdate = async () =>
     runIfAllowed(async () => {
       const updates = Object.entries(bulkBalanceUpdates).filter(
@@ -1050,6 +1013,43 @@ function App() {
         setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to update balances");
+      }
+      setLoading(false);
+    });
+
+  const handleTopUpBankBalance = async () =>
+    runIfAllowed(async () => {
+      const amount = parseFloat(topUpAmount);
+      if (isNaN(amount) || amount <= 0) {
+        setError("Please enter a valid amount greater than 0");
+        return;
+      }
+
+      if (!selectedBankForTopUp) {
+        setError("Please select a bank account");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const newBalance = selectedBankForTopUp.balance + amount;
+
+        await bankAccountService.adjustBalance(
+          currentAccount._id,
+          selectedBankForTopUp._id,
+          newBalance,
+          topUpReason.trim() || "Top up",
+        );
+
+        await loadBankAccounts();
+        setTopUpAmount("");
+        setTopUpReason("");
+        setSelectedBankForTopUp(null);
+        setActiveModal(null);
+        setSuccess(`Successfully topped up ${selectedBankForTopUp.name} with $${amount.toFixed(2)}!`);
+        setTimeout(() => setSuccess(""), 3000);
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to top up balance");
       }
       setLoading(false);
     });
@@ -1471,20 +1471,6 @@ function App() {
                       <div className="text-xl font-bold text-gray-900">
                         ${ba.balance.toFixed(2)}
                       </div>
-                      <button
-                        onClick={() => {
-                          setSelectedBankAccountForAdjust(ba);
-                          setAdjustBalanceForm({
-                            newBalance: ba.balance.toString(),
-                            reason: "",
-                          });
-                          setActiveModal("adjustBalance");
-                        }}
-                        className="mt-1 text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-                      >
-                        <Edit className="w-3 h-3" />
-                        Adjust Balance
-                      </button>
                     </div>
                   </div>
                 ))
@@ -1877,49 +1863,76 @@ function App() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Currency <span className="text-red-500">*</span>
+                  {bankAccounts.length > 0 && (
+                    <span className="ml-2 text-xs text-blue-600 font-semibold">
+                      (Account Currency: {currentAccount?.currency || "USD"})
+                    </span>
+                  )}
                 </label>
-                {/* Currency trigger button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBaCurrencyOpen((o) => !o);
-                    setBaCurrencySearch("");
-                  }}
-                  className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-xl transition-all bg-white text-left ${
-                    baCurrencyOpen
-                      ? "border-blue-500 ring-2 ring-blue-100"
-                      : "border-gray-200 hover:border-blue-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl font-bold w-10 text-center text-gray-700 leading-none">
+                {bankAccounts.length > 0 ? (
+                  <div className="w-full flex items-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-xl bg-gray-50">
+                    <span className="text-2xl font-bold w-10 text-center text-gray-600 leading-none">
                       {
                         CURRENCIES.find(
-                          (c) => c.code === bankAccountForm.currency,
+                          (c) => c.code === (currentAccount?.currency || "USD"),
                         )?.symbol
                       }
                     </span>
                     <div>
-                      <span className="font-semibold text-gray-900">
-                        {bankAccountForm.currency}
+                      <span className="font-semibold text-gray-700">
+                        {currentAccount?.currency || "USD"}
                       </span>
                       <span className="text-gray-500 text-sm ml-2">
                         {
                           CURRENCIES.find(
-                            (c) => c.code === bankAccountForm.currency,
+                            (c) => c.code === (currentAccount?.currency || "USD"),
                           )?.name
                         }
                       </span>
                     </div>
                   </div>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
-                      baCurrencyOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {/* Inline expandable panel */}
-                {baCurrencyOpen && (
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBaCurrencyOpen((o) => !o);
+                       setBaCurrencySearch("");
+                      }}
+                      className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-xl transition-all bg-white text-left ${
+                        baCurrencyOpen
+                          ? "border-blue-500 ring-2 ring-blue-100"
+                          : "border-gray-200 hover:border-blue-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-bold w-10 text-center text-gray-700 leading-none">
+                          {
+                            CURRENCIES.find(
+                              (c) => c.code === bankAccountForm.currency,
+                            )?.symbol
+                          }
+                        </span>
+                        <div>
+                          <span className="font-semibold text-gray-900">
+                            {bankAccountForm.currency}
+                          </span>
+                          <span className="text-gray-500 text-sm ml-2">
+                            {
+                              CURRENCIES.find(
+                                (c) => c.code === bankAccountForm.currency,
+                              )?.name
+                            }
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronDown
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                          baCurrencyOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {baCurrencyOpen && (
                   <div className="mt-2 border border-gray-200 rounded-xl overflow-hidden shadow-md">
                     <div className="p-2 bg-gray-50 border-b border-gray-100">
                       <div className="relative">
@@ -1993,6 +2006,8 @@ function App() {
                     </div>
                   </div>
                 )}
+                  </>
+                )}
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -2038,33 +2053,127 @@ function App() {
           </div>
         </div>
       )}
-      {activeModal === "adjustBalance" && selectedBankAccountForAdjust && (
+      {activeModal === "topUpBankBalance" && !selectedBankForTopUp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+          <div className="bg-white shadow-2xl max-w-lg w-full rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-600 p-2.5 rounded-lg">
-                  <Edit className="w-5 h-5 text-white" />
+                <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur">
+                  <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    Adjust Balance
+                  <h3 className="text-2xl font-bold text-white">
+                    Select Bank Account
                   </h3>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {selectedBankAccountForAdjust.name}
+                  <p className="text-xs text-white/90 mt-1">
+                    Choose which account to top up
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => {
                   setActiveModal(null);
-                  setSelectedBankAccountForAdjust(null);
-                  setAdjustBalanceForm({ newBalance: "", reason: "" });
+                  setSelectedBankForTopUp(null);
                   setError("");
                 }}
-                className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2 transition-colors"
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
+              <div className="space-y-3">
+                {bankAccounts.map((ba) => (
+                  <button
+                    key={ba._id}
+                    onClick={() => {
+                      setSelectedBankForTopUp(ba);
+                      setError("");
+                    }}
+                    className="w-full bg-gradient-to-r from-gray-50 to-green-50 border-2 border-gray-200 hover:border-green-500 rounded-xl p-5 transition-all hover:shadow-lg group text-left"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="bg-green-600 group-hover:bg-green-700 p-3 rounded-xl transition-colors">
+                          <Building2 className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-lg text-gray-900 group-hover:text-green-700 transition-colors">
+                            {ba.name}
+                            {ba.lastFourDigits && (
+                              <span className="text-gray-400 font-normal ml-2 text-sm">
+                                ···{ba.lastFourDigits}
+                              </span>
+                            )}
+                          </div>
+                          {ba.bankName && (
+                            <div className="text-sm text-gray-600 mt-1">
+                              {ba.bankName}{" "}
+                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded capitalize ml-1">
+                                {ba.accountType}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 mb-1">
+                          Current Balance
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
+                          ${ba.balance.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setSelectedBankForTopUp(null);
+                  setError("");
+                }}
+                className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-semibold rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeModal === "topUpBankBalance" && selectedBankForTopUp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white shadow-2xl max-w-md w-full rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur">
+                  <Plus className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">
+                    Top Up Bank Balance
+                  </h3>
+                  <p className="text-xs text-white/90 mt-1">
+                    {selectedBankForTopUp.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveModal(null);
+                  setSelectedBankForTopUp(null);
+                  setTopUpAmount("");
+                  setTopUpReason("");
+                  setError("");
+                }}
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
               </button>
             </div>
 
@@ -2075,99 +2184,108 @@ function App() {
               </div>
             )}
 
-            <div className="px-6 py-5 space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <div className="text-xs text-gray-500 mb-1">
-                  Current Balance
-                </div>
-                <div className="text-2xl font-bold text-gray-900">
-                  ${selectedBankAccountForAdjust.balance.toFixed(2)}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  New Balance <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={adjustBalanceForm.newBalance}
-                  onChange={(e) =>
-                    setAdjustBalanceForm({
-                      ...adjustBalanceForm,
-                      newBalance: e.target.value,
-                    })
-                  }
-                  placeholder="0.00"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  autoFocus
-                />
-                {adjustBalanceForm.newBalance && (
-                  <div className="mt-2 text-sm">
-                    <span
-                      className={`font-medium ${
-                        parseFloat(adjustBalanceForm.newBalance) -
-                          selectedBankAccountForAdjust.balance >=
-                        0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {parseFloat(adjustBalanceForm.newBalance) -
-                        selectedBankAccountForAdjust.balance >=
-                      0
-                        ? "+"
-                        : ""}
-                      $
-                      {(
-                        parseFloat(adjustBalanceForm.newBalance) -
-                        selectedBankAccountForAdjust.balance
-                      ).toFixed(2)}
-                    </span>
-                    <span className="text-gray-500"> from current balance</span>
+            <div className="px-6 py-5">
+              <div className="bg-gradient-to-r from-gray-50 to-green-50 border-2 border-green-200 rounded-xl p-5 mb-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-600 p-3 rounded-xl">
+                      <Building2 className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-base text-gray-900">
+                        {selectedBankForTopUp.name}
+                      </div>
+                      {selectedBankForTopUp.bankName && (
+                        <div className="text-sm text-gray-600">
+                          {selectedBankForTopUp.bankName}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500 mb-1">
+                      Current Balance
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      ${selectedBankForTopUp.balance.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Reason{" "}
-                  <span className="text-gray-400 font-normal">(optional)</span>
-                </label>
-                <textarea
-                  value={adjustBalanceForm.reason}
-                  onChange={(e) =>
-                    setAdjustBalanceForm({
-                      ...adjustBalanceForm,
-                      reason: e.target.value,
-                    })
-                  }
-                  placeholder="e.g., Reconciliation, deposit, withdrawal, correction..."
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                />
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                    Top Up Amount <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={topUpAmount}
+                    onChange={(e) => {
+                      setTopUpAmount(e.target.value);
+                      setError("");
+                    }}
+                    placeholder="0.00"
+                    className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl text-2xl font-bold focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    autoFocus
+                  />
+                  {topUpAmount && parseFloat(topUpAmount) > 0 && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="text-sm text-gray-700">
+                        New Balance:{" "}
+                        <span className="font-bold text-green-700 text-lg">
+                          $
+                          {(
+                            selectedBankForTopUp.balance +
+                            parseFloat(topUpAmount)
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="text-xs text-green-600 mt-1">
+                        +${parseFloat(topUpAmount).toFixed(2)} increase
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                    Reason{" "}
+                    <span className="text-gray-400 font-normal text-xs normal-case">
+                      (optional)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={topUpReason}
+                    onChange={(e) => setTopUpReason(e.target.value)}
+                    placeholder="e.g., Deposit, Cash transfer, Revenue..."
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
               </div>
             </div>
 
             <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
               <button
-                onClick={handleAdjustBalance}
-                disabled={loading}
-                className="flex-1 bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold"
-              >
-                {loading ? "Adjusting..." : "Adjust Balance"}
-              </button>
-              <button
                 onClick={() => {
-                  setActiveModal(null);
-                  setSelectedBankAccountForAdjust(null);
-                  setAdjustBalanceForm({ newBalance: "", reason: "" });
+                  setSelectedBankForTopUp(null);
+                  setTopUpAmount("");
+                  setTopUpReason("");
                   setError("");
                 }}
-                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+                className="px-6 py-3 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-semibold rounded-lg"
               >
-                Cancel
+                ← Back
+              </button>
+              <button
+                onClick={handleTopUpBankBalance}
+                disabled={loading || !topUpAmount || parseFloat(topUpAmount) <= 0}
+                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all font-bold text-lg shadow-lg hover:shadow-xl uppercase tracking-wide rounded-lg"
+              >
+                {loading ? "Processing..." : `Top Up $${topUpAmount || "0.00"}`}
               </button>
             </div>
           </div>
@@ -2582,10 +2700,10 @@ function App() {
       )}
       {/* Create Account Modal */}
       {showCreateAccountModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white shadow-2xl p-8 max-w-md w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-800">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 {accountKind === ""
                   ? "Create Account"
                   : accountKind === "personal"
@@ -2597,7 +2715,7 @@ function App() {
                   setShowCreateAccountModal(false);
                   resetAccountForm();
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -2612,23 +2730,23 @@ function App() {
 
             {/* Step 1: choose kind */}
             {accountKind === "" && (
-              <div className="space-y-3">
-                <p className="text-sm text-gray-500 mb-4">
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600 mb-6 text-center">
                   What type of account would you like to create?
                 </p>
                 <button
                   type="button"
                   onClick={() => setAccountKind("personal")}
-                  className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all text-left"
+                  className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
                 >
-                  <div className="bg-green-100 p-3 rounded-lg flex-shrink-0">
-                    <User className="w-6 h-6 text-green-600" />
+                  <div className="bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
+                    <User className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-bold text-gray-900 text-lg">
                       Personal Account
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600 mt-1">
                       For personal expense tracking
                     </p>
                   </div>
@@ -2636,16 +2754,16 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setAccountKind("business")}
-                  className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all text-left"
+                  className="group w-full flex items-center gap-4 p-5 border-2 border-gray-200 rounded-2xl hover:border-indigo-400 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 text-left shadow-sm hover:shadow-lg transform hover:-translate-y-1"
                 >
-                  <div className="bg-indigo-100 p-3 rounded-lg flex-shrink-0">
-                    <Building2 className="w-6 h-6 text-indigo-600" />
+                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-bold text-gray-900 text-lg">
                       Business Account
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600 mt-1">
                       For business and commercial use
                     </p>
                   </div>
@@ -2655,9 +2773,9 @@ function App() {
 
             {/* Step 2a: Personal */}
             {accountKind === "personal" && (
-              <form onSubmit={handleCreateAccount} className="space-y-4">
+              <form onSubmit={handleCreateAccount} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Description{" "}
                     <span className="text-gray-400 font-normal">
                       (Optional)
@@ -2668,26 +2786,26 @@ function App() {
                     value={personalDescription}
                     onChange={(e) => setPersonalDescription(e.target.value)}
                     placeholder="e.g., My personal expenses..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border- 2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 hover:border-gray-300"
                     autoFocus
                   />
                 </div>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-3">
                   <button
                     type="button"
                     onClick={() => setAccountKind("")}
-                    className="px-5 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
                   >
                     ← Back
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     {loading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                         Creating...
                       </>
                     ) : (
@@ -2703,9 +2821,9 @@ function App() {
 
             {/* Step 2b: Business */}
             {accountKind === "business" && (
-              <form onSubmit={handleCreateAccount} className="space-y-4">
+              <form onSubmit={handleCreateAccount} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Category <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -2715,7 +2833,7 @@ function App() {
                       setSelectedSubcategory("");
                       setCustomDescription("");
                     }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                     required
                   >
                     <option value="">Select a category...</option>
@@ -2727,14 +2845,14 @@ function App() {
                   </select>
                 </div>
                 {selectedCategory && selectedCategory !== "Other" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="animate-slideDown">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Subcategory <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={selectedSubcategory}
                       onChange={(e) => setSelectedSubcategory(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                       required
                     >
                       <option value="">Select a subcategory...</option>
@@ -2747,8 +2865,8 @@ function App() {
                   </div>
                 )}
                 {selectedCategory === "Other" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="animate-slideDown">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Business Description{" "}
                       <span className="text-red-500">*</span>
                     </label>
@@ -2757,27 +2875,27 @@ function App() {
                       value={customDescription}
                       onChange={(e) => setCustomDescription(e.target.value)}
                       placeholder="Describe your business..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
                       required
                     />
                   </div>
                 )}
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-3">
                   <button
                     type="button"
                     onClick={() => setAccountKind("")}
-                    className="px-5 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700"
                   >
                     ← Back
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     {loading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                         Creating...
                       </>
                     ) : (

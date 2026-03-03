@@ -424,7 +424,9 @@ function App() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-14 w-14 border-b-3 border-slate-900 mx-auto mb-4"></div>
-          <p className="text-slate-600 text-lg font-medium">Loading your accounts...</p>
+          <p className="text-slate-600 text-lg font-medium">
+            Loading your accounts...
+          </p>
         </div>
       </div>
     );
@@ -467,7 +469,7 @@ function App() {
 
         {/* Create Account Modal */}
         {showCreateAccountModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
             <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -497,84 +499,84 @@ function App() {
 
               {/* Business Account Form */}
               <form onSubmit={handleCreateAccount} className="space-y-5">
-                  <div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Category <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setSelectedSubcategory("");
+                      setCustomDescription("");
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                    required
+                  >
+                    <option value="">Select a category...</option>
+                    {getCategoryList().map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {selectedCategory && selectedCategory !== "Other" && (
+                  <div className="animate-slideDown">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Category <span className="text-red-500">*</span>
+                      Subcategory <span className="text-red-500">*</span>
                     </label>
                     <select
-                      value={selectedCategory}
-                      onChange={(e) => {
-                        setSelectedCategory(e.target.value);
-                        setSelectedSubcategory("");
-                        setCustomDescription("");
-                      }}
+                      value={selectedSubcategory}
+                      onChange={(e) => setSelectedSubcategory(e.target.value)}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                       required
                     >
-                      <option value="">Select a category...</option>
-                      {getCategoryList().map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
+                      <option value="">Select a subcategory...</option>
+                      {getSubcategories(selectedCategory).map((sub) => (
+                        <option key={sub} value={sub}>
+                          {sub}
                         </option>
                       ))}
                     </select>
                   </div>
-                  {selectedCategory && selectedCategory !== "Other" && (
-                    <div className="animate-slideDown">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Subcategory <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        value={selectedSubcategory}
-                        onChange={(e) => setSelectedSubcategory(e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
-                        required
-                      >
-                        <option value="">Select a subcategory...</option>
-                        {getSubcategories(selectedCategory).map((sub) => (
-                          <option key={sub} value={sub}>
-                            {sub}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {selectedCategory === "Other" && (
-                    <div className="animate-slideDown">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Business Description{" "}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={customDescription}
-                        onChange={(e) => setCustomDescription(e.target.value)}
-                        placeholder="Describe your business..."
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
-                        required
-                      />
-                    </div>
-                  )}
-                  <div className="pt-3">
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                    >
-                      {loading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                          Creating...
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-5 h-5" />
-                          Create Account
-                        </>
-                      )}
-                    </button>
+                )}
+                {selectedCategory === "Other" && (
+                  <div className="animate-slideDown">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Business Description{" "}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={customDescription}
+                      onChange={(e) => setCustomDescription(e.target.value)}
+                      placeholder="Describe your business..."
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
+                      required
+                    />
                   </div>
-                </form>
+                )}
+                <div className="pt-3">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-5 h-5" />
+                        Create Account
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
@@ -850,7 +852,10 @@ function App() {
           accountType: bankAccountForm.accountType,
           lastFourDigits: bankAccountForm.lastFourDigits.trim(),
           balance: parseFloat(bankAccountForm.balance) || 0,
-          currency: bankAccounts.length === 0 ? bankAccountForm.currency : (currentAccount?.currency || "USD"),
+          currency:
+            bankAccounts.length === 0
+              ? bankAccountForm.currency
+              : currentAccount?.currency || "USD",
         };
 
         const res = await bankAccountService.create(
@@ -1305,7 +1310,7 @@ function App() {
       </div>
       {/* Modals */}
       {activeModal === "bankAccounts" && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
           <div className="bg-white shadow-2xl rounded-2xl w-full max-w-xl overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b-2 border-blue-700">
@@ -1414,7 +1419,7 @@ function App() {
         </div>
       )}
       {activeModal === "addCash" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -1487,7 +1492,7 @@ function App() {
         </div>
       )}
       {activeModal === "transfer" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white shadow-2xl w-full max-w-md">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
@@ -1629,8 +1634,8 @@ function App() {
         </div>
       )}
       {activeModal === "addBankAccount" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-white shadow-xl max-w-xl w-full p-6 my-8">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
+          <div className="bg-white shadow-xl max-w-xl w-full p-6 my-8 rounded-2xl">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-gray-800">
                 Add Bank Account
@@ -1970,7 +1975,7 @@ function App() {
         </div>
       )}
       {activeModal === "topUpBankBalance" && !selectedBankForTopUp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white shadow-2xl max-w-lg w-full rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
               <div className="flex items-center gap-3">
@@ -2063,7 +2068,7 @@ function App() {
         </div>
       )}
       {activeModal === "topUpBankBalance" && selectedBankForTopUp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white shadow-2xl max-w-md w-full rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
               <div className="flex items-center gap-3">
@@ -2210,7 +2215,7 @@ function App() {
         </div>
       )}
       {activeModal === "updateBankBalances" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
           <div className="bg-white shadow-xl max-w-4xl w-full my-8">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-blue-600">
               <div className="flex items-center gap-3">
@@ -2390,7 +2395,7 @@ function App() {
         </div>
       )}
       {activeModal === "addExpense" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
           <div className="bg-white shadow-xl max-w-md w-full p-6 my-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-800">Add Expense</h3>
@@ -2576,7 +2581,7 @@ function App() {
         </div>
       )}
       {activeModal === "lockWeek" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-800">Lock Week</h3>
@@ -2618,7 +2623,7 @@ function App() {
       )}
       {/* Create Account Modal */}
       {showCreateAccountModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
           <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -2648,84 +2653,83 @@ function App() {
 
             {/* Business Account Form */}
             <form onSubmit={handleCreateAccount} className="space-y-5">
-                <div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Category <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value);
+                    setSelectedSubcategory("");
+                    setCustomDescription("");
+                  }}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                  required
+                >
+                  <option value="">Select a category...</option>
+                  {getCategoryList().map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {selectedCategory && selectedCategory !== "Other" && (
+                <div className="animate-slideDown">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Category <span className="text-red-500">*</span>
+                    Subcategory <span className="text-red-500">*</span>
                   </label>
                   <select
-                    value={selectedCategory}
-                    onChange={(e) => {
-                      setSelectedCategory(e.target.value);
-                      setSelectedSubcategory("");
-                      setCustomDescription("");
-                    }}
+                    value={selectedSubcategory}
+                    onChange={(e) => setSelectedSubcategory(e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
                     required
                   >
-                    <option value="">Select a category...</option>
-                    {getCategoryList().map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
+                    <option value="">Select a subcategory...</option>
+                    {getSubcategories(selectedCategory).map((sub) => (
+                      <option key={sub} value={sub}>
+                        {sub}
                       </option>
                     ))}
                   </select>
                 </div>
-                {selectedCategory && selectedCategory !== "Other" && (
-                  <div className="animate-slideDown">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Subcategory <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={selectedSubcategory}
-                      onChange={(e) => setSelectedSubcategory(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
-                      required
-                    >
-                      <option value="">Select a subcategory...</option>
-                      {getSubcategories(selectedCategory).map((sub) => (
-                        <option key={sub} value={sub}>
-                          {sub}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                {selectedCategory === "Other" && (
-                  <div className="animate-slideDown">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Business Description{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={customDescription}
-                      onChange={(e) => setCustomDescription(e.target.value)}
-                      placeholder="Describe your business..."
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
-                      required
-                    />
-                  </div>
-                )}
-                <div className="pt-3">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="w-5 h-5" />
-                        Create Account
-                      </>
-                    )}
-                  </button>
+              )}
+              {selectedCategory === "Other" && (
+                <div className="animate-slideDown">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Business Description <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={customDescription}
+                    onChange={(e) => setCustomDescription(e.target.value)}
+                    placeholder="Describe your business..."
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
+                    required
+                  />
                 </div>
-              </form>
+              )}
+              <div className="pt-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-5 h-5" />
+                      Create Account
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

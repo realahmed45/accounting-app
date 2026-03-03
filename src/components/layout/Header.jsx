@@ -2,12 +2,12 @@ import React from "react";
 import { Wallet, Settings, LogOut } from "lucide-react";
 import AccountSwitcher from "../AccountSwitcher";
 
-const Header = ({ 
-  user, 
-  currentMember, 
-  hasPermission, 
-  setShowSettings, 
-  logout 
+const Header = ({
+  user,
+  currentMember,
+  hasPermission,
+  setShowSettings,
+  logout,
 }) => {
   return (
     <div className="bg-white shadow-lg sticky top-0 z-40 border-b-2 border-gray-100 backdrop-blur-md">

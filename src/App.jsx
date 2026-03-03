@@ -1046,7 +1046,9 @@ function App() {
         setTopUpReason("");
         setSelectedBankForTopUp(null);
         setActiveModal(null);
-        setSuccess(`Successfully topped up ${selectedBankForTopUp.name} with $${amount.toFixed(2)}!`);
+        setSuccess(
+          `Successfully topped up ${selectedBankForTopUp.name} with $${amount.toFixed(2)}!`,
+        );
         setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to top up balance");
@@ -1885,7 +1887,8 @@ function App() {
                       <span className="text-gray-500 text-sm ml-2">
                         {
                           CURRENCIES.find(
-                            (c) => c.code === (currentAccount?.currency || "USD"),
+                            (c) =>
+                              c.code === (currentAccount?.currency || "USD"),
                           )?.name
                         }
                       </span>
@@ -1897,7 +1900,7 @@ function App() {
                       type="button"
                       onClick={() => {
                         setBaCurrencyOpen((o) => !o);
-                       setBaCurrencySearch("");
+                        setBaCurrencySearch("");
                       }}
                       className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-xl transition-all bg-white text-left ${
                         baCurrencyOpen
@@ -1933,79 +1936,81 @@ function App() {
                       />
                     </button>
                     {baCurrencyOpen && (
-                  <div className="mt-2 border border-gray-200 rounded-xl overflow-hidden shadow-md">
-                    <div className="p-2 bg-gray-50 border-b border-gray-100">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input
-                          type="text"
-                          autoFocus
-                          value={baCurrencySearch}
-                          onChange={(e) => setBaCurrencySearch(e.target.value)}
-                          placeholder="Search by code or name..."
-                          className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-                    <div className="max-h-52 overflow-y-auto divide-y divide-gray-50">
-                      {CURRENCIES.filter(
-                        (c) =>
-                          c.code
-                            .toLowerCase()
-                            .includes(baCurrencySearch.toLowerCase()) ||
-                          c.name
-                            .toLowerCase()
-                            .includes(baCurrencySearch.toLowerCase()),
-                      ).map((currency) => (
-                        <button
-                          key={currency.code}
-                          type="button"
-                          onClick={() => {
-                            setBankAccountForm({
-                              ...bankAccountForm,
-                              currency: currency.code,
-                            });
-                            setBaCurrencyOpen(false);
-                            setBaCurrencySearch("");
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 transition-colors text-left ${
-                            bankAccountForm.currency === currency.code
-                              ? "bg-blue-50"
-                              : "bg-white"
-                          }`}
-                        >
-                          <span className="text-xl font-bold w-8 text-center text-gray-600 leading-none flex-shrink-0">
-                            {currency.symbol}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <span className="font-semibold text-sm text-gray-900">
-                              {currency.code}
-                            </span>
-                            <span className="text-xs text-gray-500 ml-2 truncate">
-                              {currency.name}
-                            </span>
+                      <div className="mt-2 border border-gray-200 rounded-xl overflow-hidden shadow-md">
+                        <div className="p-2 bg-gray-50 border-b border-gray-100">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                              type="text"
+                              autoFocus
+                              value={baCurrencySearch}
+                              onChange={(e) =>
+                                setBaCurrencySearch(e.target.value)
+                              }
+                              placeholder="Search by code or name..."
+                              className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
                           </div>
-                          {bankAccountForm.currency === currency.code && (
-                            <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                          )}
-                        </button>
-                      ))}
-                      {CURRENCIES.filter(
-                        (c) =>
-                          c.code
-                            .toLowerCase()
-                            .includes(baCurrencySearch.toLowerCase()) ||
-                          c.name
-                            .toLowerCase()
-                            .includes(baCurrencySearch.toLowerCase()),
-                      ).length === 0 && (
-                        <div className="py-6 text-center text-sm text-gray-400">
-                          No currencies found
                         </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+                        <div className="max-h-52 overflow-y-auto divide-y divide-gray-50">
+                          {CURRENCIES.filter(
+                            (c) =>
+                              c.code
+                                .toLowerCase()
+                                .includes(baCurrencySearch.toLowerCase()) ||
+                              c.name
+                                .toLowerCase()
+                                .includes(baCurrencySearch.toLowerCase()),
+                          ).map((currency) => (
+                            <button
+                              key={currency.code}
+                              type="button"
+                              onClick={() => {
+                                setBankAccountForm({
+                                  ...bankAccountForm,
+                                  currency: currency.code,
+                                });
+                                setBaCurrencyOpen(false);
+                                setBaCurrencySearch("");
+                              }}
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 transition-colors text-left ${
+                                bankAccountForm.currency === currency.code
+                                  ? "bg-blue-50"
+                                  : "bg-white"
+                              }`}
+                            >
+                              <span className="text-xl font-bold w-8 text-center text-gray-600 leading-none flex-shrink-0">
+                                {currency.symbol}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <span className="font-semibold text-sm text-gray-900">
+                                  {currency.code}
+                                </span>
+                                <span className="text-xs text-gray-500 ml-2 truncate">
+                                  {currency.name}
+                                </span>
+                              </div>
+                              {bankAccountForm.currency === currency.code && (
+                                <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                              )}
+                            </button>
+                          ))}
+                          {CURRENCIES.filter(
+                            (c) =>
+                              c.code
+                                .toLowerCase()
+                                .includes(baCurrencySearch.toLowerCase()) ||
+                              c.name
+                                .toLowerCase()
+                                .includes(baCurrencySearch.toLowerCase()),
+                          ).length === 0 && (
+                            <div className="py-6 text-center text-sm text-gray-400">
+                              No currencies found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -2282,7 +2287,9 @@ function App() {
               </button>
               <button
                 onClick={handleTopUpBankBalance}
-                disabled={loading || !topUpAmount || parseFloat(topUpAmount) <= 0}
+                disabled={
+                  loading || !topUpAmount || parseFloat(topUpAmount) <= 0
+                }
                 className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all font-bold text-lg shadow-lg hover:shadow-xl uppercase tracking-wide rounded-lg"
               >
                 {loading ? "Processing..." : `Top Up $${topUpAmount || "0.00"}`}

@@ -87,15 +87,6 @@ const FinancialOverview = ({
         <div className="text-xs text-slate-600 mb-5 font-medium">
           Current balance
         </div>
-        {!currentWeek.isLocked && hasPermission("calculateCash") && (
-          <button
-            onClick={() => setActiveModal("addCash")}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-3 transition-all flex items-center justify-center gap-2 font-semibold shadow-sm"
-          >
-            <DollarSign className="w-4 h-4" />
-            Top Up Cash Balance
-          </button>
-        )}
       </div>
 
       {/* Total Expenses Card */}

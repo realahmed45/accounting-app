@@ -92,7 +92,7 @@ const SettingsScreen = ({
   runIfAllowed,
   formatAmount,
 }) => {
-  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "activityLog"
+  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog"
 
   // Members management state
   const [members, setMembers] = useState([]);
@@ -355,6 +355,8 @@ const SettingsScreen = ({
               {settingsSection === "users" && "Users"}
               {settingsSection === "categories" && "Categories"}
               {settingsSection === "bankAccounts" && "Bank Accounts"}
+              {settingsSection === "topUpBank" && "Top Up Bank"}
+              {settingsSection === "topUpCash" && "Top Up Cash"}
               {settingsSection === "activityLog" && "Activity Log"}
               {!settingsSection && "Settings"}
             </h1>
@@ -437,6 +439,20 @@ const SettingsScreen = ({
                     label: "Add Bank Account",
                     desc: "Link and manage bank accounts",
                     color: "bg-blue-600",
+                  },
+                  {
+                    key: "topUpBank",
+                    icon: <Building2 className="w-6 h-6" />,
+                    label: "Top Up Bank",
+                    desc: "Add funds to bank account",
+                    color: "bg-slate-900",
+                  },
+                  {
+                    key: "topUpCash",
+                    icon: <Wallet className="w-6 h-6" />,
+                    label: "Top Up Cash",
+                    desc: "Add funds to cash balance",
+                    color: "bg-emerald-600",
                   },
                   {
                     key: "activityLog",
@@ -1198,57 +1214,98 @@ const SettingsScreen = ({
                   </>
                 )}
               </div>
+            </div>
+          )}
 
-              {/* Quick Top-Ups Section */}
-              <div className="mt-8 pt-8 border-t-2 border-slate-200">
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-emerald-600" />
-                    Quick Top-Ups
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-1">
-                    Add funds to your bank accounts or cash balance
+          {/* Top Up Bank Section */}
+          {settingsSection === "topUpBank" && (
+            <div className="max-w-xl mx-auto px-6 py-8">
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-slate-900 p-3 rounded-xl">
+                    <Building2 className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Top Up Bank Account
+                  </h2>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Add funds to any of your linked bank accounts
+                </p>
+              </div>
+
+              {hasPermission("updateBankBalance") ? (
+                <button
+                  onClick={() => setActiveModal("topUpBankBalance")}
+                  className="w-full bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
+                      <Building2 className="w-8 h-8" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-bold text-xl mb-1">Add Bank Funds</h3>
+                      <p className="text-sm text-slate-300">
+                        Select account and enter amount to top up
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown className="w-6 h-6 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                </button>
+              ) : (
+                <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl text-center">
+                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                  <p className="text-slate-600 font-medium">
+                    You don't have permission to update bank balances
                   </p>
                 </div>
+              )}
+            </div>
+          )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Top Up Bank Balance Button */}
-                  {hasPermission("updateBankBalance") && (
-                    <button
-                      onClick={() => setActiveModal("topUpBankBalance")}
-                      className="group bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-6 rounded-2xl transition-all shadow-lg hover:shadow-xl flex flex-col items-start gap-3"
-                    >
-                      <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-all">
-                        <Building2 className="w-7 h-7" />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="font-bold text-lg">Top Up Bank</h4>
-                        <p className="text-sm text-slate-300 mt-1">
-                          Add funds to bank account
-                        </p>
-                      </div>
-                    </button>
-                  )}
-
-                  {/* Top Up Cash Balance Button */}
-                  {hasPermission("calculateCash") && (
-                    <button
-                      onClick={() => setActiveModal("addCash")}
-                      className="group bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-6 rounded-2xl transition-all shadow-lg hover:shadow-xl flex flex-col items-start gap-3"
-                    >
-                      <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-all">
-                        <Wallet className="w-7 h-7" />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="font-bold text-lg">Top Up Cash</h4>
-                        <p className="text-sm text-emerald-100 mt-1">
-                          Add funds to cash balance
-                        </p>
-                      </div>
-                    </button>
-                  )}
+          {/* Top Up Cash Section */}
+          {settingsSection === "topUpCash" && (
+            <div className="max-w-xl mx-auto px-6 py-8">
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-emerald-600 p-3 rounded-xl">
+                    <Wallet className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Top Up Cash Balance
+                  </h2>
                 </div>
+                <p className="text-sm text-slate-600">
+                  Add funds directly to your cash balance
+                </p>
               </div>
+
+              {hasPermission("calculateCash") ? (
+                <button
+                  onClick={() => setActiveModal("addCash")}
+                  className="w-full bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
+                      <Wallet className="w-8 h-8" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-bold text-xl mb-1">Add Cash Funds</h3>
+                      <p className="text-sm text-emerald-100">
+                        Enter amount to add to cash balance
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown className="w-6 h-6 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                </button>
+              ) : (
+                <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl text-center">
+                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                  <p className="text-slate-600 font-medium">
+                    You don't have permission to add cash
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

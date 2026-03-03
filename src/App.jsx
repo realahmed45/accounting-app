@@ -147,6 +147,16 @@ const formatTime = (date) => {
   });
 };
 
+const getCurrencySymbol = (currencyCode) => {
+  const currency = CURRENCIES.find((c) => c.code === currencyCode);
+  return currency?.symbol || "$";
+};
+
+const formatAmount = (amount, currencyCode) => {
+  const symbol = getCurrencySymbol(currencyCode);
+  return `${symbol}${amount.toFixed(2)}`;
+};
+
 // ==================== MAIN APP COMPONENT ====================
 
 function App() {
@@ -161,6 +171,7 @@ function App() {
     switchAccount,
     createAccount,
     addCategory,
+    refreshAccounts,
     loading: accountLoading,
   } = useAccount();
 
@@ -870,7 +881,7 @@ function App() {
         );
 
         if (res.success) {
-          await loadBankAccounts();
+          await Promise.all([loadBankAccounts(), refreshAccounts()]);
           setBankAccountForm({
             name: "",
             bankName: "",
@@ -964,7 +975,7 @@ function App() {
         setSelectedBankForTopUp(null);
         setActiveModal(null);
         setSuccess(
-          `Successfully topped up ${selectedBankForTopUp.name} with $${amount.toFixed(2)}!`,
+          `Successfully topped up ${selectedBankForTopUp.name} with ${formatAmount(amount, currentAccount?.currency)}!`,
         );
         setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
@@ -1138,7 +1149,15 @@ function App() {
                                     Expense
                                   </span>
                                   <span className="text-xl font-bold text-red-600">
-                                    -${exp.amount.toFixed(2)}
+                                    -
+                                    {formatAmount(
+                                      exp.amount,
+                                      currentAccount?.currency,
+                                    ).substring(
+                                      getCurrencySymbol(
+                                        currentAccount?.currency,
+                                      ).length,
+                                    )}
                                   </span>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2 ml-10">
@@ -1191,7 +1210,15 @@ function App() {
                                     Cash Added
                                   </span>
                                   <span className="text-xl font-bold text-green-600">
-                                    +${ct.amount.toFixed(2)}
+                                    +
+                                    {formatAmount(
+                                      ct.amount,
+                                      currentAccount?.currency,
+                                    ).substring(
+                                      getCurrencySymbol(
+                                        currentAccount?.currency,
+                                      ).length,
+                                    )}
                                   </span>
                                 </div>
                                 {ct.note && (
@@ -1391,7 +1418,7 @@ function App() {
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-black text-gray-900 group-hover:text-blue-600 transition-colors">
-                        ${ba.balance.toFixed(2)}
+                        {formatAmount(ba.balance, currentAccount?.currency)}
                       </div>
                     </div>
                   </div>
@@ -1407,7 +1434,10 @@ function App() {
                   <span className="font-bold text-lg">Total Balance</span>
                 </div>
                 <span className="text-3xl font-black tracking-tight">
-                  ${getExpectedBankAmount().toFixed(2)}
+                  {formatAmount(
+                    getExpectedBankAmount(),
+                    currentAccount?.currency,
+                  )}
                 </span>
               </div>
             )}
@@ -1528,7 +1558,10 @@ function App() {
                 Total Bank Balance
               </span>
               <span className="text-2xl font-bold text-indigo-800">
-                ${getExpectedBankAmount().toFixed(2)}
+                {formatAmount(
+                  getExpectedBankAmount(),
+                  currentAccount?.currency,
+                )}
               </span>
             </div>
 
@@ -1581,7 +1614,7 @@ function App() {
                       <div
                         className={`text-base font-bold ${isSelected ? "text-white" : "text-gray-900"}`}
                       >
-                        ${ba.balance.toFixed(2)}
+                        {formatAmount(ba.balance, currentAccount?.currency)}
                       </div>
                     </button>
                   );
@@ -1607,10 +1640,12 @@ function App() {
                 <p className="text-xs text-gray-500 mt-1.5">
                   Available:{" "}
                   <span className="font-semibold text-gray-800">
-                    $
-                    {bankAccounts
-                      .find((ba) => ba._id === selectedBankAccountForTransfer)
-                      ?.balance.toFixed(2) || "0.00"}
+                    {formatAmount(
+                      bankAccounts.find(
+                        (ba) => ba._id === selectedBankAccountForTransfer,
+                      )?.balance || 0,
+                      currentAccount?.currency,
+                    )}
                   </span>
                 </p>
               )}
@@ -2044,7 +2079,7 @@ function App() {
                           Current Balance
                         </div>
                         <div className="text-2xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
-                          ${ba.balance.toFixed(2)}
+                          {formatAmount(ba.balance, currentAccount?.currency)}
                         </div>
                       </div>
                     </div>
@@ -2129,7 +2164,10 @@ function App() {
                       Current Balance
                     </div>
                     <div className="text-2xl font-bold text-gray-900">
-                      ${selectedBankForTopUp.balance.toFixed(2)}
+                      {formatAmount(
+                        selectedBankForTopUp.balance,
+                        currentAccount?.currency,
+                      )}
                     </div>
                   </div>
                 </div>
@@ -2158,15 +2196,20 @@ function App() {
                       <div className="text-sm text-gray-700">
                         New Balance:{" "}
                         <span className="font-bold text-green-700 text-lg">
-                          $
-                          {(
+                          {formatAmount(
                             selectedBankForTopUp.balance +
-                            parseFloat(topUpAmount)
-                          ).toFixed(2)}
+                              parseFloat(topUpAmount),
+                            currentAccount?.currency,
+                          )}
                         </span>
                       </div>
                       <div className="text-xs text-green-600 mt-1">
-                        +${parseFloat(topUpAmount).toFixed(2)} increase
+                        +
+                        {formatAmount(
+                          parseFloat(topUpAmount),
+                          currentAccount?.currency,
+                        )}{" "}
+                        increase
                       </div>
                     </div>
                   )}
@@ -2209,7 +2252,9 @@ function App() {
                 }
                 className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all font-bold text-lg shadow-lg hover:shadow-xl uppercase tracking-wide rounded-lg"
               >
-                {loading ? "Processing..." : `Top Up $${topUpAmount || "0.00"}`}
+                {loading
+                  ? "Processing..."
+                  : `Top Up ${formatAmount(parseFloat(topUpAmount) || 0, currentAccount?.currency)}`}
               </button>
             </div>
           </div>

@@ -30,6 +30,53 @@ import TransferOwnershipModal from "../TransferOwnershipModal";
 import InviteModal from "../InviteModal";
 import OwnershipCorrectionModal from "../OwnershipCorrectionModal";
 
+// Currency list for display
+const CURRENCIES = [
+  { code: "USD", symbol: "$", name: "US Dollar" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "GBP", symbol: "£", name: "British Pound" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  { code: "CHF", symbol: "Fr", name: "Swiss Franc" },
+  { code: "CAD", symbol: "$", name: "Canadian Dollar" },
+  { code: "AUD", symbol: "$", name: "Australian Dollar" },
+  { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+  { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
+  { code: "SGD", symbol: "$", name: "Singapore Dollar" },
+  { code: "HKD", symbol: "$", name: "Hong Kong Dollar" },
+  { code: "NZD", symbol: "$", name: "New Zealand Dollar" },
+  { code: "SEK", symbol: "kr", name: "Swedish Krona" },
+  { code: "NOK", symbol: "kr", name: "Norwegian Krone" },
+  { code: "KRW", symbol: "₩", name: "South Korean Won" },
+  { code: "MXN", symbol: "$", name: "Mexican Peso" },
+  { code: "BRL", symbol: "R$", name: "Brazilian Real" },
+  { code: "ZAR", symbol: "R", name: "South African Rand" },
+  { code: "RUB", symbol: "₽", name: "Russian Ruble" },
+  { code: "TRY", symbol: "₺", name: "Turkish Lira" },
+  { code: "SAR", symbol: "﷼", name: "Saudi Riyal" },
+  { code: "PLN", symbol: "zł", name: "Polish Zloty" },
+  { code: "THB", symbol: "฿", name: "Thai Baht" },
+  { code: "IDR", symbol: "Rp", name: "Indonesian Rupiah" },
+  { code: "MYR", symbol: "RM", name: "Malaysian Ringgit" },
+  { code: "PHP", symbol: "₱", name: "Philippine Peso" },
+  { code: "DKK", symbol: "kr", name: "Danish Krone" },
+  { code: "CZK", symbol: "Kč", name: "Czech Koruna" },
+  { code: "HUF", symbol: "Ft", name: "Hungarian Forint" },
+  { code: "ILS", symbol: "₪", name: "Israeli Shekel" },
+  { code: "CLP", symbol: "$", name: "Chilean Peso" },
+  { code: "PKR", symbol: "₨", name: "Pakistani Rupee" },
+  { code: "EGP", symbol: "£", name: "Egyptian Pound" },
+  { code: "QAR", symbol: "﷼", name: "Qatari Riyal" },
+  { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar" },
+  { code: "VND", symbol: "₫", name: "Vietnamese Dong" },
+  { code: "BDT", symbol: "৳", name: "Bangladeshi Taka" },
+  { code: "NGN", symbol: "₦", name: "Nigerian Naira" },
+  { code: "ARS", symbol: "$", name: "Argentine Peso" },
+  { code: "COP", symbol: "$", name: "Colombian Peso" },
+  { code: "PEN", symbol: "S/", name: "Peruvian Sol" },
+  { code: "RON", symbol: "lei", name: "Romanian Leu" },
+];
+
 const SettingsScreen = ({
   user,
   currentAccount,
@@ -322,59 +369,100 @@ const SettingsScreen = ({
           </button>
         </div>
 
+        {/* Currency Display Banner */}
+        {currentAccount?.currency && (
+          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-emerald-200 px-6 xl:px-12 py-3">
+            <div className="flex items-center gap-3">
+              <DollarSign className="w-5 h-5 text-emerald-700" />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Account Currency:
+                </span>
+                <span className="text-2xl font-bold text-gray-900">
+                  {CURRENCIES.find((c) => c.code === currentAccount.currency)
+                    ?.symbol || ""}
+                </span>
+                <span className="text-lg font-bold text-gray-900">
+                  {currentAccount.currency}
+                </span>
+                <span className="text-sm text-gray-600">
+                  (
+                  {CURRENCIES.find((c) => c.code === currentAccount.currency)
+                    ?.name || currentAccount.currency}
+                  )
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!currentAccount?.currency && (
+          <div className="bg-yellow-50 border-b border-yellow-200 px-6 xl:px-12 py-3">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-700" />
+              <span className="text-sm font-medium text-yellow-800">
+                No currency set. Add your first bank account to set the account
+                currency.
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Body */}
         <div className="flex-1 overflow-y-auto">
           {/* Landing: 4 buttons */}
           {!settingsSection && (
             <div className="max-w-lg mx-auto px-6 py-12 space-y-6">
               <div className="space-y-3">
-              {[
-                {
-                  key: "users",
-                  icon: <User className="w-6 h-6" />,
-                  label: "Users",
-                  desc: "Manage access & team members",
-                  color: "bg-indigo-600",
-                },
-                {
-                  key: "categories",
-                  icon: <BarChart3 className="w-6 h-6" />,
-                  label: "Categories",
-                  desc: "View & manage expense categories",
-                  color: "bg-purple-600",
-                },
-                {
-                  key: "bankAccounts",
-                  icon: <Building2 className="w-6 h-6" />,
-                  label: "Add Bank Account",
-                  desc: "Link and manage bank accounts",
-                  color: "bg-blue-600",
-                },
-                {
-                  key: "activityLog",
-                  icon: <History className="w-6 h-6" />,
-                  label: "Activity Log",
-                  desc: "View account audit trail",
-                  color: "bg-gray-700",
-                },
-              ].map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => setSettingsSection(item.key)}
-                  className="w-full flex items-center gap-5 px-6 py-5 bg-white border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all text-left group"
-                >
-                  <div className={`${item.color} p-3 text-white flex-shrink-0`}>
-                    {item.icon}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-lg font-bold text-gray-900">
-                      {item.label}
+                {[
+                  {
+                    key: "users",
+                    icon: <User className="w-6 h-6" />,
+                    label: "Users",
+                    desc: "Manage access & team members",
+                    color: "bg-indigo-600",
+                  },
+                  {
+                    key: "categories",
+                    icon: <BarChart3 className="w-6 h-6" />,
+                    label: "Categories",
+                    desc: "View & manage expense categories",
+                    color: "bg-purple-600",
+                  },
+                  {
+                    key: "bankAccounts",
+                    icon: <Building2 className="w-6 h-6" />,
+                    label: "Add Bank Account",
+                    desc: "Link and manage bank accounts",
+                    color: "bg-blue-600",
+                  },
+                  {
+                    key: "activityLog",
+                    icon: <History className="w-6 h-6" />,
+                    label: "Activity Log",
+                    desc: "View account audit trail",
+                    color: "bg-gray-700",
+                  },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setSettingsSection(item.key)}
+                    className="w-full flex items-center gap-5 px-6 py-5 bg-white border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all text-left group"
+                  >
+                    <div
+                      className={`${item.color} p-3 text-white flex-shrink-0`}
+                    >
+                      {item.icon}
                     </div>
-                    <div className="text-sm text-gray-500">{item.desc}</div>
-                  </div>
-                  <ChevronDown className="w-5 h-5 text-gray-400 -rotate-90 group-hover:text-gray-700 transition-colors" />
-                </button>
-              ))}
+                    <div className="flex-1">
+                      <div className="text-lg font-bold text-gray-900">
+                        {item.label}
+                      </div>
+                      <div className="text-sm text-gray-500">{item.desc}</div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-gray-400 -rotate-90 group-hover:text-gray-700 transition-colors" />
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -1188,7 +1276,7 @@ const SettingsScreen = ({
                             ) : log.action.includes("bank") ? (
                               <Building2 className="w-4 h-4" />
                             ) : (
-                              <HistoryIcon className="w-4 h-4" />
+                              <History className="w-4 h-4" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">

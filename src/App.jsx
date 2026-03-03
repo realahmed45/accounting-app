@@ -842,6 +842,12 @@ function App() {
         return;
       }
 
+      // For subsequent banks, use account currency
+      if (bankAccounts.length > 0 && !currentAccount?.currency) {
+        setError("Account currency not set. Please contact support.");
+        return;
+      }
+
       setLoading(true);
       setError("");
 
@@ -855,7 +861,7 @@ function App() {
           currency:
             bankAccounts.length === 0
               ? bankAccountForm.currency
-              : currentAccount?.currency || "USD",
+              : currentAccount.currency,
         };
 
         const res = await bankAccountService.create(
@@ -1773,32 +1779,27 @@ function App() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Currency <span className="text-red-500">*</span>
-                  {bankAccounts.length > 0 && (
+                  {bankAccounts.length > 0 && currentAccount?.currency && (
                     <span className="ml-2 text-xs text-blue-600 font-semibold">
-                      (Account Currency: {currentAccount?.currency || "USD"})
+                      (Account Currency: {currentAccount.currency})
                     </span>
                   )}
                 </label>
                 {bankAccounts.length > 0 ? (
                   <div className="w-full flex items-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-xl bg-gray-50">
                     <span className="text-2xl font-bold w-10 text-center text-gray-600 leading-none">
-                      {
-                        CURRENCIES.find(
-                          (c) => c.code === (currentAccount?.currency || "USD"),
-                        )?.symbol
-                      }
+                      {CURRENCIES.find(
+                        (c) => c.code === currentAccount?.currency,
+                      )?.symbol || "?"}
                     </span>
                     <div>
                       <span className="font-semibold text-gray-700">
-                        {currentAccount?.currency || "USD"}
+                        {currentAccount?.currency || "Not Set"}
                       </span>
                       <span className="text-gray-500 text-sm ml-2">
-                        {
-                          CURRENCIES.find(
-                            (c) =>
-                              c.code === (currentAccount?.currency || "USD"),
-                          )?.name
-                        }
+                        {CURRENCIES.find(
+                          (c) => c.code === currentAccount?.currency,
+                        )?.name || ""}
                       </span>
                     </div>
                   </div>
@@ -1959,7 +1960,7 @@ function App() {
                       accountType: "checking",
                       lastFourDigits: "",
                       balance: "",
-                      currency: "USD",
+                      currency: "",
                     });
                     setBaCurrencyOpen(false);
                     setBaCurrencySearch("");

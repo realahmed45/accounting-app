@@ -19,6 +19,7 @@ import {
   Receipt,
   Trash2,
   DollarSign,
+  Wallet,
 } from "lucide-react";
 import {
   memberService,
@@ -1194,17 +1195,59 @@ const SettingsScreen = ({
                         <CreditCard className="w-8 h-8" />
                       </div>
                     </div>
-                    {hasPermission("updateBankBalance") && (
-                      <button
-                        onClick={() => setActiveModal("topUpBankBalance")}
-                        className="w-full mt-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-4 transition-all flex items-center justify-center gap-3 font-bold shadow-lg hover:shadow-xl text-base uppercase tracking-wide rounded-xl"
-                      >
-                        <Plus className="w-6 h-6" />
-                        Top Up Bank Balance
-                      </button>
-                    )}
                   </>
                 )}
+              </div>
+
+              {/* Quick Top-Ups Section */}
+              <div className="mt-8 pt-8 border-t-2 border-slate-200">
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-emerald-600" />
+                    Quick Top-Ups
+                  </h3>
+                  <p className="text-sm text-slate-600 mt-1">
+                    Add funds to your bank accounts or cash balance
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Top Up Bank Balance Button */}
+                  {hasPermission("updateBankBalance") && (
+                    <button
+                      onClick={() => setActiveModal("topUpBankBalance")}
+                      className="group bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-6 rounded-2xl transition-all shadow-lg hover:shadow-xl flex flex-col items-start gap-3"
+                    >
+                      <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-all">
+                        <Building2 className="w-7 h-7" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="font-bold text-lg">Top Up Bank</h4>
+                        <p className="text-sm text-slate-300 mt-1">
+                          Add funds to bank account
+                        </p>
+                      </div>
+                    </button>
+                  )}
+
+                  {/* Top Up Cash Balance Button */}
+                  {hasPermission("calculateCash") && (
+                    <button
+                      onClick={() => setActiveModal("addCash")}
+                      className="group bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-6 rounded-2xl transition-all shadow-lg hover:shadow-xl flex flex-col items-start gap-3"
+                    >
+                      <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-all">
+                        <Wallet className="w-7 h-7" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="font-bold text-lg">Top Up Cash</h4>
+                        <p className="text-sm text-emerald-100 mt-1">
+                          Add funds to cash balance
+                        </p>
+                      </div>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           )}

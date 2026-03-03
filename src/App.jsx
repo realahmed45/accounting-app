@@ -1032,7 +1032,7 @@ function App() {
   const weekDates = getWeekDates(weekStartDate);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen h-full bg-white">
       <Header
         user={user}
         currentMember={currentMember}
@@ -1044,7 +1044,7 @@ function App() {
       <NotificationBanner success={success} error={error} setError={setError} />
       {/* Main Content */}
       {/* Main Content */}
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6">
+      <div className="w-full bg-white px-8 py-6">
         {/* Top Action Bar */}
         <div className="flex flex-wrap justify-end gap-3 mb-6">
           <button

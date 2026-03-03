@@ -1016,6 +1016,7 @@ function App() {
         currentMember={currentMember}
         hasPermission={hasPermission}
         setShowSettings={setShowSettings}
+        setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logout}
       />
       <NotificationBanner success={success} error={error} setError={setError} />

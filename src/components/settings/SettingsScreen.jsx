@@ -327,26 +327,6 @@ const SettingsScreen = ({
           {/* Landing: 4 buttons */}
           {!settingsSection && (
             <div className="max-w-lg mx-auto px-6 py-12 space-y-6">
-              {/* Currency Display */}
-              {currentAccount?.currency && (
-                <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl shadow-md">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
-                      <DollarSign className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">
-                      Account Currency
-                    </h3>
-                  </div>
-                  <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mt-2">
-                    {currentAccount.currency} - {currentAccount.kind === "personal" ? "Personal" : "Business"} Account
-                  </p>
-                  <p className="text-sm text-gray-600 mt-3 font-medium">
-                    This is your default currency. All bank accounts and transactions use {currentAccount.currency}.
-                  </p>
-                </div>
-              )}
-
               <div className="space-y-3">
               {[
                 {

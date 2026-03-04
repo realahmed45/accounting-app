@@ -39,8 +39,14 @@ const DEFAULT_PERMISSIONS = {
   createAccountUpward: false,
 };
 
-const InviteModal = ({ accountId, accountName, currentUser, onClose }) => {
-  const [tab, setTab] = useState("team"); // "team" | "owner" | "pending"
+const InviteModal = ({
+  accountId,
+  accountName,
+  currentUser,
+  onClose,
+  initialTab = "team",
+}) => {
+  const [tab, setTab] = useState(initialTab); // "team" | "owner" | "pending"
 
   // Invite form state
   const [email, setEmail] = useState("");

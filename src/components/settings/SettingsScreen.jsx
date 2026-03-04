@@ -140,6 +140,7 @@ const SettingsScreen = ({
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showCorrectionModal, setShowCorrectionModal] = useState(false);
   const [showLinkParentModal, setShowLinkParentModal] = useState(false);
+  const [initialInviteTab, setInitialInviteTab] = useState("team");
 
   // Parent account state
   const [parentAccount, setParentAccount] = useState(null);
@@ -591,266 +592,35 @@ const SettingsScreen = ({
                     this account
                   </p>
                 </div>
-                {hasPermission("addUser") && !showAddMemberForm && (
-                  <button
-                    onClick={() => {
-                      setShowAddMemberForm(true);
-                      setNewMemberError("");
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
-                  >
-                    <UserPlus className="w-4 h-4" /> Invite Member
-                  </button>
-                )}
+                <div className="flex items-center gap-3">
+                  {hasPermission("addUser") && (
+                    <button
+                      onClick={() => {
+                        setInitialInviteTab("team");
+                        setShowInviteModal(true);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors rounded-lg shadow-sm"
+                    >
+                      <UserPlus className="w-4 h-4" /> Invite Team Member
+                    </button>
+                  )}
+                  {currentMember?.role === "owner" && (
+                    <button
+                      onClick={() => {
+                        setInitialInviteTab("owner");
+                        setShowInviteModal(true);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors rounded-lg shadow-sm"
+                    >
+                      <Crown className="w-4 h-4" /> Transfer Ownership
+                    </button>
+                  )}
+                </div>
               </div>
 
               {membersError && (
                 <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm">
                   {membersError}
-                </div>
-              )}
-
-              {inviteSentLink && (
-                <div className="mb-5 border border-green-200 bg-green-50 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-green-800 mb-1">
-                        ✓ Invitation created! Email not configured — share this
-                        link:
-                      </p>
-                      <input
-                        readOnly
-                        value={inviteSentLink}
-                        className="w-full px-2 py-1.5 text-xs border border-green-300 bg-white text-gray-700 font-mono"
-                        onClick={(e) => e.target.select()}
-                      />
-                    </div>
-                    <button
-                      onClick={() =>
-                        navigator.clipboard
-                          .writeText(inviteSentLink)
-                          .then(() => alert("Link copied!"))
-                      }
-                      className="flex-shrink-0 px-3 py-1.5 bg-green-600 text-white text-xs font-medium hover:bg-green-700"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => setInviteSentLink("")}
-                    className="mt-2 text-xs text-green-600 hover:underline"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              )}
-
-              {showAddMemberForm && (
-                <div className="mb-6 border border-indigo-200 bg-indigo-50 p-5">
-                  <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
-                    <UserPlus className="w-4 h-4 text-indigo-600" /> Invite New
-                    Member
-                  </h3>
-                  <p className="text-xs text-gray-500 mb-4">
-                    They'll receive an email with a link to set up their
-                    password and join this account.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        value={newMemberEmail}
-                        onChange={(e) => setNewMemberEmail(e.target.value)}
-                        placeholder="user@example.com"
-                        className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Display Name
-                      </label>
-                      <input
-                        type="text"
-                        value={newMemberDisplayName}
-                        onChange={(e) =>
-                          setNewMemberDisplayName(e.target.value)
-                        }
-                        placeholder="Optional"
-                        className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-xs font-medium text-gray-600 mb-3">
-                      Permissions
-                    </label>
-                    <div className="space-y-6">
-                      <div>
-                        <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                          Expenses &amp; Cash
-                        </p>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            { key: "makeExpense", label: "Make Expenses" },
-                            { key: "calculateCash", label: "Calculate Cash" },
-                          ].map(({ key, label }) => (
-                            <label
-                              key={key}
-                              className="flex items-center gap-2 text-sm cursor-pointer"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={!!newMemberPerms[key]}
-                                disabled={!hasPermission(key)}
-                                onChange={(e) =>
-                                  setNewMemberPerms((prev) => ({
-                                    ...prev,
-                                    [key]: e.target.checked,
-                                  }))
-                                }
-                                className="w-4 h-4 accent-indigo-600"
-                              />
-                              <span
-                                className={
-                                  !hasPermission(key)
-                                    ? "text-gray-400"
-                                    : "text-gray-700"
-                                }
-                              >
-                                {label}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                          Access Settings
-                        </p>
-                        <div className="grid grid-cols-1 gap-2">
-                          {[
-                            { key: "addUser", label: "Manage / Create Users" },
-                            {
-                              key: "addCategories",
-                              label: "Manage / Create Categories",
-                            },
-                            {
-                              key: "addBankAccount",
-                              label: "Manage / Create Bank Accounts",
-                            },
-                            {
-                              key: "updateBankBalance",
-                              label: "Update Bank Balances",
-                            },
-                          ].map(({ key, label }) => (
-                            <label
-                              key={key}
-                              className="flex items-center gap-2 text-sm cursor-pointer"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={!!newMemberPerms[key]}
-                                disabled={!hasPermission(key)}
-                                onChange={(e) => {
-                                  const checked = e.target.checked;
-                                  setNewMemberPerms((prev) => {
-                                    const next = { ...prev, [key]: checked };
-                                    next.accessSettings = !!(
-                                      next.addUser ||
-                                      next.addCategories ||
-                                      next.addBankAccount ||
-                                      next.updateBankBalance
-                                    );
-                                    return next;
-                                  });
-                                }}
-                                className="w-4 h-4 accent-indigo-600"
-                              />
-                              <span
-                                className={
-                                  !hasPermission(key)
-                                    ? "text-gray-400"
-                                    : "text-gray-700"
-                                }
-                              >
-                                {label}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                          Account Structure
-                        </p>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            {
-                              key: "createAccountDownward",
-                              label: "Create Sub-Accounts",
-                            },
-                            {
-                              key: "createAccountUpward",
-                              label: "Link To Parent",
-                            },
-                          ].map(({ key, label }) => (
-                            <label
-                              key={key}
-                              className="flex items-center gap-2 text-sm cursor-pointer"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={!!newMemberPerms[key]}
-                                disabled={!hasPermission(key)}
-                                onChange={(e) =>
-                                  setNewMemberPerms((prev) => ({
-                                    ...prev,
-                                    [key]: e.target.checked,
-                                  }))
-                                }
-                                className="w-4 h-4 accent-indigo-600"
-                              />
-                              <span
-                                className={
-                                  !hasPermission(key)
-                                    ? "text-gray-400"
-                                    : "text-gray-700"
-                                }
-                              >
-                                {label}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {newMemberError && (
-                    <p className="text-red-600 text-sm mb-3">
-                      {newMemberError}
-                    </p>
-                  )}
-                  <div className="flex gap-3">
-                    <button
-                      onClick={handleAddMember}
-                      disabled={newMemberSubmitting}
-                      className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-                    >
-                      {newMemberSubmitting ? "Sending…" : "Send Invitation"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowAddMemberForm(false);
-                        setNewMemberError("");
-                      }}
-                      className="px-4 py-2 border border-gray-300 text-gray-600 text-sm hover:bg-gray-100 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
                 </div>
               )}
 
@@ -945,8 +715,11 @@ const SettingsScreen = ({
                               )}
                             {isOwner && member.userId?._id === user?._id && (
                               <button
-                                onClick={() => setShowTransferModal(true)}
-                                className="px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
+                                onClick={() => {
+                                  setInitialInviteTab("owner");
+                                  setShowInviteModal(true);
+                                }}
+                                className="px-3 py-1.5 text-xs font-semibold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded transition-colors"
                               >
                                 Transfer Ownership
                               </button>
@@ -1518,11 +1291,17 @@ const SettingsScreen = ({
           }}
         />
       )}
-      {showInviteModal && transferStatus && (
+      {showInviteModal && (
         <InviteModal
-          inviteData={transferStatus}
-          currentAccount={currentAccount}
-          onClose={() => setShowInviteModal(false)}
+          accountId={currentAccount?._id}
+          accountName={currentAccount?.accountName}
+          currentUser={user}
+          initialTab={initialInviteTab}
+          onClose={() => {
+            setShowInviteModal(false);
+            loadMembers();
+            loadPendingInvitations();
+          }}
         />
       )}
       {showCorrectionModal && transferStatus && (

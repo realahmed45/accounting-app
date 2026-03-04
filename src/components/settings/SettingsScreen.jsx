@@ -30,6 +30,8 @@ import { sendInvitationEmail } from "../../services/emailService";
 import TransferOwnershipModal from "../TransferOwnershipModal";
 import InviteModal from "../InviteModal";
 import OwnershipCorrectionModal from "../OwnershipCorrectionModal";
+import UniqueIdDisplay from "../UniqueIdDisplay";
+import LinkParentModal from "../LinkParentModal";
 
 // Currency list for display
 const CURRENCIES = [
@@ -137,6 +139,10 @@ const SettingsScreen = ({
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showCorrectionModal, setShowCorrectionModal] = useState(false);
+  const [showLinkParentModal, setShowLinkParentModal] = useState(false);
+
+  // Parent account state
+  const [parentAccount, setParentAccount] = useState(null);
 
   useEffect(() => {
     if (settingsSection === "users" && currentAccount) {
@@ -148,6 +154,26 @@ const SettingsScreen = ({
       loadActivityLog();
     }
   }, [settingsSection, currentAccount]);
+
+  // Load parent account data
+  useEffect(() => {
+    const loadParentAccount = async () => {
+      if (currentAccount?.parentAccountId) {
+        try {
+          const { accountService } = await import("../../services/api");
+          const result = await accountService.getById(
+            currentAccount.parentAccountId,
+          );
+          if (result.success) {
+            setParentAccount(result.data);
+          }
+        } catch (err) {
+          console.error("Failed to load parent account:", err);
+        }
+      }
+    };
+    loadParentAccount();
+  }, [currentAccount]);
 
   const loadMembers = async () => {
     if (!currentAccount) return;
@@ -409,6 +435,73 @@ const SettingsScreen = ({
                 currency.
               </span>
             </div>
+          </div>
+        )}
+
+        {/* Account Unique ID & Parent Link Section */}
+        {currentAccount && !settingsSection && (
+          <div className="border-b border-gray-200 px-6 xl:px-12 py-4 space-y-4">
+            {/* Unique ID Display */}
+            <UniqueIdDisplay uniqueId={currentAccount.uniqueId} />
+
+            {/* Parent Account Info or Link Button */}
+            {currentAccount.parentAccountId && parentAccount ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-blue-900 mb-1">
+                      Parent Account
+                    </p>
+                    <p className="text-sm font-semibold text-blue-800">
+                      {parentAccount.accountName}
+                    </p>
+                    <p className="text-xs text-blue-600 font-mono mt-1">
+                      {parentAccount.uniqueId}
+                    </p>
+                  </div>
+                  {currentMember?.role === "owner" && (
+                    <button
+                      onClick={async () => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to unlink from the parent account?",
+                          )
+                        ) {
+                          try {
+                            const { accountService } =
+                              await import("../../services/api");
+                            await accountService.linkToParent(
+                              currentAccount._id,
+                              null,
+                            );
+                            setParentAccount(null);
+                            window.location.reload();
+                          } catch (err) {
+                            alert(
+                              err?.response?.data?.message ||
+                                "Failed to unlink parent account",
+                            );
+                          }
+                        }
+                      }}
+                      className="text-xs px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded transition-colors"
+                    >
+                      Unlink
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              currentMember?.role === "owner" && (
+                <button
+                  onClick={() => setShowLinkParentModal(true)}
+                  className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm flex items-center justify-center gap-2 text-sm font-medium"
+                >
+                  <Building2 className="w-4 h-4" />
+                  Link to Parent Account
+                </button>
+              )
+            )}
           </div>
         )}
 
@@ -1440,6 +1533,18 @@ const SettingsScreen = ({
           onSuccess={() => {
             setShowCorrectionModal(false);
             loadTransferStatus();
+          }}
+        />
+      )}
+      {showLinkParentModal && (
+        <LinkParentModal
+          accountId={currentAccount?._id}
+          currentAccountName={currentAccount?.accountName}
+          onClose={() => setShowLinkParentModal(false)}
+          onSuccess={async (data) => {
+            setShowLinkParentModal(false);
+            // Reload to show updated parent account info
+            window.location.reload();
           }}
         />
       )}

@@ -146,6 +146,35 @@ export const accountService = {
     );
     return response.data;
   },
+
+  findByUniqueId: async (uniqueId) => {
+    const response = await api.get(`/accounts/by-unique-id/${uniqueId}`);
+    return response.data;
+  },
+
+  linkToParent: async (accountId, parentUniqueId) => {
+    const response = await api.post(`/accounts/${accountId}/link-parent`, {
+      parentUniqueId,
+    });
+    return response.data;
+  },
+
+  transferOwnership: async (
+    accountId,
+    targetAccountUniqueId,
+    toWhatsApp,
+    toTelegram,
+  ) => {
+    const response = await api.post(
+      `/accounts/${accountId}/transfer-ownership`,
+      {
+        targetAccountUniqueId,
+        toWhatsApp,
+        toTelegram,
+      },
+    );
+    return response.data;
+  },
 };
 
 // ==================== BANK ACCOUNT SERVICES ====================

@@ -378,24 +378,95 @@ const InviteModal = ({
                     </button>
                   </div>
 
-                  <div className="space-y-1.5">
-                    {PERMISSION_OPTIONS.map(({ key, label }) => (
-                      <label
-                        key={key}
-                        className={`flex items-center gap-2.5 cursor-pointer ${
-                          viewOnly ? "opacity-40 cursor-not-allowed" : ""
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={permissions[key] || false}
-                          onChange={() => togglePermission(key)}
-                          disabled={viewOnly}
-                          className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700">{label}</span>
-                      </label>
-                    ))}
+                  <div className="space-y-6">
+                    {/* Expenses & Cash */}
+                    <div>
+                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
+                        Expenses &amp; Cash
+                      </p>
+                      <div className="space-y-2">
+                        {[
+                          { key: "makeExpense", label: "Log expenses" },
+                          { key: "calculateCash", label: "Calculate cash flow" },
+                        ].map(({ key, label }) => (
+                          <label
+                            key={key}
+                            className={`flex items-center gap-2.5 cursor-pointer ${
+                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={permissions[key] || false}
+                              onChange={() => togglePermission(key)}
+                              disabled={viewOnly}
+                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm text-gray-700">{label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Access Settings */}
+                    <div>
+                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
+                        Access Settings
+                      </p>
+                      <div className="space-y-2">
+                        {[
+                          { key: "addUser", label: "Manage users" },
+                          { key: "addCategories", label: "Manage categories" },
+                          { key: "addBankAccount", label: "Manage bank accounts" },
+                          { key: "accessSettings", label: "Access settings" },
+                        ].map(({ key, label }) => (
+                          <label
+                            key={key}
+                            className={`flex items-center gap-2.5 cursor-pointer ${
+                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={permissions[key] || false}
+                              onChange={() => togglePermission(key)}
+                              disabled={viewOnly}
+                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm text-gray-700">{label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Account Structure */}
+                    <div>
+                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
+                        Account Structure
+                      </p>
+                      <div className="space-y-2">
+                        {[
+                          { key: "createAccountDownward", label: "Create sub-accounts" },
+                          { key: "createAccountUpward", label: "Link to parent accounts" },
+                        ].map(({ key, label }) => (
+                          <label
+                            key={key}
+                            className={`flex items-center gap-2.5 cursor-pointer ${
+                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={permissions[key] || false}
+                              onChange={() => togglePermission(key)}
+                              disabled={viewOnly}
+                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm text-gray-700">{label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNotifications } from "../../context/NotificationContext";
-import { AlertCircle, Info, CheckCircle2, X } from "lucide-react";
+import { AlertCircle, Info, CheckCircle2, X, Bell } from "lucide-react";
 
 const ToastNotification = ({ onOpenCenter }) => {
   const { toasts, removeToast, markAsRead } = useNotifications();

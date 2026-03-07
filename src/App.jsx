@@ -376,6 +376,9 @@ function App() {
         console.log(
           `   - Total work logs: ${response.data.summary.totalWorkLogs}`,
         );
+        console.log(
+          `   - Total activities: ${response.data.summary.totalActivities}`,
+        );
         setDailyActivity(response.data.daily);
       }
     } catch (error) {

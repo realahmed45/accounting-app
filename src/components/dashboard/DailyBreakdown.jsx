@@ -60,7 +60,8 @@ const DailyBreakdown = ({
       (dayData.shifts?.length || 0) +
       (dayData.checkIns?.length || 0) +
       (dayData.checkOuts?.length || 0) +
-      (dayData.workLogs?.length || 0)
+      (dayData.workLogs?.length || 0) +
+      (dayData.activities?.length || 0)
     );
   };
 
@@ -141,8 +142,8 @@ const DailyBreakdown = ({
                         No activity for this day
                       </p>
                       <p className="text-sm mt-2">
-                        Expenses, shifts, check-ins, and work logs will appear
-                        here
+                        Expenses, shifts, check-ins, work logs, bank transfers,
+                        and other activities will appear here
                       </p>
                     </div>
                   )}
@@ -442,6 +443,104 @@ const DailyBreakdown = ({
                                 )}
                                 <div className="text-xs text-slate-600">
                                   Logged by: {log.loggedBy?.name || "Unknown"}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* OTHER ACTIVITIES SECTION (Bank transfers, permissions, etc.) */}
+                  {dayData?.activities && dayData.activities.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-indigo-600" />
+                        Other Activities ({dayData.activities.length})
+                      </h4>
+                      {dayData.activities.map((activity) => {
+                        // Determine activity icon and color based on action type
+                        const getActivityStyle = (action) => {
+                          if (
+                            action.includes("bank") ||
+                            action.includes("cash")
+                          ) {
+                            return {
+                              bg: "bg-emerald-50",
+                              border: "border-emerald-500",
+                              icon: "💰",
+                            };
+                          } else if (
+                            action.includes("permission") ||
+                            action.includes("member")
+                          ) {
+                            return {
+                              bg: "bg-blue-50",
+                              border: "border-blue-500",
+                              icon: "👥",
+                            };
+                          } else if (action.includes("week")) {
+                            return {
+                              bg: "bg-amber-50",
+                              border: "border-amber-500",
+                              icon: "📅",
+                            };
+                          } else if (action.includes("category")) {
+                            return {
+                              bg: "bg-pink-50",
+                              border: "border-pink-500",
+                              icon: "🏷️",
+                            };
+                          } else if (action.includes("ownership")) {
+                            return {
+                              bg: "bg-red-50",
+                              border: "border-red-500",
+                              icon: "👑",
+                            };
+                          } else if (action.includes("shift_type")) {
+                            return {
+                              bg: "bg-cyan-50",
+                              border: "border-cyan-500",
+                              icon: "⏰",
+                            };
+                          }
+                          return {
+                            bg: "bg-slate-50",
+                            border: "border-slate-500",
+                            icon: "📝",
+                          };
+                        };
+
+                        const style = getActivityStyle(activity.action);
+
+                        return (
+                          <div
+                            key={activity._id}
+                            className={`p-4 ${style.bg} border-l-4 ${style.border} rounded-lg`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="text-2xl">{style.icon}</span>
+                                  <span className="font-bold text-slate-800">
+                                    {activity.description}
+                                  </span>
+                                </div>
+                                <div className="ml-10 flex items-center gap-3 text-xs text-slate-600">
+                                  <span className="flex items-center gap-1">
+                                    <User className="w-3 h-3" />
+                                    {activity.actorName}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    {formatTime(activity.timestamp)}
+                                  </span>
+                                  <span className="px-2 py-0.5 bg-slate-200 text-slate-700 rounded-md text-xs font-medium">
+                                    {activity.action
+                                      .replace(/_/g, " ")
+                                      .toUpperCase()}
+                                  </span>
                                 </div>
                               </div>
                             </div>

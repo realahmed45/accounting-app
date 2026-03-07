@@ -137,9 +137,12 @@ const DailyBreakdown = ({
                   {activityCount === 0 && (
                     <div className="text-center py-12 text-slate-400">
                       <FileText className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                      <p className="text-lg font-medium">No activity for this day</p>
+                      <p className="text-lg font-medium">
+                        No activity for this day
+                      </p>
                       <p className="text-sm mt-2">
-                        Expenses, shifts, check-ins, and work logs will appear here
+                        Expenses, shifts, check-ins, and work logs will appear
+                        here
                       </p>
                     </div>
                   )}
@@ -212,7 +215,9 @@ const DailyBreakdown = ({
                             <button
                               onClick={() =>
                                 setSelectedExpenseForPhoto(
-                                  dayExpenses.find((e) => e._id === expense._id),
+                                  dayExpenses.find(
+                                    (e) => e._id === expense._id,
+                                  ),
                                 )
                               }
                               className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
@@ -223,7 +228,9 @@ const DailyBreakdown = ({
                             {!currentWeek.isLocked &&
                               hasPermission("makeExpense") && (
                                 <button
-                                  onClick={() => handleDeleteExpense(expense._id)}
+                                  onClick={() =>
+                                    handleDeleteExpense(expense._id)
+                                  }
                                   className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all"
                                   title="Delete"
                                 >
@@ -250,8 +257,8 @@ const DailyBreakdown = ({
                             shift.status === "assigned"
                               ? "bg-blue-50 border-blue-500"
                               : shift.status === "cancelled"
-                              ? "bg-gray-100 border-gray-400"
-                              : "bg-amber-50 border-amber-500"
+                                ? "bg-gray-100 border-gray-400"
+                                : "bg-amber-50 border-amber-500"
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -290,7 +297,9 @@ const DailyBreakdown = ({
                                 )}
                                 {shift.createdBy && (
                                   <span className="flex items-center gap-1">
-                                    <span className="opacity-60">Created by:</span>
+                                    <span className="opacity-60">
+                                      Created by:
+                                    </span>
                                     {shift.createdBy.name}
                                   </span>
                                 )}
@@ -369,7 +378,8 @@ const DailyBreakdown = ({
                               <div className="flex items-center gap-2 mb-2">
                                 <AlertCircle className="w-5 h-5 text-orange-600" />
                                 <span className="font-bold text-slate-800">
-                                  {checkOut.member?.name || "Unknown"} checked out
+                                  {checkOut.member?.name || "Unknown"} checked
+                                  out
                                 </span>
                               </div>
                               <div className="ml-7 space-y-1 text-sm text-slate-600">
@@ -486,7 +496,9 @@ const DailyBreakdown = ({
                           </div>
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => setSelectedExpenseForPhoto(expense)}
+                              onClick={() =>
+                                setSelectedExpenseForPhoto(expense)
+                              }
                               className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
                               title="View/Upload Photos"
                             >
@@ -495,7 +507,9 @@ const DailyBreakdown = ({
                             {!currentWeek.isLocked &&
                               hasPermission("makeExpense") && (
                                 <button
-                                  onClick={() => handleDeleteExpense(expense._id)}
+                                  onClick={() =>
+                                    handleDeleteExpense(expense._id)
+                                  }
                                   className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all"
                                   title="Delete"
                                 >

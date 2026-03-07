@@ -16,13 +16,8 @@ import {
   Settings,
   X,
 } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
-const NotificationCenter = ({ onClose }) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const highlightId = searchParams.get("id");
-
+const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
   const { markAsRead, deleteNotification, markAllAsRead } = useNotifications();
 
   const [notifications, setNotifications] = useState([]);
@@ -181,7 +176,7 @@ const NotificationCenter = ({ onClose }) => {
             </div>
 
             <button
-              onClick={() => navigate("/notification-settings")}
+              onClick={onOpenSettings}
               className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 transition-colors rounded-lg font-semibold"
             >
               <Settings className="w-4 h-4" />

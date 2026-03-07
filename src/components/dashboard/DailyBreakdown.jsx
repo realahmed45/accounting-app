@@ -506,6 +506,15 @@ const DailyBreakdown = ({
                         </div>
                       ))}
                     </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default DailyBreakdown;

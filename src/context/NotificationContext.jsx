@@ -43,6 +43,7 @@ export const NotificationProvider = ({ children }) => {
       const response = await notificationService.getUnreadCount();
       if (response.success) {
         const newCount = response.data.unreadCount;
+        console.log(`📊 Unread count: ${newCount} (previous: ${unreadCount})`);
 
         // If count increased, show toasts for new notifications
         if (newCount > unreadCount) {

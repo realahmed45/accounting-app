@@ -53,16 +53,19 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
       });
 
       const response = await notificationService.getNotifications(params);
-      if (response.success) {
-        setNotifications(response.data.notifications);
+      if (response?.success && response?.data?.notifications) {
+        setNotifications(response.data.notifications || []);
         setPagination((prev) => ({
           ...prev,
-          total: response.data.total,
-          totalPages: response.data.totalPages,
+          total: response.data.total || 0,
+          totalPages: response.data.totalPages || 0,
         }));
+      } else {
+        setNotifications([]);
       }
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -272,7 +275,7 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto mb-4" />
               <p className="text-slate-600">Loading notifications...</p>
             </div>
-          ) : notifications.length === 0 ? (
+          ) : notifications?.length === 0 ? (
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
               <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-slate-900 mb-2">
@@ -285,7 +288,7 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
               </p>
             </div>
           ) : (
-            notifications.map((notification) => (
+            (notifications || []).map((notification) => (
               <div
                 key={notification._id}
                 id={`notification-${notification._id}`}
@@ -322,13 +325,14 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
 
                         {/* Metadata */}
                         {notification.data &&
+                          typeof notification.data === "object" &&
                           Object.keys(notification.data).length > 0 && (
                             <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
                               <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                                 Details
                               </p>
                               <div className="grid grid-cols-2 gap-2 text-sm">
-                                {Object.entries(notification.data).map(
+                                {Object.entries(notification.data || {}).map(
                                   ([key, value]) => (
                                     <div key={key}>
                                       <span className="text-slate-600 font-medium">

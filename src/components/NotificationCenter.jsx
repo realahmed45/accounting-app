@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNotifications } from "../../context/NotificationContext";
-import { notificationService } from "../../services/notificationApi";
+import { useNotifications } from "../context/NotificationContext";
+import { notificationService } from "../services/notificationApi";
 import {
   Bell,
   Filter,

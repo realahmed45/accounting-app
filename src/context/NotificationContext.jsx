@@ -41,7 +41,7 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       const response = await notificationService.getUnreadCount();
-      if (response.success) {
+      if (response?.success && response?.data?.unreadCount !== undefined) {
         const newCount = response.data.unreadCount;
         console.log(`📊 Unread count: ${newCount} (previous: ${unreadCount})`);
 
@@ -65,7 +65,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       console.log("📥 Fetching recent notifications for toast...");
       const response = await notificationService.getRecentNotifications();
-      if (response.success) {
+      if (response?.success && response?.data?.notifications) {
         const recentUnread = response.data.notifications.filter(
           (n) => !n.isRead,
         );
@@ -96,12 +96,15 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       const response = await notificationService.getRecentNotifications();
-      if (response.success) {
+      if (response?.success && response?.data?.notifications) {
         setNotifications(response.data.notifications);
+      } else {
+        setNotifications([]);
       }
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
       setError(err.message);
+      setNotifications([]);
     }
   }, [user]);
 
@@ -112,7 +115,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       console.log("⚙️ Fetching notification preferences...");
       const response = await notificationService.getPreferences();
-      if (response.success) {
+      if (response?.success && response?.data) {
         console.log("✅ Preferences loaded:", response.data);
         setPreferences(response.data);
       } else {
@@ -176,7 +179,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       const response =
         await notificationService.updatePreferences(newPreferences);
-      if (response.success) {
+      if (response?.success && response?.data) {
         setPreferences(response.data);
         return true;
       }

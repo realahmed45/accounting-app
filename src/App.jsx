@@ -8,6 +8,9 @@ import PasswordGate from "./components/PasswordGate";
 import ScheduleScreen from "./components/schedule/ScheduleScreen";
 import Header from "./components/layout/Header";
 import NotificationBanner from "./components/layout/NotificationBanner";
+import ToastNotification from "./components/layout/ToastNotification";
+import NotificationCenter from "./components/NotificationCenter";
+import NotificationSettings from "./components/NotificationSettings";
 import FinancialOverview from "./components/dashboard/FinancialOverview";
 import DailyBreakdown from "./components/dashboard/DailyBreakdown";
 import SettingsScreen from "./components/settings/SettingsScreen";
@@ -181,6 +184,7 @@ function App() {
   const [expandedDays, setExpandedDays] = useState([formatDate(new Date())]);
   const [expenses, setExpenses] = useState([]);
   const [bankAccounts, setBankAccounts] = useState([]);
+  const [dailyActivity, setDailyActivity] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Modal States
@@ -192,6 +196,16 @@ function App() {
   const [selectedHistoryWeek, setSelectedHistoryWeek] = useState(null);
   const [selectedExpenseForPhoto, setSelectedExpenseForPhoto] = useState(null);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
+  const [showNotificationCenter, setShowNotificationCenter] = useState(false);
+  const [showNotificationSettings, setShowNotificationSettings] =
+    useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [highlightNotificationId, setHighlightNotificationId] = useState(null);
+
+  const openNotificationCenter = (notificationId = null) => {
+    setHighlightNotificationId(notificationId);
+    setShowNotificationCenter(true);
+  };
 
   // Form States
   const [addCashAmount, setAddCashAmount] = useState("");
@@ -236,8 +250,6 @@ function App() {
   const [pendingGateAction, setPendingGateAction] = useState(null);
   const [baCurrencyOpen, setBaCurrencyOpen] = useState(false);
   const [baCurrencySearch, setBaCurrencySearch] = useState("");
-
-  const [showSchedule, setShowSchedule] = useState(false);
   const [passwordGateOpen, setPasswordGateOpen] = useState(false);
 
   // Initialize form with first category when it loads
@@ -280,6 +292,7 @@ function App() {
       const currentWeek = weeks[currentWeekIndex];
       if (currentWeek) {
         loadExpenses(currentWeek._id);
+        loadDailyActivity(currentWeek._id);
       }
     }
   }, [currentWeekIndex, weeks, currentAccount]);
@@ -338,6 +351,23 @@ function App() {
       }
     } catch (error) {
       console.error("Error loading expenses:", error);
+    }
+  };
+
+  const loadDailyActivity = async (weekId) => {
+    try {
+      if (!currentAccount) return;
+      const response = await accountService.getDailyActivity(
+        currentAccount._id,
+        { weekId },
+      );
+      if (response.success) {
+        setDailyActivity(response.data.daily);
+      }
+    } catch (error) {
+      console.error("Error loading daily activity:", error);
+      // Fallback to no daily activity (will use old expense display)
+      setDailyActivity(null);
     }
   };
 
@@ -1042,6 +1072,7 @@ function App() {
         logout={logout}
       />
       <NotificationBanner success={success} error={error} setError={setError} />
+      <ToastNotification onOpenCenter={openNotificationCenter} />
       {/* Main Content */}
       {/* Main Content */}
       <div className="w-full bg-white px-8 py-6">
@@ -1341,6 +1372,7 @@ function App() {
               currentWeek={currentWeek}
               hasPermission={hasPermission}
               bankAccounts={bankAccounts}
+              dailyActivity={dailyActivity}
             />
           </>
         )}
@@ -2828,12 +2860,41 @@ function App() {
           setPendingGateAction(null);
         }}
       />
+      {/* Schedule Screen */}
       {showSchedule && (
         <ScheduleScreen
           accountId={currentAccount?._id}
           currentMember={currentMember}
           onClose={() => setShowSchedule(false)}
         />
+      )}
+      {/* Notification Center Modal */}
+      {showNotificationCenter && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="w-full h-full overflow-auto">
+            <NotificationCenter
+              onClose={() => {
+                setShowNotificationCenter(false);
+                setHighlightNotificationId(null);
+              }}
+              onOpenSettings={() => {
+                setShowNotificationCenter(false);
+                setShowNotificationSettings(true);
+              }}
+              highlightId={highlightNotificationId}
+            />
+          </div>
+        </div>
+      )}
+      {/* Notification Settings Modal */}
+      {showNotificationSettings && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="w-full h-full overflow-auto">
+            <NotificationSettings
+              onClose={() => setShowNotificationSettings(false)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

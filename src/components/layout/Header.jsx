@@ -1,6 +1,7 @@
 import React from "react";
 import { Wallet, Settings, LogOut } from "lucide-react";
 import AccountSwitcher from "../AccountSwitcher";
+import NotificationBell from "./NotificationBell";
 
 const Header = ({
   user,
@@ -29,13 +30,16 @@ const Header = ({
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
-            <AccountSwitcher setShowCreateAccountModal={setShowCreateAccountModal} />
+            <AccountSwitcher
+              setShowCreateAccountModal={setShowCreateAccountModal}
+            />
             {currentMember?.viewOnly && (
               <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider rounded-xl">
                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
                 View Only
               </div>
             )}
+            <NotificationBell />
             {hasPermission("accessSettings") && (
               <button
                 onClick={() => setShowSettings(true)}

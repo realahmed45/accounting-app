@@ -134,6 +134,14 @@ export const accountService = {
     return response.data;
   },
 
+  updateCategory: async (accountId, categoryId, categoryData) => {
+    const response = await api.put(
+      `/accounts/${accountId}/categories/${categoryId}`,
+      categoryData,
+    );
+    return response.data;
+  },
+
   getPeople: async (accountId) => {
     const response = await api.get(`/accounts/${accountId}/people`);
     return response.data;
@@ -173,6 +181,13 @@ export const accountService = {
         toTelegram,
       },
     );
+    return response.data;
+  },
+
+  getDailyActivity: async (accountId, params = {}) => {
+    const response = await api.get(`/accounts/${accountId}/daily-activity`, {
+      params,
+    });
     return response.data;
   },
 };

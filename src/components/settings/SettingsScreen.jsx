@@ -20,6 +20,8 @@ import {
   Trash2,
   DollarSign,
   Wallet,
+  Edit2,
+  Check,
 } from "lucide-react";
 import {
   memberService,
@@ -129,6 +131,9 @@ const SettingsScreen = ({
   const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [categorySubmitting, setCategorySubmitting] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editCategorySubmitting, setEditCategorySubmitting] = useState(false);
 
   // Activity Log
   const [activityLogs, setActivityLogs] = useState([]);
@@ -358,6 +363,43 @@ const SettingsScreen = ({
         alert(err.response?.data?.message || "Failed to add category");
       } finally {
         setCategorySubmitting(false);
+      }
+    });
+
+  const handleEditCategory = async () =>
+    runIfAllowed(async () => {
+      if (!editCategoryName.trim()) {
+        alert("Category name is required");
+        return;
+      }
+      setEditCategorySubmitting(true);
+      try {
+        const { accountService } = await import("../../services/api");
+        const res = await accountService.updateCategory(
+          currentAccount._id,
+          editingCategory._id,
+          { name: editCategoryName.trim() },
+        );
+        if (res.success) {
+          // Update the categories list
+          const updatedCategories = categories.map((cat) =>
+            cat._id === editingCategory._id
+              ? { ...cat, name: editCategoryName.trim() }
+              : cat,
+          );
+          // This assumes categories is passed as prop or available in state
+          // If using addCategory callback, we might need to refresh the page or pass a setter
+          setEditingCategory(null);
+          setEditCategoryName("");
+          // Force reload to show updated name
+          window.location.reload();
+        } else {
+          alert(res.message || "Failed to update category");
+        }
+      } catch (err) {
+        alert(err.response?.data?.message || "Failed to update category");
+      } finally {
+        setEditCategorySubmitting(false);
       }
     });
 
@@ -977,25 +1019,80 @@ const SettingsScreen = ({
               )}
 
               <div className="grid grid-cols-1 gap-3">
-                {categories.map((cat, i) => (
-                  <div
-                    key={cat._id || i}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-100 hover:border-purple-200 transition-all shadow-sm rounded-xl group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-purple-400 group-hover:scale-125 transition-transform" />
-                      <span className="font-semibold text-gray-800">
-                        {cat.name}
-                      </span>
-                      {cat.isDefault && (
-                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
-                          Default
-                        </span>
+                {categories.map((cat, i) => {
+                  const isEditing = editingCategory?._id === cat._id;
+                  return (
+                    <div
+                      key={cat._id || i}
+                      className="flex items-center justify-between p-4 bg-white border border-gray-100 hover:border-purple-200 transition-all shadow-sm rounded-xl group"
+                    >
+                      {isEditing ? (
+                        <div className="flex-1 flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={editCategoryName}
+                            onChange={(e) =>
+                              setEditCategoryName(e.target.value)
+                            }
+                            className="flex-1 px-3 py-2 border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg text-sm"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleEditCategory();
+                              if (e.key === "Escape") {
+                                setEditingCategory(null);
+                                setEditCategoryName("");
+                              }
+                            }}
+                          />
+                          <button
+                            onClick={handleEditCategory}
+                            disabled={editCategorySubmitting}
+                            className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50"
+                            title="Save"
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingCategory(null);
+                              setEditCategoryName("");
+                            }}
+                            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+                            title="Cancel"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-purple-400 group-hover:scale-125 transition-transform" />
+                            <span className="font-semibold text-gray-800">
+                              {cat.name}
+                            </span>
+                            {cat.isDefault && (
+                              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          {hasPermission("addCategories") && (
+                            <button
+                              onClick={() => {
+                                setEditingCategory(cat);
+                                setEditCategoryName(cat.name);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                              title="Edit category name"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
-                    {/* Potential delete category button here in future */}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

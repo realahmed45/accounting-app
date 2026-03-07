@@ -44,7 +44,10 @@ const NotificationBell = ({ onOpenCenter }) => {
 
       {/* Dropdown */}
       {showDropdown && (
-        <NotificationDropdown onClose={() => setShowDropdown(false)} />
+        <NotificationDropdown
+          onClose={() => setShowDropdown(false)}
+          onOpenCenter={onOpenCenter}
+        />
       )}
     </div>
   );

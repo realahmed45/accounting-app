@@ -10,6 +10,7 @@ const Header = ({
   setShowSettings,
   setShowCreateAccountModal,
   logout,
+  onOpenNotificationCenter,
 }) => {
   return (
     <div className="bg-white shadow-sm sticky top-0 z-40 border-b border-slate-200">
@@ -39,7 +40,7 @@ const Header = ({
                 View Only
               </div>
             )}
-            <NotificationBell />
+            <NotificationBell onOpenCenter={onOpenNotificationCenter} />
             {hasPermission("accessSettings") && (
               <button
                 onClick={() => setShowSettings(true)}

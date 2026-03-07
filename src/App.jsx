@@ -323,9 +323,15 @@ function App() {
     if (!currentAccount) return;
 
     try {
-      const monday = getMonday(new Date());
+      // Create week containing today's date
+      const today = new Date();
+      const monday = getMonday(today);
       const sunday = new Date(monday);
       sunday.setDate(sunday.getDate() + 6);
+
+      console.log(
+        `📅 Creating first week: ${formatDate(monday)} to ${formatDate(sunday)} (today: ${formatDate(today)})`,
+      );
 
       const response = await weekService.create({
         accountId: currentAccount._id,
@@ -337,6 +343,7 @@ function App() {
       if (response.success) {
         setWeeks([response.data]);
         setCurrentWeekIndex(0);
+        console.log(`✅ First week created successfully`);
       }
     } catch (error) {
       console.error("Error creating first week:", error);
@@ -1087,6 +1094,7 @@ function App() {
         setShowSettings={setShowSettings}
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logout}
+        onOpenNotificationCenter={openNotificationCenter}
       />
       <NotificationBanner success={success} error={error} setError={setError} />
       <ToastNotification onOpenCenter={openNotificationCenter} />
@@ -2859,6 +2867,10 @@ function App() {
           getExpectedBankAmount={getExpectedBankAmount}
           runIfAllowed={runIfAllowed}
           formatAmount={formatAmount}
+          onOpenNotificationSettings={() => {
+            setShowSettings(false);
+            setShowNotificationSettings(true);
+          }}
         />
       )}{" "}
       {/* end settings */}

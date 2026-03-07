@@ -95,6 +95,7 @@ const SettingsScreen = ({
   getExpectedBankAmount,
   runIfAllowed,
   formatAmount,
+  onOpenNotificationSettings,
 }) => {
   const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog"
 
@@ -427,6 +428,7 @@ const SettingsScreen = ({
               {settingsSection === "topUpBank" && "Top Up Bank"}
               {settingsSection === "topUpCash" && "Top Up Cash"}
               {settingsSection === "activityLog" && "Activity Log"}
+              {settingsSection === "notifications" && "Notifications"}
               {!settingsSection && "Settings"}
             </h1>
           </div>
@@ -597,10 +599,26 @@ const SettingsScreen = ({
                     desc: "View account audit trail",
                     color: "bg-gray-700",
                   },
+                  {
+                    key: "notifications",
+                    icon: <Settings className="w-6 h-6" />,
+                    label: "Notifications",
+                    desc: "Configure notification preferences",
+                    color: "bg-orange-600",
+                  },
                 ].map((item) => (
                   <button
                     key={item.key}
-                    onClick={() => setSettingsSection(item.key)}
+                    onClick={() => {
+                      if (
+                        item.key === "notifications" &&
+                        onOpenNotificationSettings
+                      ) {
+                        onOpenNotificationSettings();
+                      } else {
+                        setSettingsSection(item.key);
+                      }
+                    }}
                     className="w-full flex items-center gap-5 px-6 py-5 bg-white border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all text-left group"
                   >
                     <div

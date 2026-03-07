@@ -46,28 +46,35 @@ export const NotificationProvider = ({ children }) => {
 
         // If count increased, show toasts for new notifications
         if (newCount > unreadCount) {
+          console.log(
+            `🔔 New notifications detected! Count: ${unreadCount} → ${newCount}`,
+          );
           fetchRecentForToast();
         }
 
         setUnreadCount(newCount);
       }
     } catch (err) {
-      console.error("Failed to fetch unread count:", err);
+      console.error("❌ Failed to fetch unread count:", err);
     }
   }, [user, unreadCount]);
 
   // Fetch recent notifications for toast display
   const fetchRecentForToast = async () => {
     try {
+      console.log("📥 Fetching recent notifications for toast...");
       const response = await notificationService.getRecentNotifications();
       if (response.success) {
         const recentUnread = response.data.notifications.filter(
           (n) => !n.isRead,
         );
 
+        console.log(`   Found ${recentUnread.length} unread notifications`);
+
         // Show toast for the most recent unread notification
         if (recentUnread.length > 0) {
           const newest = recentUnread[0];
+          console.log(`   Showing toast for: ${newest.title}`);
           addToast(newest);
 
           // Show desktop notification
@@ -78,7 +85,7 @@ export const NotificationProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      console.error("Failed to fetch recent notifications:", err);
+      console.error("❌ Failed to fetch recent notifications:", err);
     }
   };
 

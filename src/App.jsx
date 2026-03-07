@@ -357,15 +357,28 @@ function App() {
   const loadDailyActivity = async (weekId) => {
     try {
       if (!currentAccount) return;
+      console.log(`📊 Loading daily activity for week ${weekId}...`);
       const response = await accountService.getDailyActivity(
         currentAccount._id,
         { weekId },
       );
       if (response.success) {
+        console.log(`✅ Daily activity loaded:`, response.data);
+        console.log(`   - Days with data: ${response.data.daily.length}`);
+        console.log(
+          `   - Total expenses: ${response.data.summary.totalExpenses}`,
+        );
+        console.log(`   - Total shifts: ${response.data.summary.totalShifts}`);
+        console.log(
+          `   - Total check-ins: ${response.data.summary.totalCheckIns}`,
+        );
+        console.log(
+          `   - Total work logs: ${response.data.summary.totalWorkLogs}`,
+        );
         setDailyActivity(response.data.daily);
       }
     } catch (error) {
-      console.error("Error loading daily activity:", error);
+      console.error("❌ Error loading daily activity:", error);
       // Fallback to no daily activity (will use old expense display)
       setDailyActivity(null);
     }

@@ -36,13 +36,17 @@ export const notificationService = {
 
   // Get recent notifications (last 10)
   getRecentNotifications: async () => {
+    console.log("📡 API Call: GET /notifications/recent");
     const response = await api.get("/notifications/recent");
+    console.log("✅ Response:", response.data);
     return response.data;
   },
 
   // Get unread notification count
   getUnreadCount: async () => {
+    console.log("📡 API Call: GET /notifications/unread-count");
     const response = await api.get("/notifications/unread-count");
+    console.log("✅ Response:", response.data);
     return response.data;
   },
 
@@ -74,7 +78,9 @@ export const notificationService = {
 
   // Get user preferences
   getPreferences: async () => {
+    console.log("📡 API Call: GET /notifications/preferences");
     const response = await api.get("/notifications/preferences");
+    console.log("✅ Response:", response.data);
     return response.data;
   },
 

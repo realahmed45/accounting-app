@@ -109,12 +109,16 @@ export const NotificationProvider = ({ children }) => {
     if (!user) return;
 
     try {
+      console.log("⚙️ Fetching notification preferences...");
       const response = await notificationService.getPreferences();
       if (response.success) {
+        console.log("✅ Preferences loaded:", response.data);
         setPreferences(response.data);
+      } else {
+        console.log("⚠️ Failed to load preferences:", response);
       }
     } catch (err) {
-      console.error("Failed to fetch preferences:", err);
+      console.error("❌ Failed to fetch preferences:", err);
     }
   }, [user]);
 
@@ -206,11 +210,16 @@ export const NotificationProvider = ({ children }) => {
   // Setup polling when user is logged in
   useEffect(() => {
     if (!user) {
+      console.log("❌ No user logged in, skipping notification polling");
       setNotifications([]);
       setUnreadCount(0);
       setPreferences(null);
       return;
     }
+
+    console.log(
+      `✅ User logged in: ${user.email}, starting notification polling...`,
+    );
 
     // Initial fetch
     fetchUnreadCount();
@@ -219,10 +228,16 @@ export const NotificationProvider = ({ children }) => {
 
     // Setup polling
     const interval = setInterval(() => {
+      console.log(
+        `🔁 Polling for notifications (every ${POLLING_INTERVAL / 1000}s)...`,
+      );
       fetchUnreadCount();
     }, POLLING_INTERVAL);
 
-    return () => clearInterval(interval);
+    return () => {
+      console.log("🗑️ Cleaning up notification polling");
+      clearInterval(interval);
+    };
   }, [user, fetchUnreadCount, fetchRecentNotifications, fetchPreferences]);
 
   // Check if notifications should be played with sound

@@ -186,7 +186,6 @@ function App() {
   const [expenses, setExpenses] = useState([]);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [dailyActivity, setDailyActivity] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   // Modal States
   const [activeModal, setActiveModal] = useState(null);
@@ -253,6 +252,7 @@ function App() {
     type: "",
     message: "",
   });
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [pendingGateAction, setPendingGateAction] = useState(null);
   const [baCurrencyOpen, setBaCurrencyOpen] = useState(false);
   const [baCurrencySearch, setBaCurrencySearch] = useState("");
@@ -704,11 +704,25 @@ function App() {
           setAddCashAmount("");
           setAddCashNote("");
           setActiveModal(null);
-          setSuccess("Cash added successfully!");
-          setTimeout(() => setSuccess(""), 3000);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "Cash added successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            10000,
+          );
         }
       } catch (error) {
-        setError(error.response?.data?.message || "Failed to add cash");
+        const errorMsg = error.response?.data?.message || "Failed to add cash";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -733,6 +747,8 @@ function App() {
         return;
       }
 
+      setLoading(true);
+      setLoadingMessage("Transferring funds...");
       try {
         const response = await weekService.transferBankToCash(currentWeek._id, {
           bankAccountId: selectedBankAccountForTransfer,
@@ -751,11 +767,25 @@ function App() {
           setTransferAmount("");
           setSelectedBankAccountForTransfer("");
           setActiveModal(null);
-          setSuccess("Transfer completed!");
-          setTimeout(() => setSuccess(""), 3000);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "Bank to cash transfer completed successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            10000,
+          );
         }
       } catch (error) {
-        setError(error.response?.data?.message || "Failed to transfer");
+        const errorMsg = error.response?.data?.message || "Failed to transfer";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -776,6 +806,8 @@ function App() {
       // Determine payment source
       const paymentSource = expenseForm.bankAccountId ? "bank" : "cash";
 
+      setLoading(true);
+      setLoadingMessage("Adding expense...");
       try {
         const response = await expenseService.create({
           accountId: currentAccount._id,
@@ -831,6 +863,8 @@ function App() {
         return;
       }
 
+      setLoading(true);
+      setLoadingMessage("Deleting expense...");
       try {
         const response = await expenseService.delete(expenseId);
         if (response.success) {
@@ -843,8 +877,15 @@ function App() {
           await loadWeeks();
           await loadBankAccounts();
 
-          setSuccess("Expense deleted successfully!");
-          setTimeout(() => setSuccess(""), 3000);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "Expense deleted successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            10000,
+          );
         }
       } catch (error) {
         const errorMsg =
@@ -864,6 +905,8 @@ function App() {
         return;
       }
 
+      setLoading(true);
+      setLoadingMessage("Locking week...");
       try {
         const response = await weekService.lock(currentWeek._id);
         if (response.success) {
@@ -872,11 +915,23 @@ function App() {
           setWeeks(updatedWeeks);
           setUnlockWeekCode("");
           setActiveModal(null);
-          setSuccess("Week locked successfully!");
-          setTimeout(() => setSuccess(""), 3000);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "Week locked successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            10000,
+          );
         }
       } catch (error) {
-        setError(error.response?.data?.message || "Failed to lock week");
+        const errorMsg = error.response?.data?.message || "Failed to lock week";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
       }
     });
 
@@ -890,6 +945,8 @@ function App() {
       const newEndDate = new Date(newStartDate);
       newEndDate.setDate(newEndDate.getDate() + 6);
 
+      setLoading(true);
+      setLoadingMessage("Creating new week...");
       try {
         const response = await weekService.create({
           accountId: currentAccount._id,
@@ -901,11 +958,24 @@ function App() {
         if (response.success) {
           setWeeks([response.data, ...weeks]);
           setCurrentWeekIndex(0);
-          setSuccess("New week created!");
-          setTimeout(() => setSuccess(""), 3000);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "New week created successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            10000,
+          );
         }
       } catch (error) {
-        setError(error.response?.data?.message || "Failed to create week");
+        const errorMsg =
+          error.response?.data?.message || "Failed to create week";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
       }
     });
 
@@ -1022,10 +1092,23 @@ function App() {
         await loadBankAccounts();
         setBulkBalanceUpdates({});
         setActiveModal(null);
-        setSuccess("All bank balances updated successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+        setStatusModal({
+          show: true,
+          type: "success",
+          message: "All bank balances updated successfully!",
+        });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to update balances");
+        const errorMsg =
+          err.response?.data?.message || "Failed to update balances";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
       }
       setLoading(false);
     });
@@ -1059,12 +1142,23 @@ function App() {
         setTopUpReason("");
         setSelectedBankForTopUp(null);
         setActiveModal(null);
-        setSuccess(
-          `Successfully topped up ${selectedBankForTopUp.name} with ${formatAmount(amount, currentAccount?.currency)}!`,
+        setStatusModal({
+          show: true,
+          type: "success",
+          message: `Successfully topped up ${selectedBankForTopUp.name} with ${formatAmount(amount, currentAccount?.currency)}!`,
+        });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
         );
-        setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to top up balance");
+        const errorMsg =
+          err.response?.data?.message || "Failed to top up balance";
+        setStatusModal({ show: true, type: "error", message: errorMsg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          10000,
+        );
       }
       setLoading(false);
     });
@@ -3032,6 +3126,26 @@ function App() {
             >
               OK
             </button>
+          </div>
+        </div>
+      )}
+      {/* Loading Modal */}
+      {loading && (
+        <div className="fixed inset-0 z-[75] bg-black bg-opacity-70 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center">
+            {/* Animated Spinner */}
+            <div className="flex justify-center mb-6">
+              <div className="relative w-20 h-20">
+                <div className="absolute inset-0 border-4 border-indigo-200 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+              </div>
+            </div>
+
+            {/* Loading Text */}
+            <h3 className="text-xl font-bold text-gray-800 mb-2">
+              {loadingMessage || "Processing..."}
+            </h3>
+            <p className="text-gray-500 text-sm">Please wait a moment</p>
           </div>
         </div>
       )}

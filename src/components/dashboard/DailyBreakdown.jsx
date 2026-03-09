@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Calendar,
   ChevronDown,
-  ChevronUp,
+  ChevronRight,
   Receipt,
   Camera,
   Trash2,
@@ -10,11 +10,8 @@ import {
   Clock,
   UserCheck,
   UserX,
-  MapPin,
   FileText,
   User,
-  CheckCircle,
-  AlertCircle,
   Briefcase,
 } from "lucide-react";
 
@@ -33,28 +30,31 @@ const DailyBreakdown = ({
   currentWeek,
   hasPermission,
   bankAccounts,
-  dailyActivity, // NEW: comprehensive daily data
+  dailyActivity,
 }) => {
-  // Helper to format time from ISO string
+  const [expandedSections, setExpandedSections] = useState({});
+
   const formatTime = (isoString) => {
     if (!isoString) return "";
-    const date = new Date(isoString);
-    return date.toLocaleTimeString("en-US", {
+    return new Date(isoString).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
 
-  // Helper to get activity count for a day
-  const getActivityCount = (dateStr) => {
-    if (!dailyActivity) {
-      return getExpensesForDate(dateStr).length;
-    }
+  const toggleSection = (dateStr, section) => {
+    const key = `${dateStr}-${section}`;
+    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
+  const isSectionExpanded = (dateStr, section) =>
+    expandedSections[`${dateStr}-${section}`];
+
+  const getActivityCount = (dateStr) => {
+    if (!dailyActivity) return getExpensesForDate(dateStr).length;
     const dayData = dailyActivity.find((d) => d.date === dateStr);
     if (!dayData) return 0;
-
     return (
       (dayData.expenses?.length || 0) +
       (dayData.shifts?.length || 0) +
@@ -65,516 +65,444 @@ const DailyBreakdown = ({
     );
   };
 
+  const ActivitySection = ({
+    dateStr,
+    section,
+    icon: Icon,
+    title,
+    count,
+    color,
+    children,
+  }) => {
+    const isExpanded = isSectionExpanded(dateStr, section);
+    if (count === 0) return null;
+
+    return (
+      <div className="border border-slate-200 rounded-lg overflow-hidden">
+        <button
+          onClick={() => toggleSection(dateStr, section)}
+          className={`w-full px-4 py-2.5 bg-${color}-50 hover:bg-${color}-100 flex items-center justify-between transition-colors`}
+        >
+          <div className="flex items-center gap-2">
+            <ChevronRight
+              className={`w-4 h-4 text-${color}-600 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+            />
+            <Icon className={`w-4 h-4 text-${color}-600`} />
+            <span className="font-semibold text-slate-800">{title}</span>
+            <span
+              className={`px-2 py-0.5 bg-${color}-600 text-white text-xs rounded-full font-bold`}
+            >
+              {count}
+            </span>
+          </div>
+        </button>
+        {isExpanded && <div className="p-3 bg-white space-y-2">{children}</div>}
+      </div>
+    );
+  };
+
   return (
-    <div className="bg-white p-8 border-b border-slate-200">
-      <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-        <div className="bg-emerald-600 p-3 rounded-xl">
-          <Calendar className="w-6 h-6 text-white" />
+    <div className="bg-white p-6 border-b border-gray-200">
+      <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-emerald-500 p-2 rounded-lg">
+          <Calendar className="w-4 h-4 text-white" />
         </div>
-        Daily Breakdown
+        Daily Activity
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {weekDates.map((date) => {
           const dateStr = formatDate(date);
           const dayExpenses = getExpensesForDate(dateStr);
           const dayTotal = getDayTotal(dateStr);
           const activityCount = getActivityCount(dateStr);
           const isExpanded = expandedDays.includes(dateStr);
-
-          // Get comprehensive day data if available
           const dayData = dailyActivity?.find((d) => d.date === dateStr);
 
           return (
             <div
               key={dateStr}
-              className="border-2 border-slate-200 rounded-xl overflow-hidden hover:border-emerald-400 transition-all shadow-sm"
+              className="border border-slate-200 rounded-lg overflow-hidden hover:border-emerald-400 transition-all"
             >
               <button
                 onClick={() => toggleDayExpansion(dateStr)}
-                className="w-full px-6 py-4 bg-gradient-to-r from-slate-50 to-white hover:from-emerald-50 hover:to-blue-50 flex items-center justify-between transition-all"
+                className="w-full px-4 py-3 bg-slate-50 hover:bg-emerald-50 flex items-center justify-between transition-colors"
               >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-2.5 rounded-lg ${
-                      isExpanded
-                        ? "bg-gradient-to-br from-emerald-600 to-teal-600"
-                        : "bg-slate-300"
-                    }`}
-                  >
-                    <Calendar
-                      className={`w-5 h-5 ${
-                        isExpanded ? "text-white" : "text-slate-600"
-                      }`}
-                    />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <Calendar
+                    className={`w-5 h-5 ${isExpanded ? "text-emerald-600" : "text-slate-400"}`}
+                  />
                   <div className="text-left">
-                    <span className="font-bold text-slate-800 text-lg block">
+                    <span className="font-bold text-slate-800">
                       {formatDateReadable(date)}
                     </span>
-                    <span className="text-xs text-slate-500">
-                      {activityCount} activit{activityCount !== 1 ? "ies" : "y"}
+                    <span className="ml-2 px-2 py-0.5 bg-slate-200 text-slate-700 text-xs rounded-full font-semibold">
+                      {activityCount}{" "}
+                      {activityCount !== 1 ? "activities" : "activity"}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-slate-900">
-                      {formatAmount(dayTotal, currentAccount?.currency)}
-                    </div>
-                    <div className="text-xs text-slate-500">Total Expenses</div>
-                  </div>
-                  {isExpanded ? (
-                    <ChevronUp className="w-6 h-6 text-emerald-600" />
-                  ) : (
-                    <ChevronDown className="w-6 h-6 text-slate-400" />
-                  )}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold text-slate-900">
+                    {formatAmount(dayTotal, currentAccount?.currency)}
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                  />
                 </div>
               </button>
 
               {isExpanded && (
-                <div className="p-6 bg-white space-y-4 border-t-2 border-slate-200">
-                  {/* Show message if no activity */}
+                <div className="p-4 bg-white space-y-2 border-t border-slate-200">
                   {activityCount === 0 && (
-                    <div className="text-center py-12 text-slate-400">
-                      <FileText className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                      <p className="text-lg font-medium">
-                        No activity for this day
-                      </p>
-                      <p className="text-sm mt-2">
-                        Expenses, shifts, check-ins, work logs, bank transfers,
-                        and other activities will appear here
-                      </p>
+                    <div className="text-center py-8 text-slate-400">
+                      <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                      <p className="font-medium">No activity for this day</p>
                     </div>
                   )}
 
-                  {/* EXPENSES SECTION */}
-                  {dayData?.expenses && dayData.expenses.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <Receipt className="w-4 h-4 text-red-600" />
-                        Expenses ({dayData.expenses.length})
-                      </h4>
-                      {dayData.expenses.map((expense) => (
-                        <div
-                          key={expense._id}
-                          className="flex items-start justify-between p-4 bg-red-50 border-l-4 border-red-500 rounded-lg hover:shadow-md transition-all group"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="bg-red-100 p-2 rounded-lg group-hover:bg-red-200 transition-colors">
-                                <Receipt className="w-4 h-4 text-red-600" />
-                              </div>
-                              <span className="text-xl font-bold text-slate-800">
-                                {formatAmount(
-                                  expense.amount,
-                                  currentAccount?.currency,
-                                )}
-                              </span>
-                              <span className="px-3 py-1 bg-slate-800 text-white text-sm rounded-full font-medium">
-                                {expense.category}
-                              </span>
-                              {expense.paymentSource === "bank" &&
-                                expense.bankAccountId && (
-                                  <span className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
-                                    <CreditCard className="w-3 h-3" />
-                                    {bankAccounts.find(
-                                      (ba) => ba._id === expense.bankAccountId,
-                                    )?.name || "Bank"}
-                                  </span>
-                                )}
-                              {expense.paymentSource === "cash" && (
-                                <span className="px-3 py-1 bg-emerald-600 text-white text-sm rounded-full font-medium">
-                                  💵 Cash
+                  {/* Expenses Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="expenses"
+                    icon={Receipt}
+                    title="Expenses"
+                    count={dayData?.expenses?.length || 0}
+                    color="red"
+                  >
+                    {dayData?.expenses?.map((expense) => (
+                      <div
+                        key={expense._id}
+                        className="flex items-start justify-between p-3 bg-red-50 border-l-4 border-red-500 rounded-md group"
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-lg font-bold text-slate-800">
+                              {formatAmount(
+                                expense.amount,
+                                currentAccount?.currency,
+                              )}
+                            </span>
+                            <span className="px-2 py-0.5 bg-slate-700 text-white text-xs rounded-full">
+                              {expense.category}
+                            </span>
+                            {expense.paymentSource === "bank" &&
+                              expense.bankAccountId && (
+                                <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                  <CreditCard className="w-3 h-3" />
+                                  {bankAccounts.find(
+                                    (ba) => ba._id === expense.bankAccountId,
+                                  )?.name || "Bank"}
                                 </span>
                               )}
-                            </div>
-                            {expense.note && (
-                              <p className="text-sm text-slate-700 ml-10 mb-2 font-medium">
-                                "{expense.note}"
-                              </p>
+                            {expense.paymentSource === "cash" && (
+                              <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded-full">
+                                💵 Cash
+                              </span>
                             )}
-                            <div className="ml-10 flex items-center gap-3 text-xs text-slate-600">
-                              <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />
-                                {expense.user?.name || "Unknown"}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {formatTime(expense.timestamp)}
-                              </span>
-                              {expense.photos && expense.photos.length > 0 && (
-                                <span className="flex items-center gap-1 text-emerald-700 font-medium">
-                                  <Camera className="w-3 h-3" />
+                          </div>
+                          {expense.note && (
+                            <p className="text-sm text-slate-700 mt-1">
+                              "{expense.note}"
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-600">
+                            <User className="w-3 h-3" />
+                            <span>{expense.user?.name || "Unknown"}</span>
+                            <Clock className="w-3 h-3 ml-2" />
+                            <span>{formatTime(expense.timestamp)}</span>
+                            {expense.photos?.length > 0 && (
+                              <>
+                                <Camera className="w-3 h-3 ml-2 text-emerald-600" />
+                                <span className="text-emerald-700 font-medium">
                                   {expense.photos.length} proof
                                   {expense.photos.length !== 1 ? "s" : ""}
                                 </span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() =>
-                                setSelectedExpenseForPhoto(
-                                  dayExpenses.find(
-                                    (e) => e._id === expense._id,
-                                  ),
-                                )
-                              }
-                              className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
-                              title="View/Upload Photos"
-                            >
-                              <Camera className="w-5 h-5" />
-                            </button>
-                            {!currentWeek.isLocked &&
-                              hasPermission("makeExpense") && (
-                                <button
-                                  onClick={() =>
-                                    handleDeleteExpense(expense._id)
-                                  }
-                                  className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                                  title="Delete"
-                                >
-                                  <Trash2 className="w-5 h-5" />
-                                </button>
-                              )}
+                              </>
+                            )}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* SHIFTS SECTION */}
-                  {dayData?.shifts && dayData.shifts.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <Briefcase className="w-4 h-4 text-blue-600" />
-                        Shifts ({dayData.shifts.length})
-                      </h4>
-                      {dayData.shifts.map((shift) => (
-                        <div
-                          key={shift._id}
-                          className={`p-4 border-l-4 rounded-lg ${
-                            shift.status === "assigned"
-                              ? "bg-blue-50 border-blue-500"
-                              : shift.status === "cancelled"
-                                ? "bg-gray-100 border-gray-400"
-                                : "bg-amber-50 border-amber-500"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="font-bold text-lg text-slate-800">
-                                  {shift.type.label}
-                                </span>
-                                <span className="text-sm text-slate-600 font-medium">
-                                  {shift.type.startTime} - {shift.type.endTime}
-                                </span>
-                                {shift.status === "assigned" && (
-                                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full font-bold">
-                                    ASSIGNED
-                                  </span>
-                                )}
-                                {shift.status === "open" && (
-                                  <span className="px-2 py-1 bg-amber-600 text-white text-xs rounded-full font-bold">
-                                    OPEN
-                                  </span>
-                                )}
-                                {shift.status === "cancelled" && (
-                                  <span className="px-2 py-1 bg-gray-600 text-white text-xs rounded-full font-bold">
-                                    CANCELLED
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-3 text-xs text-slate-600">
-                                {shift.assignedTo && (
-                                  <span className="flex items-center gap-1">
-                                    <User className="w-3 h-3" />
-                                    <span className="font-medium">
-                                      {shift.assignedTo.name}
-                                    </span>
-                                  </span>
-                                )}
-                                {shift.createdBy && (
-                                  <span className="flex items-center gap-1">
-                                    <span className="opacity-60">
-                                      Created by:
-                                    </span>
-                                    {shift.createdBy.name}
-                                  </span>
-                                )}
-                              </div>
-                              {shift.notes && (
-                                <p className="text-sm text-slate-700 mt-2">
-                                  {shift.notes}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* CHECK-INS SECTION */}
-                  {dayData?.checkIns && dayData.checkIns.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <UserCheck className="w-4 h-4 text-green-600" />
-                        Check-Ins ({dayData.checkIns.length})
-                      </h4>
-                      {dayData.checkIns.map((checkIn) => (
-                        <div
-                          key={checkIn._id}
-                          className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <CheckCircle className="w-5 h-5 text-green-600" />
-                                <span className="font-bold text-slate-800">
-                                  {checkIn.member?.name || "Unknown"} checked in
-                                </span>
-                              </div>
-                              <div className="ml-7 space-y-1 text-sm text-slate-600">
-                                <div className="flex items-center gap-2">
-                                  <Clock className="w-3 h-3" />
-                                  <span className="font-semibold">
-                                    {formatTime(checkIn.checkInTime)}
-                                  </span>
-                                </div>
-                                {checkIn.location && (
-                                  <div className="flex items-center gap-2">
-                                    <MapPin className="w-3 h-3" />
-                                    <span>{checkIn.location}</span>
-                                  </div>
-                                )}
-                                <div className="flex items-center gap-2 text-emerald-700 font-medium">
-                                  <Camera className="w-3 h-3" />
-                                  Photo proof available
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* CHECK-OUTS SECTION */}
-                  {dayData?.checkOuts && dayData.checkOuts.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <UserX className="w-4 h-4 text-orange-600" />
-                        Check-Outs ({dayData.checkOuts.length})
-                      </h4>
-                      {dayData.checkOuts.map((checkOut) => (
-                        <div
-                          key={checkOut._id}
-                          className="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <AlertCircle className="w-5 h-5 text-orange-600" />
-                                <span className="font-bold text-slate-800">
-                                  {checkOut.member?.name || "Unknown"} checked
-                                  out
-                                </span>
-                              </div>
-                              <div className="ml-7 space-y-1 text-sm text-slate-600">
-                                <div className="flex items-center gap-2">
-                                  <Clock className="w-3 h-3" />
-                                  <span className="font-semibold">
-                                    {formatTime(checkOut.checkOutTime)}
-                                  </span>
-                                </div>
-                                {checkOut.location && (
-                                  <div className="flex items-center gap-2">
-                                    <MapPin className="w-3 h-3" />
-                                    <span>{checkOut.location}</span>
-                                  </div>
-                                )}
-                                <div className="flex items-center gap-2 text-emerald-700 font-medium">
-                                  <Camera className="w-3 h-3" />
-                                  Photo proof available
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* WORK LOGS SECTION */}
-                  {dayData?.workLogs && dayData.workLogs.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-purple-600" />
-                        Work Logs ({dayData.workLogs.length})
-                      </h4>
-                      {dayData.workLogs.map((log) => {
-                        const hours = Math.floor(log.durationMinutes / 60);
-                        const minutes = log.durationMinutes % 60;
-                        return (
-                          <div
-                            key={log._id}
-                            className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg"
+                        <div className="flex items-center gap-1 ml-2">
+                          <button
+                            onClick={() =>
+                              setSelectedExpenseForPhoto(
+                                dayExpenses.find((e) => e._id === expense._id),
+                              )
+                            }
+                            className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded transition-all"
+                            title="View/Upload Photos"
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="font-bold text-slate-800">
-                                    {log.member?.name || "Unknown"}
-                                  </span>
-                                  <span className="text-sm text-slate-600 font-medium">
-                                    {log.startTime} - {log.endTime}
-                                  </span>
-                                  <span className="px-2 py-1 bg-purple-600 text-white text-xs rounded-full font-bold">
-                                    {hours}h {minutes}m
-                                  </span>
-                                </div>
-                                {log.note && (
-                                  <p className="text-sm text-slate-700 mb-2">
-                                    "{log.note}"
-                                  </p>
-                                )}
-                                <div className="text-xs text-slate-600">
-                                  Logged by: {log.loggedBy?.name || "Unknown"}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                            <Camera className="w-4 h-4" />
+                          </button>
+                          {!currentWeek.isLocked &&
+                            hasPermission("makeExpense") && (
+                              <button
+                                onClick={() => handleDeleteExpense(expense._id)}
+                                className="p-1.5 text-red-600 hover:bg-red-100 rounded transition-all"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                        </div>
+                      </div>
+                    ))}
+                  </ActivitySection>
 
-                  {/* OTHER ACTIVITIES SECTION (Bank transfers, permissions, etc.) */}
-                  {dayData?.activities && dayData.activities.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-indigo-600" />
-                        Other Activities ({dayData.activities.length})
-                      </h4>
-                      {dayData.activities.map((activity) => {
-                        // Determine activity icon and color based on action type
-                        const getActivityStyle = (action) => {
-                          if (
-                            action.includes("bank") ||
-                            action.includes("cash")
-                          ) {
-                            return {
-                              bg: "bg-emerald-50",
-                              border: "border-emerald-500",
-                              icon: "💰",
-                            };
-                          } else if (
-                            action.includes("permission") ||
-                            action.includes("member")
-                          ) {
-                            return {
-                              bg: "bg-blue-50",
-                              border: "border-blue-500",
-                              icon: "👥",
-                            };
-                          } else if (action.includes("week")) {
-                            return {
-                              bg: "bg-amber-50",
-                              border: "border-amber-500",
-                              icon: "📅",
-                            };
-                          } else if (action.includes("category")) {
-                            return {
-                              bg: "bg-pink-50",
-                              border: "border-pink-500",
-                              icon: "🏷️",
-                            };
-                          } else if (action.includes("ownership")) {
-                            return {
-                              bg: "bg-red-50",
-                              border: "border-red-500",
-                              icon: "👑",
-                            };
-                          } else if (action.includes("shift_type")) {
-                            return {
-                              bg: "bg-cyan-50",
-                              border: "border-cyan-500",
-                              icon: "⏰",
-                            };
-                          }
+                  {/* Shifts Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="shifts"
+                    icon={Briefcase}
+                    title="Shifts"
+                    count={dayData?.shifts?.length || 0}
+                    color="blue"
+                  >
+                    {dayData?.shifts?.map((shift) => (
+                      <div
+                        key={shift._id}
+                        className={`p-3 rounded-md border-l-4 ${shift.status === "assigned" ? "bg-blue-50 border-blue-500" : shift.status === "cancelled" ? "bg-gray-100 border-gray-400" : "bg-amber-50 border-amber-500"}`}
+                      >
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-slate-800">
+                            {shift.type.label}
+                          </span>
+                          <span className="text-sm text-slate-600">
+                            {shift.type.startTime} - {shift.type.endTime}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 text-white text-xs rounded-full font-bold ${shift.status === "assigned" ? "bg-blue-600" : shift.status === "cancelled" ? "bg-gray-600" : "bg-amber-600"}`}
+                          >
+                            {shift.status.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-slate-600">
+                          {shift.assignedTo && (
+                            <>
+                              <User className="w-3 h-3" />
+                              <span className="font-medium">
+                                {shift.assignedTo.name}
+                              </span>
+                            </>
+                          )}
+                          {shift.createdBy && (
+                            <span className="ml-2 opacity-60">
+                              Created by: {shift.createdBy.name}
+                            </span>
+                          )}
+                        </div>
+                        {shift.notes && (
+                          <p className="text-sm text-slate-700 mt-1">
+                            {shift.notes}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </ActivitySection>
+
+                  {/* Check-ins Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="checkins"
+                    icon={UserCheck}
+                    title="Check-Ins"
+                    count={dayData?.checkIns?.length || 0}
+                    color="green"
+                  >
+                    {dayData?.checkIns?.map((checkIn) => (
+                      <div
+                        key={checkIn._id}
+                        className="p-3 bg-green-50 border-l-4 border-green-500 rounded-md"
+                      >
+                        <div className="font-bold text-slate-800 mb-1">
+                          {checkIn.member?.name || "Unknown"} checked in
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <Clock className="w-3 h-3" />
+                          <span className="font-semibold">
+                            {formatTime(checkIn.checkInTime)}
+                          </span>
+                          <Camera className="w-3 h-3 ml-2 text-emerald-600" />
+                          <span className="text-emerald-700">Photo proof</span>
+                        </div>
+                      </div>
+                    ))}
+                  </ActivitySection>
+
+                  {/* Check-outs Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="checkouts"
+                    icon={UserX}
+                    title="Check-Outs"
+                    count={dayData?.checkOuts?.length || 0}
+                    color="orange"
+                  >
+                    {dayData?.checkOuts?.map((checkOut) => (
+                      <div
+                        key={checkOut._id}
+                        className="p-3 bg-orange-50 border-l-4 border-orange-500 rounded-md"
+                      >
+                        <div className="font-bold text-slate-800 mb-1">
+                          {checkOut.member?.name || "Unknown"} checked out
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <Clock className="w-3 h-3" />
+                          <span className="font-semibold">
+                            {formatTime(checkOut.checkOutTime)}
+                          </span>
+                          <Camera className="w-3 h-3 ml-2 text-emerald-600" />
+                          <span className="text-emerald-700">Photo proof</span>
+                        </div>
+                      </div>
+                    ))}
+                  </ActivitySection>
+
+                  {/* Work Logs Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="worklogs"
+                    icon={Clock}
+                    title="Work Logs"
+                    count={dayData?.workLogs?.length || 0}
+                    color="purple"
+                  >
+                    {dayData?.workLogs?.map((log) => {
+                      const hours = Math.floor(log.durationMinutes / 60);
+                      const minutes = log.durationMinutes % 60;
+                      return (
+                        <div
+                          key={log._id}
+                          className="p-3 bg-purple-50 border-l-4 border-purple-500 rounded-md"
+                        >
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-slate-800">
+                              {log.member?.name || "Unknown"}
+                            </span>
+                            <span className="text-sm text-slate-600">
+                              {log.startTime} - {log.endTime}
+                            </span>
+                            <span className="px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full font-bold">
+                              {hours}h {minutes}m
+                            </span>
+                          </div>
+                          {log.note && (
+                            <p className="text-sm text-slate-700 mt-1">
+                              "{log.note}"
+                            </p>
+                          )}
+                          <div className="text-xs text-slate-600 mt-1">
+                            Logged by: {log.loggedBy?.name || "Unknown"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </ActivitySection>
+
+                  {/* Other Activities Section */}
+                  <ActivitySection
+                    dateStr={dateStr}
+                    section="activities"
+                    icon={FileText}
+                    title="Other Activities"
+                    count={dayData?.activities?.length || 0}
+                    color="indigo"
+                  >
+                    {dayData?.activities?.map((activity) => {
+                      const getActivityStyle = (action) => {
+                        if (action.includes("bank") || action.includes("cash"))
                           return {
-                            bg: "bg-slate-50",
-                            border: "border-slate-500",
-                            icon: "📝",
+                            bg: "bg-emerald-50",
+                            border: "border-emerald-500",
+                            icon: "💰",
                           };
+                        if (
+                          action.includes("permission") ||
+                          action.includes("member")
+                        )
+                          return {
+                            bg: "bg-blue-50",
+                            border: "border-blue-500",
+                            icon: "👥",
+                          };
+                        if (action.includes("week"))
+                          return {
+                            bg: "bg-amber-50",
+                            border: "border-amber-500",
+                            icon: "📅",
+                          };
+                        if (action.includes("category"))
+                          return {
+                            bg: "bg-pink-50",
+                            border: "border-pink-500",
+                            icon: "🏷️",
+                          };
+                        if (action.includes("ownership"))
+                          return {
+                            bg: "bg-red-50",
+                            border: "border-red-500",
+                            icon: "👑",
+                          };
+                        if (action.includes("shift_type"))
+                          return {
+                            bg: "bg-cyan-50",
+                            border: "border-cyan-500",
+                            icon: "⏰",
+                          };
+                        return {
+                          bg: "bg-slate-50",
+                          border: "border-slate-500",
+                          icon: "📝",
                         };
-
-                        const style = getActivityStyle(activity.action);
-
-                        return (
-                          <div
-                            key={activity._id}
-                            className={`p-4 ${style.bg} border-l-4 ${style.border} rounded-lg`}
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="text-2xl">{style.icon}</span>
-                                  <span className="font-bold text-slate-800">
-                                    {activity.description}
-                                  </span>
-                                </div>
-                                <div className="ml-10 flex items-center gap-3 text-xs text-slate-600">
-                                  <span className="flex items-center gap-1">
-                                    <User className="w-3 h-3" />
-                                    {activity.actorName}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    {formatTime(activity.timestamp)}
-                                  </span>
-                                  <span className="px-2 py-0.5 bg-slate-200 text-slate-700 rounded-md text-xs font-medium">
-                                    {activity.action
-                                      .replace(/_/g, " ")
-                                      .toUpperCase()}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                      };
+                      const style = getActivityStyle(activity.action);
+                      return (
+                        <div
+                          key={activity._id}
+                          className={`p-3 ${style.bg} border-l-4 ${style.border} rounded-md`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg">{style.icon}</span>
+                            <span className="font-bold text-slate-800">
+                              {activity.description}
+                            </span>
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                          <div className="flex items-center gap-2 text-xs text-slate-600">
+                            <User className="w-3 h-3" />
+                            <span>{activity.actorName}</span>
+                            <Clock className="w-3 h-3 ml-2" />
+                            <span>{formatTime(activity.timestamp)}</span>
+                            <span className="px-2 py-0.5 bg-slate-200 text-slate-700 rounded text-xs ml-2">
+                              {activity.action.replace(/_/g, " ").toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </ActivitySection>
 
-                  {/* Fallback to old expense display if no dailyActivity */}
+                  {/* Fallback for old expense display */}
                   {!dailyActivity && dayExpenses.length > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {dayExpenses.map((expense) => (
                         <div
                           key={expense._id}
-                          className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-emerald-300 hover:bg-slate-100 transition-all group"
+                          className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-md hover:border-emerald-300 transition-all"
                         >
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="bg-red-100 p-2 rounded-lg group-hover:bg-red-200 transition-colors">
-                                <Receipt className="w-4 h-4 text-red-600" />
-                              </div>
-                              <span className="text-xl font-bold text-slate-800">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-lg font-bold text-slate-800">
                                 {formatAmount(
                                   expense.amount,
                                   currentAccount?.currency,
                                 )}
                               </span>
-                              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full font-medium">
+                              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded-full">
                                 {expense.category}
                               </span>
                               {expense.paymentSource === "bank" &&
                                 expense.bankAccountId && (
-                                  <span className="flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-800 text-sm rounded-full font-medium">
+                                  <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-800 text-xs rounded-full">
                                     <CreditCard className="w-3 h-3" />
                                     {bankAccounts.find(
                                       (ba) => ba._id === expense.bankAccountId,
@@ -582,26 +510,26 @@ const DailyBreakdown = ({
                                   </span>
                                 )}
                               {expense.paymentSource === "cash" && (
-                                <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full font-medium">
+                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded-full">
                                   💵 Cash
                                 </span>
                               )}
                             </div>
                             {expense.note && (
-                              <p className="text-sm text-slate-600 ml-10">
+                              <p className="text-sm text-slate-600 mt-1">
                                 {expense.note}
                               </p>
                             )}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 ml-2">
                             <button
                               onClick={() =>
                                 setSelectedExpenseForPhoto(expense)
                               }
-                              className="p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
+                              className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded transition-all"
                               title="View/Upload Photos"
                             >
-                              <Camera className="w-5 h-5" />
+                              <Camera className="w-4 h-4" />
                             </button>
                             {!currentWeek.isLocked &&
                               hasPermission("makeExpense") && (
@@ -609,10 +537,10 @@ const DailyBreakdown = ({
                                   onClick={() =>
                                     handleDeleteExpense(expense._id)
                                   }
-                                  className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                                  className="p-1.5 text-red-600 hover:bg-red-100 rounded transition-all"
                                   title="Delete"
                                 >
-                                  <Trash2 className="w-5 h-5" />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
                               )}
                           </div>

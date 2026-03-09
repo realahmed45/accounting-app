@@ -186,6 +186,7 @@ function App() {
   const [expenses, setExpenses] = useState([]);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [dailyActivity, setDailyActivity] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Modal States
   const [activeModal, setActiveModal] = useState(null);

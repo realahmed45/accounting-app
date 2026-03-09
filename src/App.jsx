@@ -308,6 +308,7 @@ function App() {
     if (!currentAccount) return;
 
     setLoading(true);
+    setLoadingMessage("Loading weeks...");
     try {
       const response = await weekService.getByAccount(currentAccount._id);
       if (response.success && response.data.length > 0) {
@@ -321,8 +322,9 @@ function App() {
       console.error("Error loading weeks:", error);
       // If no weeks, create one
       await createFirstWeek();
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const createFirstWeek = async () => {
@@ -416,6 +418,7 @@ function App() {
     if (accountKind === "personal") {
       // Personal account — no category required
       setLoading(true);
+      setLoadingMessage("Creating personal account...");
       setError("");
       try {
         const result = await createAccount({
@@ -433,8 +436,9 @@ function App() {
         }
       } catch (err) {
         setError("Failed to create account");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
       return;
     }
 
@@ -453,6 +457,7 @@ function App() {
     }
 
     setLoading(true);
+    setLoadingMessage("Creating business account...");
     setError("");
     try {
       const accountData = {
@@ -480,8 +485,9 @@ function App() {
     } catch (error) {
       console.error("Error creating account:", error);
       setError("Failed to create account");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // Show auth screen if not logged in
@@ -854,6 +860,8 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
     }); // end runIfAllowed
   };
@@ -896,6 +904,8 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -933,6 +943,8 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -977,6 +989,8 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -1009,6 +1023,7 @@ function App() {
       }
 
       setLoading(true);
+      setLoadingMessage("Adding bank account...");
       setError("");
 
       try {
@@ -1054,8 +1069,9 @@ function App() {
         }
       } catch (err) {
         setError(err.response?.data?.message || "Failed to save bank account");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }); // end runIfAllowed
   };
 
@@ -1072,13 +1088,13 @@ function App() {
       }
 
       setLoading(true);
+      setLoadingMessage("Updating bank balances...");
       try {
         // Update all bank accounts sequentially
         for (const [bankId, data] of updates) {
           const newBalance = parseFloat(data.newBalance);
           if (isNaN(newBalance) || newBalance < 0) {
             setError(`Invalid balance for account`);
-            setLoading(false);
             return;
           }
 
@@ -1110,8 +1126,9 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
   const handleTopUpBankBalance = async () =>
@@ -1128,6 +1145,7 @@ function App() {
       }
 
       setLoading(true);
+      setLoadingMessage("Topping up balance...");
       try {
         const newBalance = selectedBankForTopUp.balance + amount;
 
@@ -1160,8 +1178,9 @@ function App() {
           () => setStatusModal({ show: false, type: "", message: "" }),
           10000,
         );
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
   const toggleDayExpansion = (date) => {

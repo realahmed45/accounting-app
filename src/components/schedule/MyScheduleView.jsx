@@ -11,6 +11,8 @@ import {
   TrendingUp,
   Zap,
   Target,
+  HelpCircle,
+  Lightbulb,
 } from "lucide-react";
 import { shiftService, timeOffService } from "../../services/scheduleApi";
 
@@ -177,6 +179,74 @@ const MyScheduleView = ({ accountId }) => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-1000">
+      {/* 🎯 BEGINNER INSTRUCTIONS BOX */}
+      <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-2 border-blue-400/30 rounded-3xl p-6 backdrop-blur-sm">
+        <div className="flex items-start gap-4">
+          <div className="bg-blue-500 text-white p-3 rounded-xl flex-shrink-0">
+            <Lightbulb className="w-6 h-6" />
+          </div>
+          <div className="flex-1 space-y-4">
+            <h3 className="text-xl font-black text-white flex items-center gap-2">
+              <span className="text-red-500 text-2xl">!</span> My Hub - Quick
+              Guide
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 1. View Your Shifts
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Below you'll see all shifts assigned to you. Each card shows
+                  the date, shift type, and time range.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 2. Check-In &
+                  Check-Out
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  On shift days, click "INITIATE PROOF" to check in using your
+                  camera & GPS. Click "CHECK OUT" when done.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 3. Stats at a Glance
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  The three cards above show: your next shift date, available
+                  vacation days, and bonus overtime days earned.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 4. Camera & GPS
+                  Required
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Your browser will ask for camera and location permissions
+                  during check-in. This verifies you're at work!
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3 flex items-center gap-3">
+              <HelpCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+              <p className="text-amber-200 text-xs font-semibold">
+                <span className="text-red-500 font-bold">!</span> First time
+                here? If you don't see any shifts, ask your manager to assign
+                you some! Try exploring this page to understand the layout.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <PremiumStatCard
@@ -235,9 +305,49 @@ const MyScheduleView = ({ accountId }) => {
         {myShifts.length === 0 ? (
           <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-dashed border-white/10">
             <Calendar className="w-20 h-20 text-white/10 mx-auto mb-6" />
-            <p className="text-gray-400 font-black uppercase tracking-widest">
+            <p className="text-gray-400 font-black uppercase tracking-widest mb-4">
               System Idle — No Shifts Assigned
             </p>
+
+            {/* Beginner Help */}
+            <div className="max-w-xl mx-auto mt-8 bg-blue-500/5 border border-blue-400/20 rounded-2xl p-6">
+              <div className="flex items-start gap-4 text-left">
+                <div className="bg-blue-500 text-white p-2 rounded-lg flex-shrink-0">
+                  <Info className="w-5 h-5" />
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-white font-bold flex items-center gap-2">
+                    <span className="text-red-500 text-lg">!</span> Why don't I
+                    see any shifts?
+                  </h4>
+                  <ul className="text-gray-300 text-sm space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 font-bold flex-shrink-0">
+                        •
+                      </span>
+                      <span>Your manager hasn't assigned you shifts yet</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 font-bold flex-shrink-0">
+                        •
+                      </span>
+                      <span>You might be viewing the wrong account</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 font-bold flex-shrink-0">
+                        •
+                      </span>
+                      <span>Contact your team owner to get scheduled</span>
+                    </li>
+                  </ul>
+                  <p className="text-indigo-400 text-xs font-semibold pt-2 border-t border-white/10">
+                    <span className="text-red-500">!</span> Tip: This is sample
+                    data to help you learn the interface. In real use, your
+                    actual shifts will appear here!
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">

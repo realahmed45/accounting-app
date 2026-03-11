@@ -14,6 +14,9 @@ import {
   AlertCircle,
   Shapes,
   Gamepad2,
+  Lightbulb,
+  Info,
+  HelpCircle,
 } from "lucide-react";
 import { shiftService, shiftTypeService } from "../../services/scheduleApi";
 import { memberService } from "../../services/api";
@@ -134,6 +137,105 @@ const FullScheduleGrid = ({ accountId }) => {
           background: rgba(99, 102, 241, 0.05) !important;
         }
       `}</style>
+
+      {/* 🎯 MANAGER INSTRUCTIONS */}
+      <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-2 border-purple-400/30 rounded-3xl p-6 backdrop-blur-sm">
+        <div className="flex items-start gap-4">
+          <div className="bg-purple-500 text-white p-3 rounded-xl flex-shrink-0">
+            <Lightbulb className="w-6 h-6" />
+          </div>
+          <div className="flex-1 space-y-4">
+            <h3 className="text-xl font-black text-white flex items-center gap-2">
+              <span className="text-red-500 text-2xl">!</span> Team Roster -
+              Manager Guide
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 1. Create Shifts
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Click the blue "Initialize Shift" button to create a new
+                  shift. Select date, time, and shift type.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 2. Assign Team Members
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Click on "Open Clusters" (unassigned shifts in orange) to
+                  assign them to team members from the list.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 3. Navigate Weeks
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Use arrow buttons to move between weeks. Click "Today" to
+                  return to current week instantly.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 4. View Attendance
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Click any assigned shift card to see check-in/out proof
+                  (camera photo + GPS location).
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 5. Grid Layout
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Each row = one team member. Each column = one day. Colored
+                  cards = scheduled shifts.
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
+                  <span className="text-red-500">!</span> 6. Define Shift Types
+                </h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  Scroll down to "Shift Types" section to create reusable shift
+                  templates (Morning, Evening, etc.).
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3 flex items-start gap-3">
+              <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 space-y-2">
+                <p className="text-amber-200 text-xs font-semibold">
+                  <span className="text-red-500 font-bold">!</span> First Time
+                  Setup:
+                </p>
+                <ol className="text-amber-200 text-xs space-y-1 list-decimal list-inside ml-2">
+                  <li>
+                    Create shift types below (e.g., "Morning 9-5", "Night 10-6")
+                  </li>
+                  <li>
+                    Return here and click "Initialize Shift" to schedule them
+                  </li>
+                  <li>
+                    Assign shifts to team members by clicking orange cards
+                  </li>
+                  <li>Team members will see their shifts in "My Hub" tab</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Grid Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">

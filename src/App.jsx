@@ -203,6 +203,7 @@ function App() {
     useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [highlightNotificationId, setHighlightNotificationId] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const openNotificationCenter = (notificationId = null) => {
     setHighlightNotificationId(notificationId);
@@ -272,6 +273,16 @@ function App() {
     if (currentAccount) {
       loadWeeks();
       loadBankAccounts();
+    }
+  }, [currentAccount]);
+
+  // Check if onboarding should be shown (first time users)
+  useEffect(() => {
+    const hasSeenOnboarding =
+      localStorage.getItem("onboardingCompleted") ||
+      localStorage.getItem("onboardingSkipped");
+    if (!hasSeenOnboarding && currentAccount) {
+      setShowOnboarding(true);
     }
   }, [currentAccount]);
 
@@ -1230,19 +1241,6 @@ function App() {
   const weekStartDate = new Date(currentWeek.startDate);
   const weekEndDate = new Date(currentWeek.endDate);
   const weekDates = getWeekDates(weekStartDate);
-
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  // Check if onboarding should be shown (first time users)
-  useEffect(() => {
-    const hasSeenOnboarding =
-      localStorage.getItem("onboardingCompleted") ||
-      localStorage.getItem("onboardingSkipped");
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
-  }, []);
 
   return (
     <div className="min-h-screen h-full bg-slate-50">

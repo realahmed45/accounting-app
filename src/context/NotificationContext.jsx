@@ -33,8 +33,8 @@ export const NotificationProvider = ({ children }) => {
     typeof Notification !== "undefined" ? Notification.permission : "default",
   );
 
-  // Polling interval (5 seconds for instant notifications)
-  const POLLING_INTERVAL = 5000;
+  // Polling interval (30 seconds - reduced to prevent excessive re-renders)
+  const POLLING_INTERVAL = 30000;
 
   // Use a ref to track the previous unread count without causing re-renders or effect loops
   const prevUnreadCountRef = useRef(0);

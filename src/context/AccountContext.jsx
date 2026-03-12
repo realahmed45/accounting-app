@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import { accountService, memberService } from "../services/api";
 import { useAuth } from "./AuthContext";
 
@@ -26,7 +32,11 @@ export const AccountProvider = ({ children }) => {
   const hasPermission = (perm) => {
     if (!currentMember) {
       // Legacy fallback: if user is the account creator, treat as owner
-      if (user && currentAccount && currentAccount.userId?.toString() === user._id?.toString()) {
+      if (
+        user &&
+        currentAccount &&
+        currentAccount.userId?.toString() === user._id?.toString()
+      ) {
         return true;
       }
       return false;
@@ -48,14 +58,21 @@ export const AccountProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
+  // Track current account ID in a ref so we can skip redundant loads
+  const currentAccountIdRef = useRef(null);
+
   // Load current account from localStorage
   useEffect(() => {
     const storedAccountId = localStorage.getItem("currentAccountId");
     if (storedAccountId && accounts.length > 0) {
       const account = accounts.find((acc) => acc._id === storedAccountId);
       if (account) {
-        setCurrentAccount(account);
-        loadAccountData(account._id);
+        // Only update currentAccount + reload data when account ID actually changes
+        if (currentAccountIdRef.current !== account._id) {
+          currentAccountIdRef.current = account._id;
+          setCurrentAccount(account);
+          loadAccountData(account._id);
+        }
       } else if (accounts.length > 0) {
         // If stored account not found, use first account
         switchAccount(accounts[0]._id);
@@ -109,6 +126,7 @@ export const AccountProvider = ({ children }) => {
   const switchAccount = async (accountId) => {
     const account = accounts.find((acc) => acc._id === accountId);
     if (account) {
+      currentAccountIdRef.current = accountId;
       setCurrentAccount(account);
       localStorage.setItem("currentAccountId", accountId);
       await loadAccountData(accountId);

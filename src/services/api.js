@@ -30,10 +30,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
+      const hadToken = !!localStorage.getItem("token");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/";
+      // Only do a hard redirect if the user WAS logged in and got kicked out.
+      // If there was no token to begin with, skip the redirect — otherwise
+      // unauthenticated API calls (e.g. useSubscription on login page) cause
+      // an infinite full-page reload loop.
+      if (hadToken) {
+        window.location.href = "/";
+      }
     }
     return Promise.reject(error);
   },

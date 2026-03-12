@@ -184,7 +184,7 @@ function App() {
     refreshAccounts,
     loading: accountLoading,
   } = useAccount();
-  
+
   // Subscription hook for feature gating
   const {
     subscription,
@@ -227,7 +227,7 @@ function App() {
     feature: "",
     requiredPlan: "professional",
   });
-  
+
   // NEW: State for new features
   const [showReports, setShowReports] = useState(false);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
@@ -359,8 +359,8 @@ function App() {
   const loadWeeks = async () => {
     if (!currentAccount) return;
 
-    setLoading(true);
-    setLoadingMessage("Loading weeks...");
+    // Use a local loading state — do NOT use the global `loading` flag which
+    // shows the full-screen overlay. Week loading is a background operation.
     try {
       const response = await weekService.getByAccount(currentAccount._id);
       if (response.success && response.data.length > 0) {
@@ -374,8 +374,6 @@ function App() {
       console.error("Error loading weeks:", error);
       // If no weeks, create one
       await createFirstWeek();
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -850,7 +848,7 @@ function App() {
 
   const handleAddExpense = async (e) => {
     if (e) e.preventDefault();
-    
+
     // Check subscription limit before adding expense
     if (!canAddExpenseSubscription()) {
       setShowUpgradePrompt(true);
@@ -860,7 +858,7 @@ function App() {
       });
       return;
     }
-    
+
     runIfAllowed(async () => {
       const amount = parseFloat(expenseForm.amount);
       if (isNaN(amount) || amount <= 0) {
@@ -1648,7 +1646,6 @@ function App() {
           people={people}
         />
       )}
-
       {/* Modals */}
       {activeModal === "bankAccounts" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
@@ -3271,7 +3268,6 @@ function App() {
           </div>
         </div>
       )}
-      
       {/* Upgrade Prompt */}
       {showUpgradePrompt && (
         <UpgradePrompt

@@ -6,7 +6,15 @@ export const useSubscription = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSubscription();
+    // Only fetch if user is authenticated (has a token)
+    // Without this guard, unauthenticated page loads hit the API, get a 401,
+    // and the interceptor does window.location.href="/" causing an infinite reload loop.
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchSubscription();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const fetchSubscription = async () => {

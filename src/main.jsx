@@ -7,13 +7,11 @@ import { AccountProvider } from "./context/AccountContext";
 import { NotificationProvider } from "./context/NotificationContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <AccountProvider>
-        <NotificationProvider>
-          <App />
-        </NotificationProvider>
-      </AccountProvider>
-    </AuthProvider>
-  </React.StrictMode>,
+  <AuthProvider>
+    <AccountProvider>
+      <NotificationProvider>
+        <App />
+      </NotificationProvider>
+    </AccountProvider>
+  </AuthProvider>,
 );

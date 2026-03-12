@@ -75,8 +75,11 @@ export const useSubscription = () => {
   };
 
   const canCreateAccount = () => {
+    // Allow when subscription hasn't loaded yet — fail open so the
+    // first-account creation flow is never blocked on load timing.
+    if (!subscription) return true;
     const limits = getPlanLimits();
-    if (!limits || !subscription) return false;
+    if (!limits) return true;
     return subscription.usage.accountsCount < limits.accounts;
   };
 

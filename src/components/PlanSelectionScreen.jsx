@@ -1,342 +1,361 @@
 import React, { useState } from "react";
 import {
   Check,
-  X,
   Zap,
-  Users,
-  Database,
-  Calendar,
-  FileText,
-  Shield,
   Sparkles,
-  Crown,
-  Rocket,
   Building2,
+  Crown,
   ArrowRight,
-  Info,
+  Shield,
+  RefreshCw,
+  CreditCard,
+  ChevronRight,
 } from "lucide-react";
 
 const PlanSelectionScreen = ({ onSelectPlan, onSkip, userEmail }) => {
-  const [selectedPlan, setSelectedPlan] = useState("free");
+  const [selectedPlan, setSelectedPlan] = useState("professional");
   const [billingCycle, setBillingCycle] = useState("monthly");
 
   const plans = [
     {
       id: "free",
       name: "Starter",
+      tagline: "Get started for free",
       icon: Zap,
-      color: "slate",
-      gradient: "from-slate-600 to-slate-700",
-      borderColor: "border-slate-300",
+      accentColor: "#64748b",
+      accentBg: "bg-slate-100",
       price: { monthly: 0, yearly: 0 },
-      description: "Perfect for individuals getting started",
-      popular: false,
+      perMonth: { monthly: 0, yearly: 0 },
       features: [
-        { text: "1 account/workspace", included: true },
-        { text: "50 expenses per month", included: true },
-        { text: "7-day expense history", included: true },
-        { text: "Basic categories", included: true },
-        { text: "Email support (48h)", included: true },
-        { text: "Mobile web access", included: true },
-        { text: "Team members", included: false },
-        { text: "Advanced reports", included: false },
-        { text: "Scheduling", included: false },
-        { text: "API access", included: false },
+        "1 workspace",
+        "50 expenses / month",
+        "Basic categories",
+        "Email support",
+        "Mobile web access",
       ],
-      limits: "1 account • 50 expenses/month • 50MB storage",
+      notIncluded: ["Team members", "Scheduling", "Advanced reports"],
+      cta: "Start Free",
+      popular: false,
     },
     {
       id: "professional",
-      name: "Professional",
+      name: "Pro",
+      tagline: "For freelancers & solo pros",
       icon: Sparkles,
-      color: "purple",
-      gradient: "from-purple-600 to-pink-600",
-      borderColor: "border-purple-400",
+      accentColor: "#7c3aed",
+      accentBg: "bg-violet-600",
       price: { monthly: 12, yearly: 120 },
-      description: "For freelancers and solopreneurs",
-      popular: true,
+      perMonth: { monthly: 12, yearly: 10 },
       features: [
-        { text: "5 accounts/workspaces", included: true },
-        { text: "Unlimited expenses", included: true },
-        { text: "Unlimited history", included: true },
-        { text: "3 team members", included: true },
-        { text: "Custom categories & tags", included: true },
-        { text: "Photo storage (500MB)", included: true },
-        { text: "Basic scheduling (50 shifts/month)", included: true },
-        { text: "Email + chat support (24h)", included: true },
-        { text: "Export to CSV/PDF", included: true },
-        { text: "Bulk operations", included: true },
-        { text: "Advanced reports", included: false },
-        { text: "API access", included: false },
+        "5 workspaces",
+        "Unlimited expenses",
+        "3 team members",
+        "Custom categories & tags",
+        "500 MB photo storage",
+        "Scheduling (50 shifts / mo)",
+        "CSV / PDF export",
+        "Priority chat support",
       ],
-      limits: "5 accounts • Unlimited expenses • 500MB storage",
-      savingsYearly: "$24 (2 months free)",
+      notIncluded: ["Advanced reports", "API access"],
+      cta: "Start Pro",
+      popular: true,
+      badge: "Most Popular",
     },
     {
       id: "business",
       name: "Business",
+      tagline: "For growing teams",
       icon: Building2,
-      color: "emerald",
-      gradient: "from-emerald-600 to-teal-600",
-      borderColor: "border-emerald-400",
+      accentColor: "#059669",
+      accentBg: "bg-emerald-600",
       price: { monthly: 29, yearly: 290 },
-      description: "For growing teams and businesses",
-      popular: false,
+      perMonth: { monthly: 29, yearly: 24 },
       features: [
-        { text: "20 accounts/workspaces", included: true },
-        { text: "Unlimited everything", included: true },
-        { text: "Unlimited team members", included: true },
-        { text: "Advanced scheduling (unlimited)", included: true },
-        { text: "Photo storage (2GB)", included: true },
-        { text: "Overtime & shift management", included: true },
-        { text: "Advanced reports & analytics", included: true },
-        { text: "Priority support (12h)", included: true },
-        { text: "API access (10,000 calls/month)", included: true },
-        { text: "Custom branding", included: true },
-        { text: "Bulk operations", included: true },
-        { text: "Advanced exports (Excel, QuickBooks)", included: true },
+        "20 workspaces",
+        "Unlimited everything",
+        "Unlimited team members",
+        "Advanced reports & analytics",
+        "2 GB photo storage",
+        "Full scheduling suite",
+        "API access (10k calls / mo)",
+        "Custom branding",
+        "Advanced exports (Excel, QB)",
+        "12-hour priority support",
       ],
-      limits: "20 accounts • Unlimited • 2GB storage",
-      savingsYearly: "$58 (2 months free)",
+      notIncluded: [],
+      cta: "Start Business",
+      popular: false,
     },
     {
       id: "enterprise",
       name: "Enterprise",
+      tagline: "For large organizations",
       icon: Crown,
-      color: "amber",
-      gradient: "from-amber-600 to-orange-600",
-      borderColor: "border-amber-400",
+      accentColor: "#d97706",
+      accentBg: "bg-amber-500",
       price: { monthly: 79, yearly: "Custom" },
-      description: "For large organizations",
-      popular: false,
+      perMonth: { monthly: 79, yearly: "Custom" },
       features: [
-        { text: "Unlimited everything", included: true },
-        { text: "White-label option", included: true },
-        { text: "Dedicated account manager", included: true },
-        { text: "Phone support (2h response)", included: true },
-        { text: "Custom integrations", included: true },
-        { text: "Advanced API access (unlimited)", included: true },
-        { text: "SOC 2 compliance reports", included: true },
-        { text: "Custom contracts", included: true },
-        { text: "On-premise deployment option", included: true },
-        { text: "SSO & advanced security", included: true },
-        { text: "Custom data retention", included: true },
-        { text: "99.99% SLA guarantee", included: true },
+        "Unlimited workspaces",
+        "White-label option",
+        "Dedicated account manager",
+        "Phone support (2-hour SLA)",
+        "Custom integrations & API",
+        "SSO & advanced security",
+        "SOC 2 compliance",
+        "On-premise deployment",
+        "99.99% uptime SLA",
+        "Custom data retention",
       ],
-      limits: "Unlimited everything • Dedicated support",
-      savingsYearly: "Custom pricing available",
+      notIncluded: [],
+      cta: "Contact Sales",
+      popular: false,
     },
   ];
+
+  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
+
+  const getDisplayPrice = (plan) => {
+    const val = plan.perMonth[billingCycle];
+    if (typeof val !== "number") return val;
+    return val === 0 ? "Free" : `$${val}`;
+  };
 
   const handleContinue = () => {
     onSelectPlan(selectedPlan);
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-y-auto z-50">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-20 right-20 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-50">
+      {/* Top bar */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-8 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
+            <span className="text-white font-black text-sm">$</span>
+          </div>
+          <span className="font-bold text-gray-900 text-lg hidden sm:block">
+            Weekly Accounting
+          </span>
+        </div>
+        {userEmail && (
+          <p className="text-sm text-gray-500 hidden sm:block">
+            <span className="font-medium text-gray-700">{userEmail}</span>
+          </p>
+        )}
+        {onSkip && (
+          <button
+            onClick={onSkip}
+            className="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors flex items-center gap-1"
+          >
+            Skip for now <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 sm:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 animate-fadeIn">
-          <div className="inline-flex items-center justify-center gap-3 mb-4">
-            <Rocket className="w-12 h-12 text-purple-400" />
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white">
-              Choose Your Plan
-            </h1>
-          </div>
-          <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-6">
-            Select the perfect plan for your needs. Upgrade or downgrade
-            anytime.
+        <div className="text-center mb-8 sm:mb-10">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
+            Pick the right plan for you
+          </h1>
+          <p className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto">
+            Start free, upgrade when you need more. Cancel anytime.
           </p>
 
           {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <span
-              className={`text-sm font-semibold ${billingCycle === "monthly" ? "text-white" : "text-slate-400"}`}
+          <div className="inline-flex items-center mt-6 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                billingCycle === "monthly"
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
             >
               Monthly
-            </span>
-            <button
-              onClick={() =>
-                setBillingCycle(
-                  billingCycle === "monthly" ? "yearly" : "monthly",
-                )
-              }
-              className="relative w-16 h-8 bg-slate-700 rounded-full transition-colors hover:bg-slate-600"
-            >
-              <div
-                className={`absolute w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full top-1 transition-all ${billingCycle === "yearly" ? "left-9" : "left-1"}`}
-              ></div>
             </button>
-            <span
-              className={`text-sm font-semibold ${billingCycle === "yearly" ? "text-white" : "text-slate-400"}`}
+            <button
+              onClick={() => setBillingCycle("yearly")}
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 ${
+                billingCycle === "yearly"
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
             >
               Yearly
-            </span>
-            {billingCycle === "yearly" && (
-              <span className="ml-2 px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full animate-pulse">
-                Save up to 17%
+              <span
+                className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${billingCycle === "yearly" ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-700"}`}
+              >
+                -17%
               </span>
-            )}
+            </button>
           </div>
-
-          {userEmail && (
-            <p className="text-slate-400 text-sm">
-              Setting up plan for{" "}
-              <span className="text-white font-semibold">{userEmail}</span>
-            </p>
-          )}
         </div>
 
         {/* Plans Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 animate-slideUp">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
           {plans.map((plan) => {
             const PlanIcon = plan.icon;
             const isSelected = selectedPlan === plan.id;
-            const price =
-              billingCycle === "monthly"
-                ? plan.price.monthly
-                : plan.price.yearly;
-            const priceDisplay =
-              typeof price === "number" ? `$${price}` : price;
-            const priceLabel = billingCycle === "monthly" ? "/mo" : "/yr";
+            const price = getDisplayPrice(plan);
 
             return (
               <div
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className={`relative bg-white/95 backdrop-blur-xl rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 hover:shadow-2xl ${
+                className={`relative flex flex-col bg-white rounded-2xl cursor-pointer transition-all duration-200 overflow-hidden ${
                   isSelected
-                    ? `ring-4 ring-${plan.color}-500 shadow-2xl scale-105`
-                    : "ring-2 ring-slate-200 hover:ring-slate-300"
-                } ${plan.popular ? "lg:-mt-4 lg:mb-0" : ""}`}
+                    ? "ring-2 ring-violet-600 shadow-xl shadow-violet-100"
+                    : "ring-1 ring-gray-200 shadow-sm hover:shadow-md hover:ring-gray-300"
+                } ${plan.popular ? "sm:-mt-2" : ""}`}
               >
-                {/* Popular Badge */}
+                {/* Popular ribbon */}
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg animate-bounce">
-                    ⭐ MOST POPULAR
+                  <div className="absolute top-0 right-0 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                    {plan.badge}
                   </div>
                 )}
 
-                {/* Selected Checkmark */}
-                {isSelected && (
-                  <div
-                    className={`absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-r ${plan.gradient} rounded-full flex items-center justify-center shadow-lg animate-scaleIn`}
-                  >
-                    <Check className="w-6 h-6 text-white" />
-                  </div>
-                )}
+                {/* Top accent bar */}
+                <div
+                  className="h-1.5 w-full"
+                  style={{ background: plan.accentColor }}
+                />
 
-                {/* Plan Header */}
-                <div className="text-center mb-6">
-                  <div
-                    className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${plan.gradient} rounded-2xl mb-4 shadow-lg`}
-                  >
-                    <PlanIcon className="w-8 h-8 text-white" />
+                <div className="p-5 flex flex-col flex-1">
+                  {/* Icon + name */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center"
+                      style={{ background: `${plan.accentColor}18` }}
+                    >
+                      <PlanIcon
+                        className="w-5 h-5"
+                        style={{ color: plan.accentColor }}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-gray-900 text-base leading-tight">
+                        {plan.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 leading-tight">
+                        {plan.tagline}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="text-sm text-slate-600 mb-4">
-                    {plan.description}
-                  </p>
 
                   {/* Price */}
-                  <div className="mb-2">
-                    <span className="text-5xl font-black text-slate-900">
-                      {priceDisplay}
-                    </span>
-                    {typeof price === "number" && (
-                      <span className="text-slate-600 text-lg">
-                        {priceLabel}
+                  <div className="mb-5">
+                    <div className="flex items-end gap-1">
+                      <span className="text-4xl font-black text-gray-900 leading-none">
+                        {price}
                       </span>
+                      {typeof plan.perMonth[billingCycle] === "number" &&
+                        plan.perMonth[billingCycle] > 0 && (
+                          <span className="text-gray-400 text-sm mb-0.5">
+                            /mo
+                          </span>
+                        )}
+                    </div>
+                    {billingCycle === "yearly" &&
+                      typeof plan.price.yearly === "number" &&
+                      plan.price.yearly > 0 && (
+                        <p className="text-xs text-emerald-600 font-semibold mt-1">
+                          Billed ${plan.price.yearly}/yr · saves $
+                          {(plan.perMonth.monthly - plan.perMonth.yearly) * 12}
+                          /yr
+                        </p>
+                      )}
+                    {plan.price.monthly === 0 && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        No credit card required
+                      </p>
                     )}
                   </div>
-                  {billingCycle === "yearly" && plan.savingsYearly && (
-                    <p className="text-xs text-emerald-600 font-bold">
-                      💰 {plan.savingsYearly}
-                    </p>
-                  )}
-                </div>
 
-                {/* Features */}
-                <div className="space-y-2 mb-6">
-                  {plan.features.slice(0, 6).map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      {feature.included ? (
-                        <Check className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <X className="w-4 h-4 text-slate-300 flex-shrink-0 mt-0.5" />
-                      )}
-                      <span
-                        className={`text-sm ${feature.included ? "text-slate-700 font-medium" : "text-slate-400"}`}
+                  {/* Divider */}
+                  <div className="border-t border-gray-100 mb-4" />
+
+                  {/* Features */}
+                  <ul className="space-y-2 flex-1">
+                    {plan.features.map((f, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-2 text-sm text-gray-700"
                       >
-                        {feature.text}
-                      </span>
-                    </div>
-                  ))}
-                  {plan.features.length > 6 && (
-                    <p className="text-xs text-slate-500 italic mt-2">
-                      + {plan.features.length - 6} more features...
-                    </p>
-                  )}
-                </div>
+                        <Check
+                          className="w-4 h-4 flex-shrink-0 mt-0.5"
+                          style={{ color: plan.accentColor }}
+                        />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                    {plan.notIncluded.map((f, i) => (
+                      <li
+                        key={`no-${i}`}
+                        className="flex items-start gap-2 text-sm text-gray-400"
+                      >
+                        <span className="w-4 h-4 flex-shrink-0 mt-0.5 flex items-center justify-center font-bold text-xs">
+                          —
+                        </span>
+                        <span className="line-through">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-                {/* Limits */}
-                <div className="pt-4 border-t border-slate-200">
-                  <p className="text-xs text-slate-500 text-center">
-                    {plan.limits}
-                  </p>
+                  {/* Select button */}
+                  <div className="mt-5">
+                    <button
+                      type="button"
+                      className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${
+                        isSelected
+                          ? "text-white shadow-md"
+                          : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                      }`}
+                      style={isSelected ? { background: plan.accentColor } : {}}
+                    >
+                      {isSelected ? (
+                        <span className="flex items-center justify-center gap-1.5">
+                          <Check className="w-4 h-4" /> Selected
+                        </span>
+                      ) : (
+                        `Choose ${plan.name}`
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          {onSkip && (
-            <button
-              onClick={onSkip}
-              className="px-8 py-4 bg-slate-700 text-white rounded-xl font-bold hover:bg-slate-600 transition-all"
-            >
-              Skip for Now
-            </button>
-          )}
+        {/* CTA */}
+        <div className="flex flex-col items-center gap-3">
           <button
             onClick={handleContinue}
-            className="px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2 text-lg"
+            className="flex items-center gap-2.5 px-8 py-4 rounded-2xl text-white font-bold text-base shadow-lg transition-all hover:opacity-90 hover:shadow-xl active:scale-95"
+            style={{
+              background: selectedPlanData?.accentColor || "#7c3aed",
+            }}
           >
-            Continue with {plans.find((p) => p.id === selectedPlan)?.name}
+            {selectedPlanData?.cta || "Continue"}
+            <span className="font-normal opacity-90">
+              with {selectedPlanData?.name}
+            </span>
             <ArrowRight className="w-5 h-5" />
           </button>
-        </div>
 
-        {/* Trust Indicators */}
-        <div className="mt-12 flex items-center justify-center gap-8 text-slate-400 text-sm flex-wrap">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5" />
-            <span>Secure Payments</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Check className="w-5 h-5" />
-            <span>Cancel Anytime</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Info className="w-5 h-5" />
-            <span>No Credit Card Required for Free Plan</span>
+          {/* Trust row */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-2 text-xs text-gray-400">
+            <span className="flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5" /> Secure checkout
+            </span>
+            <span className="flex items-center gap-1.5">
+              <RefreshCw className="w-3.5 h-3.5" /> Cancel anytime
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CreditCard className="w-3.5 h-3.5" /> No card needed for free
+            </span>
           </div>
         </div>
       </div>

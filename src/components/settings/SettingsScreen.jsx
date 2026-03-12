@@ -22,6 +22,10 @@ import {
   Wallet,
   Edit2,
   Check,
+  Star,
+  Zap,
+  Shield,
+  TrendingUp,
 } from "lucide-react";
 import {
   memberService,
@@ -97,7 +101,56 @@ const SettingsScreen = ({
   formatAmount,
   onOpenNotificationSettings,
 }) => {
-  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog"
+  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog" | "subscription"
+
+  // Subscription upgrade state
+  const [currentSubscription, setCurrentSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
+  const [upgradeSuccess, setUpgradeSuccess] = useState("");
+  const [upgradeError, setUpgradeError] = useState("");
+  const [selectedUpgradePlan, setSelectedUpgradePlan] = useState("");
+  const [selectedBillingCycle, setSelectedBillingCycle] = useState("monthly");
+
+  const loadSubscription = async () => {
+    setSubscriptionLoading(true);
+    try {
+      const { default: api } = await import("../../services/api");
+      const response = await api.get("/subscription");
+      if (response.data.success) {
+        setCurrentSubscription(response.data.data);
+        setSelectedUpgradePlan(response.data.data.currentPlan);
+      }
+    } catch (err) {
+      console.error("Failed to load subscription:", err);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  const handleUpgradePlan = async () => {
+    if (!selectedUpgradePlan) return;
+    setUpgrading(true);
+    setUpgradeError("");
+    setUpgradeSuccess("");
+    try {
+      const { default: api } = await import("../../services/api");
+      const response = await api.post("/subscription/subscribe", {
+        plan: selectedUpgradePlan,
+        billingCycle: selectedBillingCycle,
+      });
+      if (response.data.success) {
+        setCurrentSubscription(response.data.data);
+        setUpgradeSuccess(`✅ Successfully switched to ${selectedUpgradePlan} plan!`);
+      } else {
+        setUpgradeError(response.data.message || "Failed to update plan");
+      }
+    } catch (err) {
+      setUpgradeError(err?.response?.data?.message || "Failed to update plan. Please try again.");
+    } finally {
+      setUpgrading(false);
+    }
+  };
 
   // Members management state
   const [members, setMembers] = useState([]);
@@ -159,6 +212,9 @@ const SettingsScreen = ({
     }
     if (settingsSection === "activityLog" && currentAccount) {
       loadActivityLog();
+    }
+    if (settingsSection === "subscription") {
+      loadSubscription();
     }
   }, [settingsSection, currentAccount]);
 
@@ -605,6 +661,13 @@ const SettingsScreen = ({
                     label: "Notifications",
                     desc: "Configure notification preferences",
                     color: "bg-orange-600",
+                  },
+                  {
+                    key: "subscription",
+                    icon: <Star className="w-6 h-6" />,
+                    label: "Subscription & Plan",
+                    desc: "View your plan, usage limits & upgrade",
+                    color: "bg-gradient-to-br from-amber-500 to-orange-600",
                   },
                 ].map((item) => (
                   <button
@@ -1389,6 +1452,187 @@ const SettingsScreen = ({
                     ))}
                   </div>
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* Subscription & Plan Section - NEW */}
+          {settingsSection === "subscription" && (
+            <div className="max-w-2xl mx-auto px-6 py-8">
+              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Star className="w-5 h-5 text-amber-500" />
+                Subscription & Plan
+              </h2>
+
+              {subscriptionLoading ? (
+                <div className="text-center py-12 text-gray-500">
+                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                  Loading subscription...
+                </div>
+              ) : (
+                <>
+                  {/* Current Plan Card */}
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 mb-6 text-white shadow-xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-amber-500 p-2.5 rounded-xl">
+                          <Crown className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-slate-300 text-xs font-bold uppercase tracking-wider">Current Plan</p>
+                          <p className="text-2xl font-black text-white capitalize">
+                            {currentSubscription?.currentPlan || "Free"} Plan
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-full">
+                        <span className="text-emerald-400 text-xs font-bold uppercase">
+                          {currentSubscription?.status || "Active"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mt-4">
+                      <div className="bg-white/10 rounded-xl p-3 text-center">
+                        <p className="text-2xl font-black">{currentSubscription?.usage?.teamMembersCount ?? 1}</p>
+                        <p className="text-xs text-slate-300 mt-1">Team Members</p>
+                      </div>
+                      <div className="bg-white/10 rounded-xl p-3 text-center">
+                        <p className="text-2xl font-black">{currentSubscription?.usage?.expensesThisMonth ?? 0}</p>
+                        <p className="text-xs text-slate-300 mt-1">Expenses This Month</p>
+                      </div>
+                      <div className="bg-white/10 rounded-xl p-3 text-center">
+                        <p className="text-2xl font-black">{currentSubscription?.usage?.accountsCount ?? 1}</p>
+                        <p className="text-xs text-slate-300 mt-1">Accounts</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Success / Error messages */}
+                  {upgradeSuccess && (
+                    <div className="bg-emerald-50 border-2 border-emerald-500 text-emerald-700 px-4 py-3 rounded-xl font-bold mb-4">
+                      {upgradeSuccess}
+                    </div>
+                  )}
+                  {upgradeError && (
+                    <div className="bg-red-50 border-2 border-red-500 text-red-700 px-4 py-3 rounded-xl font-bold mb-4">
+                      {upgradeError}
+                    </div>
+                  )}
+
+                  {/* Plan Selection */}
+                  <div className="mb-6">
+                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-3">Choose a Plan</h3>
+                    <div className="space-y-3">
+                      {[
+                        { id: "free", name: "Starter", price: { monthly: 0, yearly: 0 }, desc: "1 account • 50 expenses/month", color: "border-slate-400" },
+                        { id: "professional", name: "Professional", price: { monthly: 12, yearly: 120 }, desc: "5 accounts • Unlimited expenses • 3 members", color: "border-blue-500", popular: true },
+                        { id: "business", name: "Business", price: { monthly: 29, yearly: 290 }, desc: "20 accounts • Unlimited everything • Unlimited members", color: "border-emerald-500" },
+                        { id: "enterprise", name: "Enterprise", price: { monthly: 79, yearly: 790 }, desc: "Unlimited everything • White-label • Dedicated support", color: "border-amber-500" },
+                      ].map((plan) => (
+                        <button
+                          key={plan.id}
+                          onClick={() => setSelectedUpgradePlan(plan.id)}
+                          className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left ${
+                            selectedUpgradePlan === plan.id
+                              ? `${plan.color} bg-blue-50 shadow-md`
+                              : "border-gray-200 bg-white hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              selectedUpgradePlan === plan.id ? "border-blue-600 bg-blue-600" : "border-gray-300"
+                            }`}>
+                              {selectedUpgradePlan === plan.id && (
+                                <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                              )}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-gray-900">{plan.name}</span>
+                                {plan.popular && (
+                                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Popular</span>
+                                )}
+                                {plan.id === currentSubscription?.currentPlan && (
+                                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Current</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-500 mt-0.5">{plan.desc}</p>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0 ml-4">
+                            <p className="font-black text-gray-900 text-lg">
+                              {plan.price[selectedBillingCycle] === 0 ? "Free" : `$${plan.price[selectedBillingCycle]}`}
+                            </p>
+                            {plan.price[selectedBillingCycle] > 0 && (
+                              <p className="text-xs text-gray-400">/{selectedBillingCycle === "yearly" ? "yr" : "mo"}</p>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Billing Cycle Toggle */}
+                  <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span className="text-sm font-bold text-gray-700">Billing:</span>
+                    <div className="flex bg-white rounded-lg border border-gray-200 overflow-hidden">
+                      {["monthly", "yearly"].map((cycle) => (
+                        <button
+                          key={cycle}
+                          onClick={() => setSelectedBillingCycle(cycle)}
+                          className={`px-4 py-2 text-sm font-bold transition-all capitalize ${
+                            selectedBillingCycle === cycle
+                              ? "bg-blue-600 text-white"
+                              : "text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {cycle}
+                        </button>
+                      ))}
+                    </div>
+                    {selectedBillingCycle === "yearly" && (
+                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                        Save ~17%!
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Upgrade Button */}
+                  <button
+                    onClick={handleUpgradePlan}
+                    disabled={upgrading || selectedUpgradePlan === currentSubscription?.currentPlan}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {upgrading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Updating Plan...
+                      </span>
+                    ) : selectedUpgradePlan === currentSubscription?.currentPlan ? (
+                      "✓ This is Your Current Plan"
+                    ) : (
+                      `🚀 Switch to ${selectedUpgradePlan?.charAt(0).toUpperCase() + selectedUpgradePlan?.slice(1)} Plan`
+                    )}
+                  </button>
+
+                  {/* Plan Features Summary */}
+                  <div className="mt-6 space-y-2">
+                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">All Plans Include</h3>
+                    {[
+                      { icon: <Shield className="w-4 h-4 text-emerald-600" />, text: "Secure encrypted data storage" },
+                      { icon: <Zap className="w-4 h-4 text-blue-600" />, text: "Real-time expense tracking" },
+                      { icon: <TrendingUp className="w-4 h-4 text-purple-600" />, text: "Analytics & reports" },
+                      { icon: <Building2 className="w-4 h-4 text-amber-600" />, text: "Bank account management" },
+                    ].map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        {feature.icon}
+                        <span className="text-gray-700 text-sm font-medium">{feature.text}</span>
+                        <Check className="w-4 h-4 text-emerald-600 ml-auto" />
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}

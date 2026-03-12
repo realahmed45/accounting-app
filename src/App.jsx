@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "./context/AuthContext";
 import { useAccount } from "./context/AccountContext";
+import { useSubscription } from "./hooks/useSubscription";
 import AuthScreen from "./components/AuthScreen";
 import AccountSwitcher from "./components/AccountSwitcher";
 import PhotoUploadModal from "./components/PhotoUploadModal";
 import PasswordGate from "./components/PasswordGate";
+import UpgradePrompt from "./components/UpgradePrompt";
 import ScheduleScreen from "./components/schedule/ScheduleScreen";
 import Header from "./components/layout/Header";
 import NotificationBanner from "./components/layout/NotificationBanner";
@@ -15,6 +17,9 @@ import NotificationSettings from "./components/NotificationSettings";
 import FinancialOverview from "./components/dashboard/FinancialOverview";
 import DailyBreakdown from "./components/dashboard/DailyBreakdown";
 import SettingsScreen from "./components/settings/SettingsScreen";
+import ReportsScreen from "./components/ReportsScreen"; // NEW
+import QuickStatsWidget from "./components/QuickStatsWidget"; // NEW
+import BulkOperationsBar from "./components/BulkOperationsBar"; // NEW
 import {
   weekService,
   expenseService,
@@ -179,6 +184,19 @@ function App() {
     refreshAccounts,
     loading: accountLoading,
   } = useAccount();
+  
+  // Subscription hook for feature gating
+  const {
+    subscription,
+    canCreateAccount: canCreateAccountSubscription,
+    canAddExpense: canAddExpenseSubscription,
+    canInviteMember: canInviteMemberSubscription,
+    canUseScheduling,
+    canUseAdvancedReports,
+    getExpensesRemaining,
+    getAccountsRemaining,
+    isFreePlan,
+  } = useSubscription();
 
   // State Management
   const [weeks, setWeeks] = useState([]);
@@ -204,6 +222,15 @@ function App() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [highlightNotificationId, setHighlightNotificationId] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradePromptConfig, setUpgradePromptConfig] = useState({
+    feature: "",
+    requiredPlan: "professional",
+  });
+  
+  // NEW: State for new features
+  const [showReports, setShowReports] = useState(false);
+  const [selectedExpenses, setSelectedExpenses] = useState([]);
 
   const openNotificationCenter = (notificationId = null) => {
     setHighlightNotificationId(notificationId);
@@ -315,6 +342,19 @@ function App() {
       }
     }
   }, [currentWeekIndex, weeks, currentAccount]);
+
+  // Helper function to check subscription limits before creating account
+  const handleCreateAccountClick = () => {
+    if (!canCreateAccountSubscription()) {
+      setShowUpgradePrompt(true);
+      setUpgradePromptConfig({
+        feature: "Multiple Accounts",
+        requiredPlan: "professional",
+      });
+      return;
+    }
+    setShowCreateAccountModal(true);
+  };
 
   const loadWeeks = async () => {
     if (!currentAccount) return;
@@ -539,7 +579,7 @@ function App() {
 
             <div className="space-y-3">
               <button
-                onClick={() => setShowCreateAccountModal(true)}
+                onClick={handleCreateAccountClick}
                 className="w-full bg-indigo-600 text-white px-4 py-3 hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center gap-2"
               >
                 <Plus className="w-5 h-5" />
@@ -810,6 +850,17 @@ function App() {
 
   const handleAddExpense = async (e) => {
     if (e) e.preventDefault();
+    
+    // Check subscription limit before adding expense
+    if (!canAddExpenseSubscription()) {
+      setShowUpgradePrompt(true);
+      setUpgradePromptConfig({
+        feature: "Unlimited Expenses",
+        requiredPlan: "professional",
+      });
+      return;
+    }
+    
     runIfAllowed(async () => {
       const amount = parseFloat(expenseForm.amount);
       if (isNaN(amount) || amount <= 0) {
@@ -1253,6 +1304,12 @@ function App() {
         logout={logout}
         onOpenNotificationCenter={openNotificationCenter}
         onShowOnboarding={() => setShowOnboarding(true)}
+        expenses={expenses}
+        onExpenseClick={(expense) => {
+          // Scroll to expense or highlight it
+          console.log("Navigate to expense:", expense);
+        }}
+        onShowReports={() => setShowReports(true)}
       />
       <NotificationBanner success={success} error={error} setError={setError} />
       <ToastNotification onOpenCenter={openNotificationCenter} />
@@ -1544,6 +1601,11 @@ function App() {
               </div>
             </div>
 
+            {/* Quick Stats Widget - NEW VISIBLE FEATURE */}
+            <div className="px-6 pt-6">
+              <QuickStatsWidget expenses={expenses} weekDates={weekDates} />
+            </div>
+
             <FinancialOverview
               bankAccounts={bankAccounts}
               currentWeek={currentWeek}
@@ -1577,6 +1639,16 @@ function App() {
           </>
         )}
       </div>
+      {/* Reports Screen - NEW VISIBLE FEATURE */}
+      {showReports && (
+        <ReportsScreen
+          onClose={() => setShowReports(false)}
+          expenses={expenses}
+          categories={categories}
+          people={people}
+        />
+      )}
+
       {/* Modals */}
       {activeModal === "bankAccounts" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
@@ -3198,6 +3270,15 @@ function App() {
             <p className="text-gray-500 text-sm">Please wait a moment</p>
           </div>
         </div>
+      )}
+      
+      {/* Upgrade Prompt */}
+      {showUpgradePrompt && (
+        <UpgradePrompt
+          feature={upgradePromptConfig.feature}
+          requiredPlan={upgradePromptConfig.requiredPlan}
+          onClose={() => setShowUpgradePrompt(false)}
+        />
       )}
     </div>
   );

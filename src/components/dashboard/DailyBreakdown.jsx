@@ -15,6 +15,7 @@ import {
   Briefcase,
   Info,
   HelpCircle,
+  Download,
 } from "lucide-react";
 import { HelpIcon, InstructionBox } from "../layout/Tooltip";
 
@@ -36,6 +37,45 @@ const DailyBreakdown = ({
   dailyActivity,
 }) => {
   const [expandedSections, setExpandedSections] = useState({});
+
+  // Export week data to CSV - NEW FEATURE
+  const exportWeekToCSV = () => {
+    const allExpenses = weekDates.flatMap((date) =>
+      getExpensesForDate(formatDate(date)),
+    );
+
+    const headers = [
+      "Date",
+      "Description",
+      "Amount",
+      "Category",
+      "Person",
+      "Source",
+      "Time",
+    ];
+    const rows = allExpenses.map((e) => [
+      new Date(e.date).toLocaleDateString(),
+      e.note || "",
+      e.amount,
+      e.category || "Uncategorized",
+      e.personName || "Unknown",
+      e.source || "Unknown",
+      new Date(e.createdAt || e.date).toLocaleTimeString(),
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `weekly-expenses-${Date.now()}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const formatTime = (isoString) => {
     if (!isoString) return "";
@@ -129,6 +169,15 @@ const DailyBreakdown = ({
               </p>
             </div>
           </div>
+
+          {/* Export Button - NEW VISIBLE FEATURE */}
+          <button
+            onClick={exportWeekToCSV}
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+          >
+            <Download className="w-5 h-5" />
+            Export Week
+          </button>
         </div>
 
         {/* First-time user instruction */}

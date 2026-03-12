@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { LogIn, UserPlus, Mail, Lock, User, Phone } from "lucide-react";
+import PlanSelectionScreen from "./PlanSelectionScreen";
 
 const AuthScreen = () => {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPlanSelection, setShowPlanSelection] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -19,6 +21,7 @@ const AuthScreen = () => {
     firstName: "",
     familyName: "",
     phoneNumber: "",
+    selectedPlan: "free",
   });
 
   const handleLogin = async (e) => {
@@ -36,11 +39,17 @@ const AuthScreen = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    const result = await register(registerData);
+    // Show full-screen plan selection
+    setShowPlanSelection(true);
+  };
+
+  const handlePlanSelected = async (selectedPlan) => {
+    setLoading(true);
+    const result = await register({ ...registerData, selectedPlan });
     if (!result.success) {
       setError(result.message);
+      setShowPlanSelection(false);
     }
     setLoading(false);
   };
@@ -96,6 +105,7 @@ const AuthScreen = () => {
               onClick={() => {
                 setIsLogin(false);
                 setError("");
+                setShowPlanSelection(false); // Reset plan selection when switching to register
               }}
               className={`flex-1 py-3.5 rounded-xl font-bold transition-all ${
                 !isLogin
@@ -299,19 +309,18 @@ const AuthScreen = () => {
                 </p>
               </div>
 
+              {error && (
+                <div className="bg-red-500/10 border-2 border-red-500 text-red-400 px-4 py-3 rounded-xl text-center font-bold">
+                  {error}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
               >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Creating your account...
-                  </span>
-                ) : (
-                  "✨ Create My Account"
-                )}
+                {loading ? "Processing..." : "Continue to Plan Selection →"}
               </button>
             </form>
           )}
@@ -322,6 +331,15 @@ const AuthScreen = () => {
           Manage multiple accounts • Track expenses • Upload bill photos
         </p>
       </div>
+
+      {/* Full-screen Plan Selection Component */}
+      {showPlanSelection && (
+        <PlanSelectionScreen
+          userEmail={registerData.email}
+          onSelectPlan={handlePlanSelected}
+          onSkip={() => handlePlanSelected("free")}
+        />
+      )}
     </div>
   );
 };

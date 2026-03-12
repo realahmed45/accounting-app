@@ -1,8 +1,13 @@
 import { X, Zap, Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const UpgradePrompt = ({ feature, requiredPlan = "professional", onClose }) => {
-  const navigate = useNavigate();
+  const handleUpgradeClick = () => {
+    // For now, just show an alert. In production, this would open a payment modal or redirect to billing
+    alert(
+      "Upgrade functionality coming soon! Contact support to upgrade your plan.",
+    );
+    onClose();
+  };
 
   const planBenefits = {
     professional: [
@@ -77,10 +82,7 @@ const UpgradePrompt = ({ feature, requiredPlan = "professional", onClose }) => {
           {/* CTA Buttons */}
           <div className="space-y-3">
             <button
-              onClick={() => {
-                navigate("/plans");
-                onClose();
-              }}
+              onClick={handleUpgradeClick}
               className={`w-full py-3 px-6 bg-gradient-to-r ${
                 planColors[requiredPlan] || planColors.professional
               } text-white rounded-lg hover:opacity-90 transition-all font-semibold flex items-center justify-center`}

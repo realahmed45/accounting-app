@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { notificationService } from "../services/notificationApi";
 import { useAuth } from "./AuthContext";
@@ -35,7 +36,10 @@ export const NotificationProvider = ({ children }) => {
   // Polling interval (5 seconds for instant notifications)
   const POLLING_INTERVAL = 5000;
 
-  // Fetch unread count
+  // Use a ref to track the previous unread count without causing re-renders or effect loops
+  const prevUnreadCountRef = useRef(0);
+
+  // Fetch unread count — NOTE: does NOT include unreadCount in deps to avoid infinite loop
   const fetchUnreadCount = useCallback(async () => {
     if (!user) return;
 
@@ -43,22 +47,25 @@ export const NotificationProvider = ({ children }) => {
       const response = await notificationService.getUnreadCount();
       if (response?.success && response?.data?.unreadCount !== undefined) {
         const newCount = response.data.unreadCount;
-        console.log(`📊 Unread count: ${newCount} (previous: ${unreadCount})`);
+        console.log(
+          `📊 Unread count: ${newCount} (previous: ${prevUnreadCountRef.current})`,
+        );
 
         // If count increased, show toasts for new notifications
-        if (newCount > unreadCount) {
+        if (newCount > prevUnreadCountRef.current) {
           console.log(
-            `🔔 New notifications detected! Count: ${unreadCount} → ${newCount}`,
+            `🔔 New notifications detected! Count: ${prevUnreadCountRef.current} → ${newCount}`,
           );
           fetchRecentForToast();
         }
 
+        prevUnreadCountRef.current = newCount;
         setUnreadCount(newCount);
       }
     } catch (err) {
       console.error("❌ Failed to fetch unread count:", err);
     }
-  }, [user, unreadCount]);
+  }, [user]);
 
   // Fetch recent notifications for toast display
   const fetchRecentForToast = async () => {
@@ -242,7 +249,7 @@ export const NotificationProvider = ({ children }) => {
       console.log("🗑️ Cleaning up notification polling");
       clearInterval(interval);
     };
-  }, [user, fetchUnreadCount, fetchRecentNotifications, fetchPreferences]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Check if notifications should be played with sound
   const shouldPlaySound = () => {

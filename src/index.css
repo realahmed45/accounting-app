@@ -59,13 +59,13 @@ body {
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0f172a;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Animated background particles */
+/* Modern gradient mesh background */
 body::before {
   content: "";
   position: fixed;
@@ -73,20 +73,33 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle animated gradient overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
   background:
     radial-gradient(
       circle at 20% 50%,
-      rgba(255, 255, 255, 0.1) 0%,
+      rgba(59, 130, 246, 0.08) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 80% 80%,
-      rgba(255, 255, 255, 0.1) 0%,
+      rgba(168, 85, 247, 0.08) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 40% 20%,
-      rgba(255, 255, 255, 0.05) 0%,
+      rgba(16, 185, 129, 0.06) 0%,
       transparent 50%
     );
   animation: float 20s ease-in-out infinite;
@@ -97,45 +110,45 @@ body::before {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(0) rotate(0deg);
   }
   33% {
     transform: translateY(-20px) translateX(10px);
   }
   66% {
-    transform: translateY(-10px) translateX(-10px);
+    transform: translateY(-10px) translateX(-10px) rotate(1deg);
   }
 }
 
 #root {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  flex-direction: column;
   position: relative;
   z-index: 1;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Modern Dark */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(241, 241, 241, 0.5);
+  background: rgba(15, 23, 42, 0.5);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(180deg, #3b82f6 0%, #8b5cf6 100%);
   border-radius: 10px;
   transition: all 0.3s ease;
+  border: 2px solid rgba(15, 23, 42, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
+  border-color: rgba(15, 23, 42, 0.7);
 }
 
 /* Premium Animation classes */

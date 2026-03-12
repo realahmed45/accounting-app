@@ -13,7 +13,10 @@ import {
   FileText,
   User,
   Briefcase,
+  Info,
+  HelpCircle,
 } from "lucide-react";
+import { HelpIcon, InstructionBox } from "../layout/Tooltip";
 
 const DailyBreakdown = ({
   weekDates,
@@ -78,39 +81,74 @@ const DailyBreakdown = ({
     if (count === 0) return null;
 
     return (
-      <div className="border border-slate-200 rounded-lg overflow-hidden">
+      <div className="border-2 border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all">
         <button
           onClick={() => toggleSection(dateStr, section)}
-          className={`w-full px-4 py-2.5 bg-${color}-50 hover:bg-${color}-100 flex items-center justify-between transition-colors`}
+          className={`w-full px-4 py-3.5 bg-gradient-to-r from-${color}-50 to-${color}-100/50 hover:from-${color}-100 hover:to-${color}-50 flex items-center justify-between transition-all group border-l-4 border-${color}-500`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <ChevronRight
-              className={`w-4 h-4 text-${color}-600 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+              className={`w-5 h-5 text-${color}-600 transition-transform ${isExpanded ? "rotate-90" : ""}`}
             />
-            <Icon className={`w-4 h-4 text-${color}-600`} />
-            <span className="font-semibold text-slate-800">{title}</span>
+            <div className={`p-2 rounded-lg bg-${color}-500 shadow-md`}>
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-slate-800 text-base">{title}</span>
             <span
-              className={`px-2 py-0.5 bg-${color}-600 text-white text-xs rounded-full font-bold`}
+              className={`px-3 py-1 bg-gradient-to-r from-${color}-600 to-${color}-700 text-white text-xs rounded-full font-black shadow-sm`}
             >
               {count}
             </span>
           </div>
         </button>
-        {isExpanded && <div className="p-3 bg-white space-y-2">{children}</div>}
+        {isExpanded && (
+          <div className="p-4 bg-white space-y-3 border-t-2 border-${color}-100">
+            {children}
+          </div>
+        )}
       </div>
     );
   };
 
   return (
-    <div className="bg-white p-6 border-b border-gray-200">
-      <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <div className="bg-emerald-500 p-2 rounded-lg">
-          <Calendar className="w-4 h-4 text-white" />
+    <div className="bg-gradient-to-br from-white via-slate-50 to-white">
+      {/* Header with Instructions */}
+      <div className="p-6 border-b border-slate-200 bg-white">
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-3 rounded-xl shadow-lg">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-slate-800 flex items-center gap-2">
+                Daily Activity Breakdown
+                <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities. Days with more activity show higher counts." />
+              </h3>
+              <p className="text-sm text-slate-600 font-medium mt-1">
+                📅 Week view • Click any day to expand details
+              </p>
+            </div>
+          </div>
         </div>
-        Daily Activity
-      </h3>
 
-      <div className="space-y-2">
+        {/* First-time user instruction */}
+        {weekDates.every(
+          (date) => getExpensesForDate(formatDate(date)).length === 0,
+        ) && (
+          <InstructionBox
+            title="How to use Daily Breakdown"
+            variant="info"
+            icon={Info}
+          >
+            This section shows all your daily activities organized by date.{" "}
+            <strong>Click on any day</strong> below to expand and see expenses,
+            shifts, check-ins, and work logs. When you add expenses or
+            activities, they'll appear here automatically!
+          </InstructionBox>
+        )}
+      </div>
+
+      <div className="p-6 space-y-3">
         {weekDates.map((date) => {
           const dateStr = formatDate(date);
           const dayExpenses = getExpensesForDate(dateStr);
@@ -122,42 +160,73 @@ const DailyBreakdown = ({
           return (
             <div
               key={dateStr}
-              className="border border-slate-200 rounded-lg overflow-hidden hover:border-emerald-400 transition-all"
+              className="border-2 border-slate-200 rounded-2xl overflow-hidden hover:border-emerald-400 hover:shadow-lg transition-all bg-white"
             >
               <button
                 onClick={() => toggleDayExpansion(dateStr)}
-                className="w-full px-4 py-3 bg-slate-50 hover:bg-emerald-50 flex items-center justify-between transition-colors"
+                className="w-full px-5 py-4 bg-gradient-to-r from-slate-50 to-white hover:from-emerald-50 hover:to-teal-50 flex items-center justify-between transition-all group"
               >
-                <div className="flex items-center gap-3">
-                  <Calendar
-                    className={`w-5 h-5 ${isExpanded ? "text-emerald-600" : "text-slate-400"}`}
-                  />
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`p-2.5 rounded-xl transition-all ${
+                      isExpanded
+                        ? "bg-gradient-to-br from-emerald-600 to-teal-600 shadow-lg"
+                        : "bg-slate-200 group-hover:bg-emerald-100"
+                    }`}
+                  >
+                    <Calendar
+                      className={`w-6 h-6 ${
+                        isExpanded
+                          ? "text-white"
+                          : "text-slate-600 group-hover:text-emerald-700"
+                      }`}
+                    />
+                  </div>
                   <div className="text-left">
-                    <span className="font-bold text-slate-800">
+                    <span className="font-black text-lg text-slate-800 block">
                       {formatDateReadable(date)}
                     </span>
-                    <span className="ml-2 px-2 py-0.5 bg-slate-200 text-slate-700 text-xs rounded-full font-semibold">
-                      {activityCount}{" "}
-                      {activityCount !== 1 ? "activities" : "activity"}
-                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span
+                        className={`px-3 py-1 ${
+                          activityCount > 0
+                            ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                            : "bg-slate-200 text-slate-600"
+                        } text-xs rounded-full font-bold`}
+                      >
+                        {activityCount}{" "}
+                        {activityCount !== 1 ? "Activities" : "Activity"}
+                      </span>
+                      {dayTotal > 0 && (
+                        <span className="px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">
+                          {formatAmount(dayTotal, currentAccount?.currency)}{" "}
+                          spent
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold text-slate-900">
-                    {formatAmount(dayTotal, currentAccount?.currency)}
-                  </span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                    className={`w-6 h-6 text-slate-400 group-hover:text-emerald-600 transition-all ${
+                      isExpanded ? "rotate-180 text-emerald-600" : ""
+                    }`}
                   />
                 </div>
               </button>
 
               {isExpanded && (
-                <div className="p-4 bg-white space-y-2 border-t border-slate-200">
+                <div className="p-5 bg-slate-50/50 space-y-3 border-t-2 border-slate-200">
                   {activityCount === 0 && (
-                    <div className="text-center py-8 text-slate-400">
-                      <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
-                      <p className="font-medium">No activity for this day</p>
+                    <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
+                      <FileText className="w-16 h-16 mx-auto mb-4 text-slate-300" />
+                      <p className="font-bold text-slate-800 text-lg mb-2">
+                        No Activity Yet
+                      </p>
+                      <p className="text-slate-500 text-sm">
+                        Add expenses or schedule activities for this day to see
+                        them here!
+                      </p>
                     </div>
                   )}
 

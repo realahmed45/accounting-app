@@ -46,37 +46,50 @@ const AuthScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+      </div>
+
+      <div className="max-w-md w-full relative z-10">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-900 rounded-2xl mb-6 shadow-lg">
-            <span className="text-white text-3xl font-bold">$</span>
+        <div className="text-center mb-8 animate-fadeIn">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-scaleIn">
+            <span className="text-white text-4xl font-black">$</span>
           </div>
-          <h1 className="text-4xl font-bold text-slate-900">
+          <h1 className="text-5xl font-black text-white mb-3 tracking-tight">
             Weekly Accounting
           </h1>
-          <p className="text-slate-600 mt-3 text-lg">
-            {isLogin ? "Welcome back!" : "Create your account"}
+          <p className="text-slate-300 text-lg font-medium">
+            {isLogin ? "👋 Welcome back!" : "🚀 Start your journey"}
           </p>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
+        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 animate-slideUp">
           {/* Toggle Tabs */}
-          <div className="flex gap-2 mb-6 p-1 bg-slate-100 rounded-xl">
+          <div className="flex gap-2 mb-6 p-1.5 bg-slate-100 rounded-2xl">
             <button
               onClick={() => {
                 setIsLogin(true);
                 setError("");
               }}
-              className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 py-3.5 rounded-xl font-bold transition-all ${
                 isLogin
-                  ? "bg-slate-900 text-white shadow-md"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white"
               }`}
             >
-              <LogIn className="inline w-4 h-4 mr-2" />
+              <LogIn className="inline w-5 h-5 mr-2" />
               Login
             </button>
             <button
@@ -84,20 +97,20 @@ const AuthScreen = () => {
                 setIsLogin(false);
                 setError("");
               }}
-              className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 py-3.5 rounded-xl font-bold transition-all ${
                 !isLogin
-                  ? "bg-slate-900 text-white shadow-md"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white"
               }`}
             >
-              <UserPlus className="inline w-4 h-4 mr-2" />
+              <UserPlus className="inline w-5 h-5 mr-2" />
               Register
             </button>
           </div>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
-              {error}
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-xl text-sm font-semibold animate-slideDown">
+              ⚠️ {error}
             </div>
           )}
 
@@ -105,11 +118,11 @@ const AuthScreen = () => {
           {isLogin ? (
             <form onSubmit={handleLogin} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Email
+                <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-blue-600" />
+                  Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="email"
                     required
@@ -117,18 +130,21 @@ const AuthScreen = () => {
                     onChange={(e) =>
                       setLoginData({ ...loginData, email: e.target.value })
                     }
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                    className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
                     placeholder="your@email.com"
                   />
                 </div>
+                <p className="text-xs text-slate-500 mt-1.5 ml-1">
+                  💡 Use the email you registered with
+                </p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-purple-600" />
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="password"
                     required
@@ -136,18 +152,28 @@ const AuthScreen = () => {
                     onChange={(e) =>
                       setLoginData({ ...loginData, password: e.target.value })
                     }
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                    className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
                     placeholder="••••••••"
                   />
                 </div>
+                <p className="text-xs text-slate-500 mt-1.5 ml-1">
+                  🔒 Your password is encrypted and secure
+                </p>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-slate-900 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Logging in...
+                  </span>
+                ) : (
+                  "🚀 Login to Dashboard"
+                )}
               </button>
             </form>
           ) : (
@@ -155,11 +181,11 @@ const AuthScreen = () => {
             <form onSubmit={handleRegister} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                    <User className="w-4 h-4 text-emerald-600" />
                     First Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="text"
                       required
@@ -170,18 +196,17 @@ const AuthScreen = () => {
                           firstName: e.target.value,
                         })
                       }
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                      className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium"
                       placeholder="John"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-2">
                     Family Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="text"
                       required
@@ -192,7 +217,7 @@ const AuthScreen = () => {
                           familyName: e.target.value,
                         })
                       }
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                      className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium"
                       placeholder="Doe"
                     />
                   </div>
@@ -200,11 +225,11 @@ const AuthScreen = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Email
+                <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-blue-600" />
+                  Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="email"
                     required
@@ -215,18 +240,24 @@ const AuthScreen = () => {
                         email: e.target.value,
                       })
                     }
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                    className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
                     placeholder="your@email.com"
                   />
                 </div>
+                <p className="text-xs text-slate-500 mt-1.5 ml-1">
+                  📧 We'll never share your email
+                </p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Phone Number
+                <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-amber-600" />
+                  Phone Number{" "}
+                  <span className="text-xs text-slate-400 font-normal">
+                    (Optional)
+                  </span>
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="tel"
                     value={registerData.phoneNumber}
@@ -236,18 +267,18 @@ const AuthScreen = () => {
                         phoneNumber: e.target.value,
                       })
                     }
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
-                    placeholder="+1234567890"
+                    className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-medium"
+                    placeholder="+1 (555) 123-4567"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-purple-600" />
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="password"
                     required
@@ -259,28 +290,35 @@ const AuthScreen = () => {
                         password: e.target.value,
                       })
                     }
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                    className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
                     placeholder="••••••••"
                   />
                 </div>
-                <p className="text-xs text-slate-500 mt-1.5">
-                  Minimum 6 characters
+                <p className="text-xs text-slate-500 mt-1.5 ml-1">
+                  🔑 Minimum 6 characters - make it strong!
                 </p>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-slate-900 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                {loading ? "Creating account..." : "Create Account"}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Creating your account...
+                  </span>
+                ) : (
+                  "✨ Create My Account"
+                )}
               </button>
             </form>
           )}
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-500 text-sm mt-8 font-medium">
+        <p className="text-center text-slate-300 text-sm mt-8 font-medium">
           Manage multiple accounts • Track expenses • Upload bill photos
         </p>
       </div>

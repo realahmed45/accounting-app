@@ -9,6 +9,7 @@ import ScheduleScreen from "./components/schedule/ScheduleScreen";
 import Header from "./components/layout/Header";
 import NotificationBanner from "./components/layout/NotificationBanner";
 import ToastNotification from "./components/layout/ToastNotification";
+import OnboardingTour from "./components/layout/OnboardingTour";
 import NotificationCenter from "./components/NotificationCenter";
 import NotificationSettings from "./components/NotificationSettings";
 import FinancialOverview from "./components/dashboard/FinancialOverview";
@@ -1230,8 +1231,21 @@ function App() {
   const weekEndDate = new Date(currentWeek.endDate);
   const weekDates = getWeekDates(weekStartDate);
 
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if onboarding should be shown (first time users)
+  useEffect(() => {
+    const hasSeenOnboarding =
+      localStorage.getItem("onboardingCompleted") ||
+      localStorage.getItem("onboardingSkipped");
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen h-full bg-white">
+    <div className="min-h-screen h-full bg-slate-50">
       <Header
         user={user}
         currentMember={currentMember}
@@ -1240,37 +1254,55 @@ function App() {
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logout}
         onOpenNotificationCenter={openNotificationCenter}
+        onShowOnboarding={() => setShowOnboarding(true)}
       />
       <NotificationBanner success={success} error={error} setError={setError} />
       <ToastNotification onOpenCenter={openNotificationCenter} />
-      {/* Main Content */}
-      {/* Main Content */}
-      <div className="w-full bg-white px-8 py-6">
-        {/* Top Action Bar */}
-        <div className="flex flex-wrap justify-end gap-3 mb-6">
-          <button
-            onClick={() => setShowHistoryTab(!showHistoryTab)}
-            className={`px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-semibold shadow-sm hover:shadow-md ${
-              showHistoryTab
-                ? "bg-slate-900 text-white"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
-            }`}
-          >
-            <History className="w-5 h-5" />
-            Unified Feed
-          </button>
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <OnboardingTour
+          onComplete={() => setShowOnboarding(false)}
+          onSkip={() => setShowOnboarding(false)}
+        />
+      )}
+      {/* Main Content - Full Width */}
+      <div className="w-full bg-slate-50">
+        {/* Top Action Bar - Modern Design */}
+        <div className="bg-white shadow-sm border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-slate-800">
+              {showHistoryTab
+                ? "📋 Activity History"
+                : showSchedule
+                  ? "📅 Schedule View"
+                  : "💰 Dashboard"}
+            </h2>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowHistoryTab(!showHistoryTab)}
+              className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm hover:shadow-md ${
+                showHistoryTab
+                  ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-lg"
+                  : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+              }`}
+            >
+              <History className="w-5 h-5" />
+              <span className="hidden sm:inline">Activity Feed</span>
+            </button>
 
-          <button
-            onClick={() => setShowSchedule(true)}
-            className="px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-semibold shadow-sm bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:shadow-md"
-          >
-            <Calendar className="w-5 h-5 text-emerald-600" />
-            Schedule
-          </button>
+            <button
+              onClick={() => setShowSchedule(true)}
+              className="px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 hover:shadow-lg"
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="hidden sm:inline">Schedule</span>
+            </button>
+          </div>
         </div>
 
         {showHistoryTab ? (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sm:p-8">
+          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sm:p-8 m-6">
             <h2 className="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-3">
               <div className="bg-slate-900 p-3 rounded-xl">
                 <History className="w-8 h-8 text-white" />

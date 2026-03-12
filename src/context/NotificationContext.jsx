@@ -33,8 +33,11 @@ export const NotificationProvider = ({ children }) => {
     typeof Notification !== "undefined" ? Notification.permission : "default",
   );
 
-  // Polling interval (30 seconds - reduced to prevent excessive re-renders)
-  const POLLING_INTERVAL = 30000;
+  // Polling interval — 5 seconds for near-instant notifications.
+  // Safe to keep fast because fetchUnreadCount no longer includes unreadCount
+  // in its useCallback deps (uses prevUnreadCountRef instead), so changing the
+  // count no longer creates a new function reference and re-triggers the effect.
+  const POLLING_INTERVAL = 5000;
 
   // Use a ref to track the previous unread count without causing re-renders or effect loops
   const prevUnreadCountRef = useRef(0);
@@ -364,32 +367,50 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  // Play notification sound
+  // Play notification sound — always plays, loud, attractive double-chime
   const playNotificationSound = () => {
-    if (!shouldPlaySound()) return;
-
     try {
-      // Create a simple beep sound
-      const audioContext = new (
-        window.AudioContext || window.webkitAudioContext
-      )();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      const ctx = new AudioCtx();
 
-      oscillator.frequency.value = 800;
-      oscillator.type = "sine";
+      // Resume context if browser suspended it (autoplay policy)
+      const resume =
+        ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
 
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        audioContext.currentTime + 0.5,
-      );
+      resume.then(() => {
+        const now = ctx.currentTime;
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+        // ── Helper: play one tone ──────────────────────────────────────
+        const playTone = (freq, startTime, duration, peakGain = 0.8) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.type = "sine";
+          osc.frequency.value = freq;
+
+          // Fast attack, smooth decay
+          gain.gain.setValueAtTime(0, startTime);
+          gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        };
+
+        // ── Double-chime: high note then slightly higher note ──────────
+        // First chime
+        playTone(880, now, 0.35, 0.85); // A5
+        playTone(1320, now, 0.35, 0.4); // E6 harmonic overtone
+
+        // Second chime (100ms later, slightly higher = pleasant ascending ding)
+        playTone(1046, now + 0.12, 0.4, 0.85); // C6
+        playTone(1568, now + 0.12, 0.4, 0.4); // G6 harmonic overtone
+      });
     } catch (err) {
       console.error("Failed to play notification sound:", err);
     }

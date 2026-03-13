@@ -121,28 +121,28 @@ const DailyBreakdown = ({
     if (count === 0) return null;
 
     return (
-      <div className="glass-card !bg-white/5 border-white/5 overflow-hidden hover:border-white/10 transition-all duration-300">
+      <div className="glass-card-silk !bg-white/40 overflow-hidden hover:border-slate-300 transition-all duration-300 shadow-sm">
         <button
           onClick={() => toggleSection(dateStr, section)}
           className={`w-full px-5 py-4 bg-transparent hover:bg-white/5 flex items-center justify-between transition-all group border-l-4 border-l-${color}-500/50`}
         >
           <div className="flex items-center gap-4">
             <ChevronRight
-              className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${isExpanded ? "rotate-90 text-white" : ""}`}
+              className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-90 text-slate-900" : ""}`}
             />
-            <div className={`p-2.5 rounded-xl bg-${color}-500/20 text-${color}-400 shadow-lg group-hover:scale-110 transition-transform`}>
+            <div className={`p-2.5 rounded-xl bg-${color}-100 text-${color}-600 shadow-sm group-hover:scale-110 transition-transform`}>
               <Icon className="w-5 h-5" />
             </div>
-            <span className="font-bold text-white text-base tracking-tight">{title}</span>
+            <span className="font-bold text-slate-900 text-base tracking-tight">{title}</span>
             <span
-              className={`px-2.5 py-0.5 bg-${color}-500/20 text-${color}-400 text-[10px] rounded-full font-black border border-${color}-500/30 uppercase tracking-widest`}
+              className={`px-2.5 py-0.5 bg-${color}-50 text-${color}-700 text-[10px] rounded-full font-black border border-${color}-200 uppercase tracking-widest`}
             >
               {count}
             </span>
           </div>
         </button>
         {isExpanded && (
-          <div className="p-5 bg-white/5 space-y-4 border-t border-white/5">
+          <div className="p-5 bg-slate-50/50 space-y-4 border-t border-slate-100">
             {children}
           </div>
         )}
@@ -153,7 +153,7 @@ const DailyBreakdown = ({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header with Instructions */}
-      <div className="p-6 glass-card !bg-slate-900/20 border-white/5 relative overflow-hidden group">
+      <div className="p-6 glass-card-silk border-slate-200 relative overflow-hidden group shadow-md">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-600/5 rounded-full blur-[100px] group-hover:bg-emerald-600/10 transition-all duration-700"></div>
         <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4">
           <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
@@ -213,7 +213,7 @@ const DailyBreakdown = ({
           return (
             <div
               key={dateStr}
-              className="glass-card !bg-white/5 border-white/5 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group"
+              className="glass-card-silk !bg-white/60 border-slate-200 overflow-hidden hover:border-emerald-400 transition-all duration-300 group shadow-sm"
             >
               <button
                 onClick={() => toggleDayExpansion(dateStr)}
@@ -230,7 +230,7 @@ const DailyBreakdown = ({
                     <Calendar className="w-6 h-6" />
                   </div>
                   <div className="text-left min-w-0 flex-1">
-                    <span className="font-black text-lg text-white block tracking-tight">
+                    <span className="font-black text-lg text-slate-900 block tracking-tight">
                       {formatDateReadable(date)}
                     </span>
                     <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 flex-wrap">
@@ -269,7 +269,7 @@ const DailyBreakdown = ({
                   {activityCount === 0 && (
                     <div className="text-center py-12 bg-white/5 rounded-2xl border-2 border-dashed border-white/5">
                       <FileText className="w-16 h-16 mx-auto mb-4 text-slate-700" />
-                      <p className="font-bold text-white text-lg mb-2 px-4 tracking-tight">
+                      <p className="font-bold text-slate-900 text-lg mb-2 px-4 tracking-tight">
                         No Activity Yet
                       </p>
                       <p className="text-slate-500 text-xs px-4 font-medium uppercase tracking-widest">
@@ -294,7 +294,7 @@ const DailyBreakdown = ({
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 flex-wrap mb-2">
-                            <span className="text-xl font-black text-white tracking-tight">
+                            <span className="text-xl font-black text-slate-900 tracking-tight">
                               {formatAmount(
                                 expense.amount,
                                 currentAccount?.currency,
@@ -321,7 +321,7 @@ const DailyBreakdown = ({
                             )}
                           </div>
                           {expense.note && (
-                            <p className="text-sm text-slate-300 mb-2 leading-relaxed italic opacity-80">
+                            <p className="text-sm text-slate-600 mb-2 leading-relaxed italic opacity-80">
                               "{expense.note}"
                             </p>
                           )}
@@ -384,7 +384,7 @@ const DailyBreakdown = ({
                         className="p-4 bg-indigo-500/5 border-l-4 border-indigo-500/50 rounded-r-xl"
                       >
                         <div className="flex items-center gap-3 flex-wrap mb-2">
-                          <span className="font-black text-white tracking-tight">
+                          <span className="font-black text-slate-900 tracking-tight">
                             {shift.type.label}
                           </span>
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -438,7 +438,7 @@ const DailyBreakdown = ({
                         key={checkIn._id}
                         className="p-4 bg-emerald-500/5 border-l-4 border-emerald-500/50 rounded-r-xl"
                       >
-                        <div className="font-bold text-white mb-2 tracking-tight">
+                        <div className="font-bold text-slate-900 mb-2 tracking-tight">
                           {checkIn.member?.name || "Member"} checked in
                         </div>
                         <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
@@ -504,7 +504,7 @@ const DailyBreakdown = ({
                           className="p-4 bg-purple-500/5 border-l-4 border-purple-500/50 rounded-r-xl"
                         >
                           <div className="flex items-center gap-3 flex-wrap mb-2">
-                            <span className="font-black text-white tracking-tight">
+                            <span className="font-black text-slate-900 tracking-tight">
                               {log.member?.name || "Member"}
                             </span>
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -599,7 +599,7 @@ const DailyBreakdown = ({
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <span className="text-xl group-hover/activity:scale-125 transition-transform duration-300">{style.icon}</span>
-                            <span className="font-bold text-white tracking-tight">
+                            <span className="font-bold text-slate-900 tracking-tight">
                               {activity.description}
                             </span>
                           </div>

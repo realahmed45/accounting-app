@@ -104,7 +104,7 @@ const SubscriptionDashboard = () => {
             <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg shadow-indigo-500/20">
               <Zap className="w-6 h-6 text-white italic" />
             </div>
-            <h2 className="text-3xl font-black text-white tracking-tight uppercase italic">
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase italic">
               Neural Tier
             </h2>
           </div>
@@ -114,7 +114,7 @@ const SubscriptionDashboard = () => {
         </div>
         <button
           onClick={() => navigate("/plans")}
-          className="group flex items-center gap-4 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all hover:scale-[1.05] active:scale-[0.95] shadow-2xl"
+          className="group flex items-center gap-4 px-8 py-4 bg-white/40 hover:bg-white/60 border border-slate-200 text-slate-900 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all hover:scale-[1.05] active:scale-[0.95] shadow-sm"
         >
           <div className="p-1.5 bg-indigo-500/20 rounded-lg group-hover:scale-110 transition-transform">
             <Zap className="w-4 h-4 text-indigo-400" />
@@ -124,7 +124,7 @@ const SubscriptionDashboard = () => {
       </div>
 
       {/* Current Plan Hero Card */}
-      <div className="relative z-10 glass-modal-content p-10 overflow-hidden group">
+      <div className="relative z-10 glass-card-silk !bg-white/80 p-10 overflow-hidden group shadow-lg border-slate-200">
         {/* Animated Background Element */}
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
         
@@ -132,8 +132,8 @@ const SubscriptionDashboard = () => {
           <div className="flex-1 space-y-6">
             <div className="space-y-2">
               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.5em]">Current Protocol</p>
-              <h3 className="text-5xl font-black text-white capitalize tracking-tighter italic">
-                {subscription.currentPlan} <span className="text-indigo-500/50">Core</span>
+              <h3 className="text-5xl font-black text-slate-900 capitalize tracking-tighter italic">
+                {subscription.currentPlan} <span className="text-indigo-600/50">Core</span>
               </h3>
             </div>
             
@@ -142,19 +142,19 @@ const SubscriptionDashboard = () => {
                 <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Authorization Status</p>
                 <div className="flex items-center gap-2">
                   <div className={`w-2 h-2 rounded-full ${subscription.status === "active" ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" : "bg-rose-500 animate-pulse"}`}></div>
-                  <span className="text-xs font-black text-white uppercase tracking-widest italic">{subscription.status}</span>
+                  <span className="text-xs font-black text-slate-900 uppercase tracking-widest italic">{subscription.status}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Billing Frequency</p>
-                <div className="flex items-center gap-2 text-white">
+                <div className="flex items-center gap-2 text-slate-900">
                   <Calendar className="w-3.5 h-3.5 text-indigo-400" />
                   <span className="text-xs font-black uppercase tracking-widest italic">{subscription.billingCycle}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Next Synchronization</p>
-                <p className="text-xs font-black text-white uppercase tracking-widest italic">
+                <p className="text-xs font-black text-slate-900 uppercase tracking-widest italic">
                   {formatDate(subscription.currentPeriodEnd)}
                 </p>
               </div>
@@ -166,7 +166,7 @@ const SubscriptionDashboard = () => {
               <div className="p-6 bg-white/5 rounded-[2rem] border border-white/5 flex items-center justify-between gap-8 min-w-[240px]">
                 <div>
                   <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Neural Payment Vault</p>
-                  <p className="text-xs font-black text-white tracking-widest italic">
+                  <p className="text-xs font-black text-slate-900 tracking-widest italic">
                     {subscription.paymentMethod || "ENCRYPTED_ID"}
                   </p>
                 </div>
@@ -193,7 +193,7 @@ const SubscriptionDashboard = () => {
           ].map((stat, idx) => {
             const percentage = getUsagePercentage(stat.value, stat.limit * (stat.unit === "GB" ? 1024 : 1));
             return (
-              <div key={idx} className="glass-modal-content p-6 group hover:translate-y-[-4px] transition-all duration-500">
+              <div key={idx} className="glass-card-silk p-6 group hover:translate-y-[-4px] transition-all duration-500 shadow-sm border-slate-200">
                 <div className="flex items-center justify-between mb-6">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{stat.label}</h4>
                   <stat.icon className={`w-4 h-4 text-${stat.color}-500/50 group-hover:text-${stat.color}-400 transition-colors`} />
@@ -201,7 +201,7 @@ const SubscriptionDashboard = () => {
                 
                 <div className="mb-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-white italic tracking-tighter">{stat.value}</span>
+                    <span className="text-3xl font-black text-slate-900 italic tracking-tighter">{stat.value}</span>
                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
                       / {stat.limit === Number.MAX_SAFE_INTEGER ? "∞" : stat.limit}{stat.unit}
                     </span>
@@ -234,12 +234,12 @@ const SubscriptionDashboard = () => {
       )}
 
       {/* Feature Access Matrix */}
-      <div className="relative z-10 glass-modal-content p-10 pb-12">
+      <div className="relative z-10 glass-card-silk p-10 pb-12 shadow-sm border-slate-200">
         <div className="flex items-center gap-4 mb-10">
           <div className="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
             <CheckCircle className="w-5 h-5 text-emerald-400" />
           </div>
-          <h3 className="text-xl font-black text-white uppercase tracking-tight italic">
+          <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">
             Neural Feature Matrix
           </h3>
         </div>
@@ -262,7 +262,7 @@ const SubscriptionDashboard = () => {
                   {enabled ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
                 </div>
                 <div>
-                  <p className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${enabled ? "text-white" : "text-slate-600"}`}>
+                  <p className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${enabled ? "text-slate-900" : "text-slate-400"}`}>
                     {feature.replace(/([A-Z])/g, " $1").trim()}
                   </p>
                   <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mt-1">

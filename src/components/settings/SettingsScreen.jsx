@@ -467,28 +467,26 @@ const SettingsScreen = ({
     });
 
   return (
-    <>
-      <div className="fixed inset-0 bg-slate-950 z-[100] flex flex-col animate-fadeIn">
-        {/* Animated background elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-float pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-float pointer-events-none" style={{ animationDelay: '-2s' }} />
+    <div className="w-full min-h-screen animate-fadeIn space-y-8">
+      {/* Container redesigned for in-page use */}
+      <div className="flex flex-col space-y-8">
 
-        {/* Header */}
-        <div className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 px-6 sm:px-12 py-6 flex items-center justify-between flex-shrink-0 relative z-10">
+        {/* Header section redesigned for in-page use */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-slate-200">
           <div className="flex items-center gap-4 min-w-0">
             {settingsSection && (
               <button
                 onClick={() => setSettingsSection(null)}
-                className="p-3 hover:bg-white/5 text-slate-400 hover:text-white transition-all mr-2 rounded-2xl group"
+                className="p-3 hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-all mr-2 rounded-2xl group border border-slate-100 shadow-sm"
               >
                 <ChevronDown className="w-6 h-6 rotate-90 group-active:scale-95 transition-transform" />
               </button>
             )}
-            <div className="bg-indigo-600 p-3 rounded-2xl shadow-[0_0_20px_rgba(79,70,229,0.3)]">
-              <Settings className="w-5 h-5 text-white animate-spin-slow" />
+            <div className="bg-indigo-600 p-3 rounded-2xl shadow-xl shadow-indigo-500/20">
+              <Settings className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white tracking-widest uppercase truncate">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase truncate">
                 {settingsSection === "users" && "Neural Network"}
                 {settingsSection === "categories" && "Logic Classes"}
                 {settingsSection === "bankAccounts" && "Liquidity Nodes"}
@@ -498,7 +496,7 @@ const SettingsScreen = ({
                 {settingsSection === "notifications" && "Comm Link"}
                 {!settingsSection && "Control Center"}
               </h1>
-              <p className="text-[10px] font-black uppercase text-indigo-400 tracking-[0.4em] mt-1 opacity-70">
+              <p className="text-[10px] font-black uppercase text-indigo-600 tracking-[0.4em] mt-1 opacity-70">
                 System Profile // {settingsSection ? settingsSection.toUpperCase() : "ROOT"}
               </p>
             </div>
@@ -508,10 +506,10 @@ const SettingsScreen = ({
               setShowSettings(false);
               setSettingsSection(null);
             }}
-            className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-widest active:scale-95"
+            className="group flex items-center gap-2 px-6 py-3 bg-white/40 hover:bg-white/60 border border-slate-200 text-slate-600 hover:text-slate-900 rounded-2xl transition-all font-bold text-sm shadow-sm"
           >
-            <X className="w-5 h-5 transition-transform group-hover:rotate-90" />
-            <span>Abort Session</span>
+            <ChevronLeft className="w-4 h-4" />
+            Back to Dashboard
           </button>
         </div>
 
@@ -566,7 +564,7 @@ const SettingsScreen = ({
                     <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">
                       Ascending Node Connection
                     </p>
-                    <p className="text-xl font-black text-white tracking-widest uppercase">
+                    <p className="text-xl font-black text-slate-900 tracking-widest uppercase">
                       {parentAccount.accountName}
                     </p>
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 flex items-center gap-2">
@@ -704,7 +702,7 @@ const SettingsScreen = ({
                       {item.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-lg font-black text-white tracking-widest uppercase truncate mb-1">
+                      <div className="text-lg font-black text-slate-900 tracking-widest uppercase truncate mb-1">
                         {item.label}
                       </div>
                       <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
@@ -1796,7 +1794,7 @@ const SettingsScreen = ({
           }}
         />
       )}
-    </>
+    </div>
   );
 };
 

@@ -23,14 +23,13 @@ const Header = ({
   user,
   currentMember,
   hasPermission,
-  setShowSettings,
+  setActiveTab,
   setShowCreateAccountModal,
   logout,
   onOpenNotificationCenter,
   onShowOnboarding,
   expenses = [],
   onExpenseClick,
-  onShowReports,
   toggleSidebar,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +62,7 @@ const Header = ({
       : [];
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/50 backdrop-blur-xl border-b border-white/5 py-4 px-6">
+    <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5 py-4 px-6 shadow-2xl">
       <div className="flex items-center justify-between gap-6 max-w-[1600px] mx-auto">
         {/* Left: Mobile Toggle & Breadcrumbs/Title */}
         <div className="flex items-center gap-4">
@@ -75,8 +74,11 @@ const Header = ({
           </button>
           
           <div className="hidden sm:block">
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              Accounting <span className="text-indigo-500">.</span>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span className="bg-indigo-500/10 text-indigo-400 p-1.5 rounded-lg border border-indigo-500/20">
+                <Wallet className="w-5 h-5" />
+              </span>
+              Neural <span className="text-indigo-500 font-extrabold">Portal</span>
             </h1>
           </div>
         </div>
@@ -87,14 +89,14 @@ const Header = ({
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
             <input
               type="text"
-              placeholder="Search anything... (e.g. 'Coffee', '$50')"
+              placeholder="Search financial neural path... (e.g. 'Coffee', '$50')"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setShowSearchResults(true);
               }}
               onFocus={() => setShowSearchResults(true)}
-              className="w-full pl-11 pr-11 py-2.5 bg-white/5 border border-white/10 hover:border-white/20 focus:border-indigo-500/50 rounded-2xl text-sm transition-all focus:ring-4 focus:ring-indigo-500/10"
+              className="w-full pl-11 pr-11 py-2.5 bg-white/5 border border-white/10 hover:border-white/20 focus:border-indigo-500/50 rounded-2xl text-sm transition-all focus:ring-4 focus:ring-indigo-500/10 text-white placeholder:text-slate-600"
             />
             {searchQuery && (
               <button
@@ -108,7 +110,7 @@ const Header = ({
 
           {/* Search Results Dropdown */}
           {showSearchResults && searchQuery.length >= 2 && (
-            <div className="absolute top-full mt-3 w-full glass-card overflow-hidden z-50 animate-fade-in">
+            <div className="absolute top-full mt-3 w-full glass-panel border border-white/10 overflow-hidden z-50 animate-fade-in shadow-2xl bg-slate-900/90 backdrop-blur-3xl">
               {searchResults.length > 0 ? (
                 <div className="p-2">
                   <p className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
@@ -141,8 +143,8 @@ const Header = ({
                   ))}
                 </div>
               ) : (
-                <div className="p-8 text-center">
-                  <p className="text-slate-400 text-sm font-medium">No results found for "{searchQuery}"</p>
+                <div className="p-8 text-center text-slate-400">
+                  <p className="text-sm tracking-wide">No neural records found for "{searchQuery}"</p>
                 </div>
               )}
             </div>
@@ -152,8 +154,8 @@ const Header = ({
         {/* Right: Actions */}
         <div className="flex items-center gap-3">
           <button
-            onClick={onShowReports}
-            className="hidden md:flex btn-primary !py-2 !px-4 !text-sm"
+            onClick={() => setActiveTab("reports")}
+            className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-500 shadow-lg shadow-indigo-500/20 text-white rounded-xl text-sm font-bold hover:scale-105 transition-all"
           >
             <BarChart3 className="w-4 h-4" />
             Reports
@@ -164,14 +166,14 @@ const Header = ({
           <NotificationBell onOpenCenter={onOpenNotificationCenter} />
 
           <button
-            onClick={() => setShowSettings(true)}
+            onClick={() => setActiveTab("settings")}
             className="p-2.5 hover:bg-white/5 text-slate-400 hover:text-white rounded-xl transition-all border border-transparent hover:border-white/10"
           >
             <Settings className="w-5 h-5" />
           </button>
 
-          <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-sky-400 p-[1px] hidden sm:block">
-            <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-sky-400 p-[1.5px] hidden sm:block">
+            <div className="w-full h-full rounded-[10px] bg-slate-950 flex items-center justify-center">
               <User className="w-4 h-4 text-indigo-400" />
             </div>
           </div>

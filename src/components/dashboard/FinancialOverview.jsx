@@ -53,9 +53,9 @@ const FinancialOverview = ({
       {/* Main Financial Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 p-3 sm:p-6">
         {/* Bank Balance Card */}
-        <div className="glass-card group relative overflow-hidden transition-all duration-500 border-white/5 hover:border-indigo-500/30">
+        <div className="glass-card-silk group relative overflow-hidden transition-all duration-500 hover:border-indigo-500/30">
           {/* Animated Background Glow */}
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] group-hover:bg-indigo-600/20 transition-all duration-700"></div>
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-[100px] group-hover:bg-indigo-500/10 transition-all duration-700"></div>
 
           <div className="relative p-4 sm:p-6">
             {/* Header */}
@@ -86,7 +86,7 @@ const FinancialOverview = ({
               onClick={() => setActiveModal("bankAccounts")}
               className="w-full text-left mb-3 sm:mb-4 group/amount"
             >
-              <div className="text-3xl sm:text-4xl font-black text-white tracking-tight group-hover/amount:text-indigo-400 transition-colors mb-1 truncate">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight group-hover/amount:text-indigo-600 transition-colors mb-1 truncate">
                 {formatAmount(bankBalance, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">
@@ -126,9 +126,9 @@ const FinancialOverview = ({
         </div>
 
         {/* Cash Box Card */}
-        <div className="glass-card group relative overflow-hidden transition-all duration-500 border-white/5 hover:border-emerald-500/30">
+        <div className="glass-card-silk group relative overflow-hidden transition-all duration-500 hover:border-emerald-500/30">
           {/* Animated Background Glow */}
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-600/10 rounded-full blur-[100px] group-hover:bg-emerald-600/20 transition-all duration-700"></div>
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 rounded-full blur-[100px] group-hover:bg-emerald-500/10 transition-all duration-700"></div>
 
           <div className="relative p-4 sm:p-6">
             {/* Header */}
@@ -155,7 +155,7 @@ const FinancialOverview = ({
 
             {/* Amount Display */}
             <div className="mb-3 sm:mb-4">
-              <div className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-1 truncate">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-1 truncate">
                 {formatAmount(cashBalance, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">
@@ -177,9 +177,9 @@ const FinancialOverview = ({
         </div>
 
         {/* Total Expenses Card */}
-        <div className="glass-card group relative overflow-hidden transition-all duration-500 border-white/5 hover:border-rose-500/30">
+        <div className="glass-card-silk group relative overflow-hidden transition-all duration-500 hover:border-rose-500/30">
           {/* Animated Background Glow */}
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-rose-600/10 rounded-full blur-[100px] group-hover:bg-rose-600/20 transition-all duration-700"></div>
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-rose-500/5 rounded-full blur-[100px] group-hover:bg-rose-500/10 transition-all duration-700"></div>
 
           <div className="relative p-4 sm:p-6">
             {/* Header */}
@@ -207,7 +207,7 @@ const FinancialOverview = ({
 
             {/* Amount Display */}
             <div className="mb-3 sm:mb-4">
-              <div className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-1 truncate">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-1 truncate">
                 {formatAmount(totalExpenses, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">

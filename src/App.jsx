@@ -15,11 +15,10 @@ import ToastNotification from "./components/layout/ToastNotification";
 import OnboardingTour from "./components/layout/OnboardingTour";
 import NotificationCenter from "./components/NotificationCenter";
 import NotificationSettings from "./components/NotificationSettings";
-import FinancialOverview from "./components/dashboard/FinancialOverview";
-import DailyBreakdown from "./components/dashboard/DailyBreakdown";
-import SettingsScreen from "./components/settings/SettingsScreen";
-import ReportsScreen from "./components/ReportsScreen"; // NEW
-import QuickStatsWidget from "./components/QuickStatsWidget"; // NEW
+import ReportsScreen from "./components/ReportsScreen";
+import RecurringExpenseManager from "./components/RecurringExpenseManager";
+import SubscriptionDashboard from "./components/SubscriptionDashboard";
+import QuickStatsWidget from "./components/QuickStatsWidget";
 import {
   weekService,
   expenseService,
@@ -1292,8 +1291,6 @@ function App() {
   const weekStartDate = new Date(currentWeek.startDate);
   const weekEndDate = new Date(currentWeek.endDate);
   const weekDates = getWeekDates(weekStartDate);
-  const canOpenAddExpense =
-    !currentWeek.isLocked && hasPermission("makeExpense");
   const showMobileBottomNav =
     !showSettings &&
     !showReports &&
@@ -1303,6 +1300,92 @@ function App() {
     !activeModal &&
     !showCreateAccountModal &&
     !selectedExpenseForPhoto;
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "dashboard":
+        return (
+          <>
+            <QuickStatsWidget expenses={expenses} weekDates={weekDates} />
+            <FinancialOverview
+              bankAccounts={bankAccounts}
+              currentWeek={currentWeek}
+              hasPermission={hasPermission}
+              setActiveModal={setActiveModal}
+              getExpectedBankAmount={getExpectedBankAmount}
+              getExpectedCashAmount={getExpectedCashAmount}
+              getTotalExpenses={getTotalExpenses}
+              expenses={expenses}
+              currentAccount={currentAccount}
+              formatAmount={formatAmount}
+            />
+            <DailyBreakdown
+              weekDates={weekDates}
+              formatDate={formatDate}
+              formatDateReadable={formatDateReadable}
+              getExpensesForDate={getExpensesForDate}
+              getDayTotal={getDayTotal}
+              expandedDays={expandedDays}
+              toggleDayExpansion={toggleDayExpansion}
+              setSelectedExpenseForPhoto={setSelectedExpenseForPhoto}
+              currentAccount={currentAccount}
+              formatAmount={formatAmount}
+              handleDeleteExpense={handleDeleteExpense}
+              currentWeek={currentWeek}
+              hasPermission={hasPermission}
+              bankAccounts={bankAccounts}
+              dailyActivity={dailyActivity}
+            />
+          </>
+        );
+      case "accounting":
+        return (
+          <div className="space-y-8">
+            <RecurringExpenseManager accountId={currentAccount?._id} />
+            <SubscriptionDashboard accountId={currentAccount?._id} />
+          </div>
+        );
+      case "schedule":
+        return (
+          <ScheduleScreen
+            accountId={currentAccount?._id}
+            currentMember={currentMember}
+            onClose={() => setActiveTab("dashboard")}
+          />
+        );
+      case "reports":
+        return (
+          <ReportsScreen
+            onClose={() => setActiveTab("dashboard")}
+            expenses={expenses}
+            categories={categories}
+            people={people}
+          />
+        );
+      case "settings":
+        return (
+          <SettingsScreen
+            user={user}
+            currentAccount={currentAccount}
+            currentMember={currentMember}
+            hasPermission={hasPermission}
+            categories={categories}
+            bankAccounts={bankAccounts}
+            addCategory={addCategory}
+            setShowSettings={setShowSettings}
+            setActiveModal={setActiveModal}
+            getExpectedBankAmount={getExpectedBankAmount}
+            runIfAllowed={runIfAllowed}
+            formatAmount={formatAmount}
+            onOpenNotificationSettings={() => {
+              setShowNotificationSettings(true);
+            }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 font-inter text-slate-300 antialiased overflow-x-hidden">
@@ -1323,7 +1406,7 @@ function App() {
           user={user}
           currentMember={currentMember}
           hasPermission={hasPermission}
-          setShowSettings={setShowSettings}
+          setActiveTab={setActiveTab}
           setShowCreateAccountModal={setShowCreateAccountModal}
           logout={logout}
           onOpenNotificationCenter={openNotificationCenter}
@@ -1332,7 +1415,6 @@ function App() {
           onExpenseClick={(expense) => {
             console.log("Navigate to expense:", expense);
           }}
-          onShowReports={() => setShowReports(true)}
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
 
@@ -1347,333 +1429,12 @@ function App() {
           />
         )}
 
-        <main className="p-4 lg:p-8 max-w-[1600px] mx-auto">
-        {/* Top Action Bar - Modern Design */}
-        <div className="bg-white shadow-sm border-b border-slate-200 px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-3">
-            <h2 className="text-base sm:text-xl font-bold text-slate-800">
-              {showHistoryTab
-                ? "📋 Activity History"
-                : showSchedule
-                  ? "📅 Schedule View"
-                  : "💰 Dashboard"}
-            </h2>
+        <main className={`flex-1 transition-all duration-500 overflow-hidden`}>
+          <div className="silk-container p-4 lg:p-8">
+            {renderContent()}
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setShowHistoryTab(!showHistoryTab)}
-              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm hover:shadow-md text-sm sm:text-base ${
-                showHistoryTab
-                  ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-lg"
-                  : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-              }`}
-            >
-              <History className="w-5 h-5" />
-              <span className="hidden sm:inline">Activity Feed</span>
-            </button>
-
-            <button
-              onClick={() => setShowSchedule(true)}
-              className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 hover:shadow-lg text-sm sm:text-base"
-            >
-              <Calendar className="w-5 h-5" />
-              <span className="hidden sm:inline">Schedule</span>
-            </button>
-          </div>
-        </div>
-
-        {showHistoryTab ? (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sm:p-8 m-6">
-            <h2 className="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-              <div className="bg-slate-900 p-3 rounded-xl">
-                <History className="w-8 h-8 text-white" />
-              </div>
-              Activity History
-            </h2>
-
-            {/* Activity Timeline */}
-            <div className="space-y-4">
-              {expenses.length === 0 &&
-                (!currentWeek?.cashTransactions ||
-                  currentWeek.cashTransactions.length === 0) && (
-                  <div className="text-center py-16 text-slate-400">
-                    <FileText className="w-20 h-20 mx-auto mb-4 opacity-30" />
-                    <p className="text-lg font-medium">No activities yet</p>
-                    <p className="text-sm mt-2">
-                      Start adding expenses, transfers, or cash to see activity
-                      history
-                    </p>
-                  </div>
-                )}
-
-              {/* Build unified activity list: expenses + cash transactions */}
-              {Object.entries(
-                [
-                  ...expenses.map((e) => ({
-                    type: "expense",
-                    data: e,
-                    timestamp: new Date(e.createdAt || e.date),
-                  })),
-                  ...(currentWeek?.cashTransactions || []).map((ct) => ({
-                    type: "cash",
-                    data: ct,
-                    timestamp: new Date(ct.createdAt || ct.date),
-                  })),
-                ]
-                  .sort((a, b) => b.timestamp - a.timestamp)
-                  .reduce((groups, activity) => {
-                    const date = formatDate(activity.timestamp);
-                    if (!groups[date]) groups[date] = [];
-                    groups[date].push(activity);
-                    return groups;
-                  }, {}),
-              ).map(([date, activities]) => (
-                <div
-                  key={date}
-                  className="border-l-4 border-slate-300 pl-6 pb-6"
-                >
-                  <div className="sticky top-0 bg-white pb-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <Calendar className="w-5 h-5 text-emerald-600" />
-                      <h3 className="text-lg font-bold text-slate-800">
-                        {formatDateReadable(new Date(date))}
-                      </h3>
-                      <span className="text-sm text-slate-500">
-                        ({activities.length} activities)
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {activities.map((activity, idx) => {
-                      if (activity.type === "expense") {
-                        const exp = activity.data;
-                        return (
-                          <div
-                            key={idx}
-                            className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-slate-300"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-red-50 p-2 rounded-lg">
-                                    <Receipt className="w-4 h-4 text-red-600" />
-                                  </div>
-                                  <span className="font-semibold text-slate-800">
-                                    Expense
-                                  </span>
-                                  <span className="text-xl font-bold text-red-600">
-                                    -
-                                    {formatAmount(
-                                      exp.amount,
-                                      currentAccount?.currency,
-                                    ).substring(
-                                      getCurrencySymbol(
-                                        currentAccount?.currency,
-                                      ).length,
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-2 ml-10">
-                                  <span className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">
-                                    {exp.category}
-                                  </span>
-                                  {exp.paymentSource === "bank" &&
-                                    exp.bankAccountId && (
-                                      <span className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
-                                        <CreditCard className="w-3 h-3" />
-                                        {bankAccounts.find(
-                                          (ba) => ba._id === exp.bankAccountId,
-                                        )?.name || "Bank"}
-                                      </span>
-                                    )}
-                                  {exp.paymentSource === "cash" && (
-                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
-                                      💵 Cash
-                                    </span>
-                                  )}
-                                </div>
-                                {exp.note && (
-                                  <p className="text-sm text-slate-600 mt-2 ml-10">
-                                    {exp.note}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                {formatTime(activity.timestamp)}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      if (activity.type === "cash") {
-                        const ct = activity.data;
-                        return (
-                          <div
-                            key={idx}
-                            className="bg-white border border-emerald-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-emerald-300"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-emerald-50 p-2 rounded-lg">
-                                    <Wallet className="w-4 h-4 text-emerald-600" />
-                                  </div>
-                                  <span className="font-semibold text-slate-800">
-                                    Cash Added
-                                  </span>
-                                  <span className="text-xl font-bold text-green-600">
-                                    +
-                                    {formatAmount(
-                                      ct.amount,
-                                      currentAccount?.currency,
-                                    ).substring(
-                                      getCurrencySymbol(
-                                        currentAccount?.currency,
-                                      ).length,
-                                    )}
-                                  </span>
-                                </div>
-                                {ct.note && (
-                                  <p className="text-sm text-gray-600 mt-1 ml-10">
-                                    {ct.note}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {formatTime(activity.timestamp)}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      return null;
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Week Navigation */}
-            <div className="bg-white border-b border-slate-200 p-6 mb-0">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-emerald-600 p-3 rounded-xl">
-                    <Calendar className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-900">
-                      Week {currentWeekIndex + 1} of {weeks.length}
-                    </h2>
-                    <p className="text-sm text-slate-600">
-                      {formatDateReadable(weekStartDate)} -{" "}
-                      {formatDateReadable(weekEndDate)}
-                    </p>
-                  </div>
-                </div>
-                {currentWeek.isLocked && (
-                  <span className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-semibold">
-                    <Lock className="w-4 h-4" />
-                    Locked
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-3 flex-wrap">
-                <button
-                  onClick={() =>
-                    setCurrentWeekIndex(Math.max(0, currentWeekIndex - 1))
-                  }
-                  disabled={currentWeekIndex === 0}
-                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
-                >
-                  <ChevronDown className="w-4 h-4 rotate-90" />
-                  Previous Week
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentWeekIndex(
-                      Math.min(weeks.length - 1, currentWeekIndex + 1),
-                    )
-                  }
-                  disabled={currentWeekIndex === weeks.length - 1}
-                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
-                >
-                  Next Week
-                  <ChevronUp className="w-4 h-4 rotate-90" />
-                </button>
-                {currentWeekIndex === 0 && !currentWeek.isLocked && (
-                  <button
-                    onClick={createNewWeek}
-                    className="px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2 font-semibold rounded-xl transition-all"
-                  >
-                    <Plus className="w-5 h-5" />
-                    New Week
-                  </button>
-                )}
-                {!currentWeek.isLocked && hasPermission("makeExpense") && (
-                  <button
-                    onClick={() => setActiveModal("lockWeek")}
-                    className="px-5 py-2.5 bg-yellow-500 text-white hover:bg-yellow-600 flex items-center gap-2 ml-auto font-semibold rounded-xl transition-all"
-                  >
-                    <Lock className="w-5 h-5" />
-                    Lock Week
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Stats Widget - NEW VISIBLE FEATURE */}
-            <div className="px-6 pt-6">
-              <QuickStatsWidget expenses={expenses} weekDates={weekDates} />
-            </div>
-
-            <FinancialOverview
-              bankAccounts={bankAccounts}
-              currentWeek={currentWeek}
-              hasPermission={hasPermission}
-              setActiveModal={setActiveModal}
-              getExpectedBankAmount={getExpectedBankAmount}
-              getExpectedCashAmount={getExpectedCashAmount}
-              getTotalExpenses={getTotalExpenses}
-              expenses={expenses}
-              currentAccount={currentAccount}
-              formatAmount={formatAmount}
-            />
-
-            <DailyBreakdown
-              weekDates={weekDates}
-              formatDate={formatDate}
-              formatDateReadable={formatDateReadable}
-              getExpensesForDate={getExpensesForDate}
-              getDayTotal={getDayTotal}
-              expandedDays={expandedDays}
-              toggleDayExpansion={toggleDayExpansion}
-              setSelectedExpenseForPhoto={setSelectedExpenseForPhoto}
-              currentAccount={currentAccount}
-              formatAmount={formatAmount}
-              handleDeleteExpense={handleDeleteExpense}
-              currentWeek={currentWeek}
-              hasPermission={hasPermission}
-              bankAccounts={bankAccounts}
-              dailyActivity={dailyActivity}
-            />
-          </>
-        )}
         </main>
-        {/* Reports Screen - NEW VISIBLE FEATURE */}
-      {showReports && (
-        <ReportsScreen
-          onClose={() => setShowReports(false)}
-          expenses={expenses}
-          categories={categories}
-          people={people}
-        />
-      )}
+      </div>
       {/* Mobile Bottom Navigation */}
       {showMobileBottomNav && (
         <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
@@ -3261,28 +3022,6 @@ function App() {
           onClose={() => setSelectedExpenseForPhoto(null)}
         />
       )}
-      {/* ==================== SETTINGS SCREENnn ==================== */}
-      {showSettings && (
-        <SettingsScreen
-          user={user}
-          currentAccount={currentAccount}
-          currentMember={currentMember}
-          hasPermission={hasPermission}
-          categories={categories}
-          bankAccounts={bankAccounts}
-          addCategory={addCategory}
-          setShowSettings={setShowSettings}
-          setActiveModal={setActiveModal}
-          getExpectedBankAmount={getExpectedBankAmount}
-          runIfAllowed={runIfAllowed}
-          formatAmount={formatAmount}
-          onOpenNotificationSettings={() => {
-            setShowSettings(false);
-            setShowNotificationSettings(true);
-          }}
-        />
-      )}{" "}
-      {/* end settings */}
       {/* ==================== MODALS ==================== */}
       <PasswordGate
         isOpen={passwordGateOpen}
@@ -3298,14 +3037,6 @@ function App() {
           setPendingGateAction(null);
         }}
       />
-      {/* Schedule Screen */}
-      {showSchedule && (
-        <ScheduleScreen
-          accountId={currentAccount?._id}
-          currentMember={currentMember}
-          onClose={() => setShowSchedule(false)}
-        />
-      )}
       {/* Notification Center Modal */}
       {showNotificationCenter && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -3426,7 +3157,6 @@ function App() {
           onClose={() => setShowUpgradePrompt(false)}
         />
       )}
-      </div>
     </div>
   );
 }

@@ -132,34 +132,36 @@ const ReportsScreen = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xl flex items-center justify-center z-[100] p-4 overflow-y-auto animate-fadeIn font-inter">
-      <div className="glass-card w-full max-w-7xl max-h-[90vh] overflow-hidden border-white/5 flex flex-col">
-        {/* Header */}
-        <div className="bg-white/5 border-b border-white/5 px-8 py-6 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="bg-indigo-600 p-3 rounded-xl shadow-lg shadow-indigo-500/20">
-              <BarChart3 className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h2 className="text-3xl font-black text-white tracking-tighter uppercase">
-                Analytics Hub
-              </h2>
-              <p className="text-slate-400 text-xs font-black tracking-widest mt-1 opacity-70">
-                Visualizing Spending Intelligence
-              </p>
-            </div>
+    <div className="w-full min-h-screen animate-fadeIn space-y-8">
+      {/* Header section redesigned for in-page use */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-slate-200">
+        <div className="flex items-center gap-4">
+          <div className="bg-indigo-600 p-3 rounded-xl shadow-lg shadow-indigo-500/20">
+            <BarChart3 className="w-8 h-8 text-white" />
           </div>
-          <button
-            onClick={onClose}
-            className="p-3 bg-white/5 hover:bg-rose-500/20 rounded-xl transition-all text-slate-400 hover:text-rose-400 border border-white/5"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">
+              Analytics <span className="text-indigo-600">Hub</span>
+            </h2>
+            <p className="text-slate-500 text-xs font-black tracking-widest mt-1 opacity-70">
+              Visualizing Spending Intelligence
+            </p>
+          </div>
         </div>
+        <button
+          onClick={onClose}
+          className="group flex items-center gap-2 px-6 py-3 bg-white/40 hover:bg-white/60 border border-slate-200 text-slate-600 hover:text-slate-900 rounded-2xl transition-all font-bold text-sm shadow-sm"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to Dashboard
+        </button>
+      </div>
 
-        <div className="p-8 overflow-y-auto scrollbar-hide">
+      <div className="space-y-8">
+
+        <div className="p-0 overflow-y-auto scrollbar-hide">
           {/* Filters */}
-          <div className="flex flex-wrap gap-6 mb-10 items-center bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+          <div className="flex flex-wrap gap-6 mb-10 items-center bg-white/40 p-6 rounded-2xl border border-slate-200 backdrop-blur-md shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-indigo-400" />
@@ -170,7 +172,7 @@ const ReportsScreen = ({
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="bg-slate-900/50 text-white px-4 py-2.5 rounded-xl border border-white/10 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-indigo-500 transition-all"
+                className="bg-white/60 text-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-indigo-500 transition-all shadow-sm"
               >
                 <option value="7">Last 7 days</option>
                 <option value="14">Last 14 days</option>
@@ -191,7 +193,7 @@ const ReportsScreen = ({
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-900/50 text-white px-4 py-2.5 rounded-xl border border-white/10 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-purple-500 transition-all"
+                className="bg-white/60 text-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-purple-500 transition-all shadow-sm"
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => {
@@ -216,7 +218,7 @@ const ReportsScreen = ({
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div className="glass-card p-6 border-l-4 border-l-indigo-500 bg-indigo-500/5 group">
+            <div className="glass-card-silk p-6 border-l-4 border-l-indigo-600 bg-white shadow-sm group">
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-indigo-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
                   <DollarSign className="w-6 h-6 text-indigo-400" />
@@ -226,7 +228,7 @@ const ReportsScreen = ({
               <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
                 Aggregate Spending
               </p>
-              <p className="text-4xl font-black text-white tracking-tighter">
+              <p className="text-4xl font-black text-slate-900 tracking-tighter">
                 ${stats.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
               <p className="text-indigo-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
@@ -234,7 +236,7 @@ const ReportsScreen = ({
               </p>
             </div>
 
-            <div className="glass-card p-6 border-l-4 border-l-purple-500 bg-purple-500/5 group">
+            <div className="glass-card-silk p-6 border-l-4 border-l-purple-600 bg-white shadow-sm group">
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-purple-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
                   <BarChart3 className="w-6 h-6 text-purple-400" />
@@ -244,13 +246,13 @@ const ReportsScreen = ({
               <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
                 Transaction Volume
               </p>
-              <p className="text-4xl font-black text-white tracking-tighter">{stats.count}</p>
+              <p className="text-4xl font-black text-slate-900 tracking-tighter">{stats.count}</p>
               <p className="text-purple-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
                 Verified Records
               </p>
             </div>
 
-            <div className="glass-card p-6 border-l-4 border-l-emerald-500 bg-emerald-500/5 group">
+            <div className="glass-card-silk p-6 border-l-4 border-l-emerald-600 bg-white shadow-sm group">
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-emerald-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
                   <TrendingDown className="w-6 h-6 text-emerald-400" />
@@ -260,7 +262,7 @@ const ReportsScreen = ({
               <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
                 Average Value
               </p>
-              <p className="text-4xl font-black text-white tracking-tighter">
+              <p className="text-4xl font-black text-slate-900 tracking-tighter">
                 ${stats.average.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
               <p className="text-emerald-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
@@ -277,7 +279,7 @@ const ReportsScreen = ({
                 <div className="bg-amber-500/20 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-500">
                   <Tag className="w-6 h-6 text-amber-500" />
                 </div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
                   Sector Distribution
                 </h3>
               </div>
@@ -301,7 +303,7 @@ const ReportsScreen = ({
                             {category}
                           </span>
                           <div className="text-right flex items-baseline gap-2">
-                            <span className="text-white font-black text-lg tracking-tighter">
+                            <span className="text-slate-900 font-black text-lg tracking-tighter">
                               ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                             <span className="text-slate-500 font-bold text-[10px] uppercase">
@@ -339,7 +341,7 @@ const ReportsScreen = ({
                 <div className="bg-blue-500/20 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-500">
                   <Users className="w-6 h-6 text-blue-500" />
                 </div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
                   Elite Contributors
                 </h3>
               </div>
@@ -361,7 +363,7 @@ const ReportsScreen = ({
                         <div className="flex items-center justify-between mb-2.5">
                           <span className="text-slate-300 font-black text-xs uppercase tracking-widest">{person}</span>
                           <div className="text-right flex items-baseline gap-2">
-                            <span className="text-white font-black text-lg tracking-tighter">
+                            <span className="text-slate-900 font-black text-lg tracking-tighter">
                               ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                             <span className="text-slate-500 font-bold text-[10px] uppercase">
@@ -395,13 +397,13 @@ const ReportsScreen = ({
           </div>
 
           {/* All Categories Table */}
-          <div className="glass-panel p-8 mb-4">
+          <div className="glass-card-silk p-8 mb-4 border-slate-200 shadow-sm bg-white/60">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="bg-purple-500/20 p-2.5 rounded-xl">
                   <PieChart className="w-6 h-6 text-purple-400" />
                 </div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
                   Comprehensive Breakdown
                 </h3>
               </div>
@@ -425,29 +427,29 @@ const ReportsScreen = ({
                       return (
                         <tr
                           key={category}
-                          className="group bg-white/5 hover:bg-white/[0.08] transition-all duration-300"
+                          className="group bg-white/40 hover:bg-white/60 transition-all duration-300"
                         >
-                          <td className="py-5 px-6 rounded-l-2xl border-y border-l border-white/5 group-hover:border-white/10">
+                          <td className="py-5 px-6 rounded-l-2xl border-y border-l border-slate-200 group-hover:border-indigo-200">
                             <div className="flex items-center gap-3">
                               <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
-                              <span className="text-white font-bold tracking-tight">
+                              <span className="text-slate-900 font-bold tracking-tight">
                                 {category}
                               </span>
                             </div>
                           </td>
-                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10 font-black text-slate-400 text-xs">
+                          <td className="text-right py-5 px-6 border-y border-slate-200 group-hover:border-indigo-200 font-black text-slate-500 text-xs">
                             {data.count}
                           </td>
-                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10">
-                            <span className="text-white font-black tracking-tighter text-lg">
+                          <td className="text-right py-5 px-6 border-y border-slate-200 group-hover:border-indigo-200">
+                            <span className="text-slate-900 font-black tracking-tighter text-lg">
                               ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                           </td>
-                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10 font-bold text-slate-400 text-xs">
+                          <td className="text-right py-5 px-6 border-y border-slate-200 group-hover:border-indigo-200 font-bold text-slate-500 text-xs">
                             ${(data.total / data.count).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
-                          <td className="text-right py-5 px-6 rounded-r-2xl border-y border-r border-white/5 group-hover:border-white/10">
-                            <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-black tracking-widest">
+                          <td className="text-right py-5 px-6 rounded-r-2xl border-y border-r border-slate-200 group-hover:border-indigo-200">
+                            <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg text-xs font-black tracking-widest">
                               {percentage.toFixed(1)}%
                             </span>
                           </td>

@@ -79,26 +79,20 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
   }, [activeTab]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950 font-inter text-slate-300 flex flex-col overflow-y-auto scrollbar-hide">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/10 rounded-full blur-[120px]"></div>
-      </div>
-
-      {/* Header Container */}
-      <div className="sticky top-0 z-[110] bg-slate-900/50 backdrop-blur-xl border-b border-white/5 px-4 md:px-12 py-6 flex items-center justify-between shrink-0">
+    <div className="w-full min-h-screen animate-fadeIn space-y-8">
+      {/* Header section redesigned as an in-page title */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-slate-200">
         <div className="flex items-center gap-5">
-          <div className="bg-indigo-600 p-3.5 rounded-2xl shadow-xl shadow-indigo-500/20 transform hover:rotate-6 transition-transform">
+          <div className="bg-indigo-600 p-3.5 rounded-2xl shadow-xl shadow-indigo-500/20">
             <Calendar className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-black text-white tracking-widest uppercase">
-              Schedule <span className="text-indigo-400">Hub</span>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">
+              Schedule <span className="text-indigo-600">Hub</span>
             </h1>
             <div className="flex items-center gap-2.5 mt-1.5">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]" />
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em]">
                 Live Ecosystem Sync
               </p>
             </div>
@@ -107,39 +101,36 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
 
         <button
           onClick={onClose}
-          className="group p-4 bg-white/5 hover:bg-rose-500/20 rounded-2xl transition-all duration-500 border border-white/5 hover:border-rose-500/30"
+          className="group flex items-center gap-2 px-6 py-3 bg-white/40 hover:bg-white/60 border border-slate-200 text-slate-600 hover:text-slate-900 rounded-2xl transition-all font-bold text-sm"
         >
-          <X className="w-6 h-6 text-slate-400 group-hover:text-white transition-colors" />
+          <ChevronLeft className="w-4 h-4" />
+          Back to Dashboard
         </button>
       </div>
 
-      {/* Main Context Grid */}
-      {/* Main Context Grid */}
-      <div className="flex-1 flex flex-col items-center relative z-10">
-        <div className="w-full max-w-7xl px-4 md:px-12 py-10">
-          {/* Navigation Bar - Floating Design */}
-          <div className="flex justify-center mb-16">
-            <div className="bg-white/5 backdrop-blur-xl p-2 rounded-2xl border border-white/10 shadow-2xl flex gap-2 items-center">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-10 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-500 ${
-                    activeTab === tab.id
-                      ? "text-white bg-indigo-600 shadow-[0_10px_20px_rgba(79,70,229,0.3)] scale-[1.02]"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <div
-                    className={`transition-transform duration-500 ${activeTab === tab.id ? "scale-125 rotate-6" : "group-hover:scale-110"}`}
-                  >
-                    {tab.icon}
-                  </div>
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* Navigation Bar - Floating Design */}
+      <div className="flex justify-start mb-8 overflow-x-auto pb-4 scrollbar-hide">
+        <div className="bg-white/40 backdrop-blur-xl p-2 rounded-2xl border border-slate-200 shadow-sm flex gap-2 items-center">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-3 px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "text-white bg-indigo-600 shadow-lg scale-[1.02]"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-white/40"
+              }`}
+            >
+              <div
+                className={`transition-transform duration-500 ${activeTab === tab.id ? "scale-110" : "group-hover:scale-110"}`}
+              >
+                {tab.icon}
+              </div>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
           {/* 🎯 INTELLIGENCE BANNER */}
           {showHelp && (
@@ -150,9 +141,9 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-                      Scheduling Intelligence Hub
-                    </h3>
+                  <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-3">
+                    Scheduling Intelligence Hub
+                  </h3>
                     <button
                       onClick={() => setShowHelp(false)}
                       className="text-slate-500 hover:text-rose-400 p-2 rounded-xl border border-white/5 hover:bg-rose-500/10 transition-all"
@@ -171,15 +162,15 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
                         <div className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all">
                           <div className="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-black text-xs">1</div>
                           <div>
-                            <p className="text-white font-bold text-sm tracking-tight">Workstream Vision</p>
-                            <p className="text-slate-400 text-xs mt-1">Real-time visualization of your allocated work cycles and upcoming shifts.</p>
+                            <p className="text-slate-900 font-bold text-sm tracking-tight">Workstream Vision</p>
+                            <p className="text-slate-600 text-xs mt-1">Real-time visualization of your allocated work cycles and upcoming shifts.</p>
                           </div>
                         </div>
                         <div className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all">
                           <div className="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-black text-xs">2</div>
                           <div>
-                            <p className="text-white font-bold text-sm tracking-tight">Biometric Verification</p>
-                            <p className="text-slate-400 text-xs mt-1">Secure check-in/out protocols with GPS and camera-integrated attendance tracking.</p>
+                            <p className="text-slate-900 font-bold text-sm tracking-tight">Biometric Verification</p>
+                            <p className="text-slate-600 text-xs mt-1">Secure check-in/out protocols with GPS and camera-integrated attendance tracking.</p>
                           </div>
                         </div>
                       </div>
@@ -195,15 +186,15 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
                           <div className="flex items-start gap-4 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 hover:border-emerald-500/20 transition-all">
                             <div className="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-black text-xs">A</div>
                             <div>
-                              <p className="text-white font-bold text-sm tracking-tight">Roster Orchestration</p>
-                              <p className="text-slate-400 text-xs mt-1">Architect complex work schedules, assign team members, and optimize coverage.</p>
+                              <p className="text-slate-900 font-bold text-sm tracking-tight">Roster Orchestration</p>
+                              <p className="text-slate-600 text-xs mt-1">Architect complex work schedules, assign team members, and optimize coverage.</p>
                             </div>
                           </div>
                           <div className="flex items-start gap-4 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 hover:border-emerald-500/20 transition-all">
                             <div className="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-black text-xs">B</div>
                             <div>
-                              <p className="text-white font-bold text-sm tracking-tight">Velocity Reports</p>
-                              <p className="text-slate-400 text-xs mt-1">Deep analytics on punctuality, attendance trends, and overtime distribution.</p>
+                              <p className="text-slate-900 font-bold text-sm tracking-tight">Velocity Reports</p>
+                              <p className="text-slate-600 text-xs mt-1">Deep analytics on punctuality, attendance trends, and overtime distribution.</p>
                             </div>
                           </div>
                         </div>
@@ -301,8 +292,6 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
               <ScheduleReportsPanel accountId={accountId} />
             )}
           </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -117,25 +117,27 @@ const NotificationSettings = ({ onClose }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24 sm:pb-0">
+    <div className="min-h-screen bg-[#020617] text-slate-300 font-inter selection:bg-indigo-500/30 pb-24 sm:pb-12">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <div className="glass-header sticky top-0 z-[60] py-6">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 active:scale-95 group"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6 text-slate-400 group-hover:text-white" />
               </button>
               <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
-                  <Settings className="w-6 h-6 sm:w-8 sm:h-8" />
-                  Notification Settings
-                </h1>
-                <p className="text-sm text-slate-600 mt-1">
-                  Customize how you receive notifications
+                <div className="flex items-center gap-3">
+                  <Settings className="w-8 h-8 text-indigo-400" />
+                  <h1 className="text-2xl sm:text-3xl font-black text-white tracking-widest uppercase italic">
+                    Matrix Protocol
+                  </h1>
+                </div>
+                <p className="text-[10px] text-indigo-400/60 font-black uppercase tracking-[0.2em] mt-1">
+                  Neural Signal Orchestration
                 </p>
               </div>
             </div>
@@ -143,21 +145,21 @@ const NotificationSettings = ({ onClose }) => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`hidden sm:flex items-center gap-2 px-6 py-3 ${
+              className={`hidden sm:flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs tracking-widest uppercase transition-all active:scale-95 ${
                 saved
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-slate-900 hover:bg-slate-800"
-              } text-white transition-colors rounded-lg font-semibold disabled:opacity-50`}
+                  ? "bg-emerald-500 text-white shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+                  : "btn-primary shadow-[0_0_30px_rgba(79,70,229,0.3)]"
+              }`}
             >
               {saved ? (
                 <>
-                  <Check className="w-5 h-5" />
-                  Saved!
+                  <Check className="w-4 h-4" />
+                  SYNCED
                 </>
               ) : (
                 <>
-                  <Save className="w-5 h-5" />
-                  {saving ? "Saving..." : "Save Changes"}
+                  <Save className="w-4 h-4" />
+                  {saving ? "UPLOADING..." : "COMMIT CHANGES"}
                 </>
               )}
             </button>
@@ -166,320 +168,296 @@ const NotificationSettings = ({ onClose }) => {
       </div>
 
       {/* Mobile Save Bar */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-200 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 ${
-            saved
-              ? "bg-green-600 hover:bg-green-700"
-              : "bg-slate-900 hover:bg-slate-800"
-          } text-white transition-colors rounded-xl font-semibold disabled:opacity-50`}
-        >
-          {saved ? (
-            <>
-              <Check className="w-5 h-5" />
-              Saved!
-            </>
-          ) : (
-            <>
-              <Save className="w-5 h-5" />
-              {saving ? "Saving..." : "Save Changes"}
-            </>
-          )}
-        </button>
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-[70] p-6">
+        <div className="glass-card p-2 bg-[#020617]/80 backdrop-blur-2xl border-white/10">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className={`w-full flex items-center justify-center gap-3 py-5 rounded-2xl font-black text-xs tracking-[0.3em] uppercase transition-all active:scale-95 ${
+              saved
+                ? "bg-emerald-500 text-white"
+                : "btn-primary"
+            }`}
+          >
+            {saved ? (
+              <>
+                <Check className="w-5 h-5" />
+                SYNCED
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                {saving ? "UPLOADING..." : "COMMIT CHANGES"}
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Email Notifications */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Mail className="w-6 h-6" />
-                Email Notifications
-              </h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Choose which emails you want to receive
-              </p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.emailNotifications.all}
-                onChange={() => handleToggle("emailNotifications", "all")}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className="ml-3 text-sm font-semibold text-slate-700">
-                Master Switch
-              </span>
-            </label>
-          </div>
-
-          <div className="space-y-4">
-            {Object.entries(formData.emailNotifications)
-              .filter(([key]) => key !== "all")
-              .map(([key, value]) => (
-                <div
-                  key={key}
-                  className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0"
-                >
-                  <span className="text-slate-700 font-medium capitalize">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={value}
-                      onChange={() => handleToggle("emailNotifications", key)}
-                      disabled={!formData.emailNotifications.all}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 peer-disabled:opacity-50 peer-disabled:cursor-not-allowed"></div>
-                  </label>
+      <div className="max-w-4xl mx-auto px-6 sm:px-8 py-10 space-y-10">
+        {/* Email Segment */}
+        <div className="glass-card overflow-hidden">
+          <div className="p-8 border-b border-white/5 bg-white/2">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-500/20 rounded-lg">
+                    <Mail className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <h2 className="text-lg font-black text-white tracking-widest uppercase">
+                    Neural Uplink (Email)
+                  </h2>
                 </div>
-              ))}
+                <p className="text-sm text-slate-500 font-medium">
+                  Configure external signal delivery parameters
+                </p>
+              </div>
+              
+              <button
+                onClick={() => handleToggle("emailNotifications", "all")}
+                className={`w-14 h-8 rounded-full transition-all relative ${
+                  formData.emailNotifications.all ? 'bg-indigo-500' : 'bg-white/10'
+                }`}
+              >
+                <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-lg ${
+                  formData.emailNotifications.all ? 'left-7' : 'left-1'
+                }`} />
+              </button>
+            </div>
           </div>
 
-          {/* Email Frequency */}
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              Email Frequency
-            </label>
-            <select
-              value={formData.emailFrequency}
-              onChange={(e) => handleEmailFrequencyChange(e.target.value)}
-              disabled={!formData.emailNotifications.all}
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              <option value="instant">Instant (as they happen)</option>
-              <option value="hourly_digest">Hourly Digest</option>
-              <option value="daily_digest">Daily Digest</option>
-            </select>
+          <div className="p-8 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              {Object.entries(formData.emailNotifications)
+                .filter(([key]) => key !== "all")
+                .map(([key, value]) => (
+                  <div
+                    key={key}
+                    className={`flex items-center justify-between transition-opacity ${
+                      !formData.emailNotifications.all ? 'opacity-30' : 'opacity-100'
+                    }`}
+                  >
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                      {key.replace(/([A-Z])/g, " $1").trim()}
+                    </span>
+                    <button
+                      disabled={!formData.emailNotifications.all}
+                      onClick={() => handleToggle("emailNotifications", key)}
+                      className={`w-10 h-5 rounded-full transition-all relative ${
+                        value ? 'bg-indigo-500/50' : 'bg-white/5'
+                      }`}
+                    >
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+                        value ? 'left-5.5' : 'left-0.5'
+                      }`} />
+                    </button>
+                  </div>
+                ))}
+            </div>
+
+            <div className="pt-8 border-t border-white/5">
+              <div className="input-group-premium max-w-sm">
+                <label className="input-label-premium">Signal Frequency</label>
+                <select
+                  value={formData.emailFrequency}
+                  onChange={(e) => handleEmailFrequencyChange(e.target.value)}
+                  disabled={!formData.emailNotifications.all}
+                  className="input-premium bg-[#0f172a] appearance-none"
+                >
+                  <option value="instant" className="bg-[#0f172a]">Direct Transmission (Instant)</option>
+                  <option value="hourly_digest" className="bg-[#0f172a]">Hourly Accumulation</option>
+                  <option value="daily_digest" className="bg-[#0f172a]">Diurnal Briefing</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* In-App Notifications */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Bell className="w-6 h-6" />
-                In-App Notifications
-              </h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Control notifications within the app
-              </p>
+        {/* Matrix Segment (In-App) */}
+        <div className="glass-card overflow-hidden">
+          <div className="p-8 border-b border-white/5 bg-white/2">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-500/20 rounded-lg">
+                    <Bell className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <h2 className="text-lg font-black text-white tracking-widest uppercase">
+                    Matrix Overlay (In-App)
+                  </h2>
+                </div>
+                <p className="text-sm text-slate-500 font-medium">
+                  Direct neural stream visualization settings
+                </p>
+              </div>
+              
+              <button
+                onClick={() => handleToggle("inAppNotifications", "all")}
+                className={`w-14 h-8 rounded-full transition-all relative ${
+                  formData.inAppNotifications.all ? 'bg-indigo-500' : 'bg-white/10'
+                }`}
+              >
+                <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-lg ${
+                  formData.inAppNotifications.all ? 'left-7' : 'left-1'
+                }`} />
+              </button>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.inAppNotifications.all}
-                onChange={() => handleToggle("inAppNotifications", "all")}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className="ml-3 text-sm font-semibold text-slate-700">
-                Master Switch
-              </span>
-            </label>
           </div>
 
-          <div className="space-y-4">
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
             {Object.entries(formData.inAppNotifications)
               .filter(([key]) => key !== "all")
               .map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0"
+                  className={`flex items-center justify-between transition-opacity ${
+                    !formData.inAppNotifications.all ? 'opacity-30' : 'opacity-100'
+                  }`}
                 >
-                  <span className="text-slate-700 font-medium capitalize">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
                     {key.replace(/([A-Z])/g, " $1").trim()}
                   </span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={value}
-                      onChange={() => handleToggle("inAppNotifications", key)}
-                      disabled={!formData.inAppNotifications.all}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 peer-disabled:opacity-50 peer-disabled:cursor-not-allowed"></div>
-                  </label>
+                  <button
+                    disabled={!formData.inAppNotifications.all}
+                    onClick={() => handleToggle("inAppNotifications", key)}
+                    className={`w-10 h-5 rounded-full transition-all relative ${
+                      value ? 'bg-indigo-500/50' : 'bg-white/5'
+                    }`}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+                      value ? 'left-5.5' : 'left-0.5'
+                    }`} />
+                  </button>
                 </div>
               ))}
           </div>
         </div>
 
-        {/* Quiet Hours */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Clock className="w-6 h-6" />
-                Quiet Hours
-              </h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Mute notifications during specific hours
+        {/* Silent Protocol (Quiet Hours) */}
+        <div className="glass-card p-8">
+          <div className="flex items-start justify-between mb-8">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-amber-500/20 rounded-lg">
+                  <Clock className="w-5 h-5 text-amber-500" />
+                </div>
+                <h2 className="text-lg font-black text-white tracking-widest uppercase">
+                  Silent Protocol
+                </h2>
+              </div>
+              <p className="text-sm text-slate-500 font-medium">
+                Autonomous signal suppression periods
               </p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.quietHours.enabled}
-                onChange={handleQuietHoursToggle}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
-            </label>
+            
+            <button
+              onClick={handleQuietHoursToggle}
+              className={`w-14 h-8 rounded-full transition-all relative ${
+                formData.quietHours.enabled ? 'bg-amber-500' : 'bg-white/10'
+              }`}
+            >
+              <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-lg ${
+                formData.quietHours.enabled ? 'left-7' : 'left-1'
+              }`} />
+            </button>
           </div>
 
           {formData.quietHours.enabled && (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Start Time
-                </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-fadeIn">
+              <div className="input-group-premium">
+                <label className="input-label-premium">Dark Phase Start</label>
                 <input
                   type="time"
                   value={formData.quietHours.startTime}
-                  onChange={(e) =>
-                    handleQuietHoursChange("startTime", e.target.value)
-                  }
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium"
+                  onChange={(e) => handleQuietHoursChange("startTime", e.target.value)}
+                  className="input-premium bg-[#0f172a] [color-scheme:dark]"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  End Time
-                </label>
+              <div className="input-group-premium">
+                <label className="input-label-premium">Dark Phase End</label>
                 <input
                   type="time"
                   value={formData.quietHours.endTime}
-                  onChange={(e) =>
-                    handleQuietHoursChange("endTime", e.target.value)
-                  }
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium"
+                  onChange={(e) => handleQuietHoursChange("endTime", e.target.value)}
+                  className="input-premium bg-[#0f172a] [color-scheme:dark]"
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Additional Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">
-            Additional Settings
+        {/* Sensory Overrides */}
+        <div className="glass-card p-8 space-y-8">
+          <h2 className="text-xs font-black text-indigo-400 tracking-[0.3em] uppercase">
+            Sensory Overrides
           </h2>
 
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Volume2 className="w-5 h-5 text-slate-600" />
+          <div className="space-y-8">
+            <div className="flex items-center justify-between group">
+              <div className="flex items-center gap-5">
+                <div className="p-3 bg-white/5 rounded-2xl border border-white/5 group-hover:border-indigo-500/30 transition-all">
+                  <Volume2 className="w-5 h-5 text-slate-400 group-hover:text-indigo-400" />
+                </div>
                 <div>
-                  <p className="font-semibold text-slate-900">
-                    Notification Sound
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    Play a sound when new notifications arrive
-                  </p>
+                  <p className="font-black text-white tracking-widest uppercase text-xs">Acoustic Feedback</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Audio signal on packet arrival</p>
                 </div>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.notificationSound}
-                  onChange={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      notificationSound: !prev.notificationSound,
-                    }))
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+              <button
+                onClick={() => setFormData((prev) => ({ ...prev, notificationSound: !prev.notificationSound }))}
+                className={`w-10 h-5 rounded-full transition-all relative ${
+                  formData.notificationSound ? 'bg-indigo-500/50' : 'bg-white/5'
+                }`}
+              >
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+                  formData.notificationSound ? 'left-5.5' : 'left-0.5'
+                }`} />
+              </button>
             </div>
 
-            {/* Desktop Notifications with Permission Request */}
-            <div
-              className={`flex items-center justify-between pt-6 border-t border-slate-200 p-4 rounded-lg transition-colors ${
-                notificationPermission === "denied" ? "bg-red-50" : ""
-              }`}
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <Monitor className="w-5 h-5 text-slate-600 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900">
-                    Desktop Notifications
-                  </p>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    {notificationPermission === "granted" &&
-                      "✅ Browser notifications enabled"}
-                    {notificationPermission === "default" &&
-                      "🔔 Click toggle to request permission"}
-                    {notificationPermission === "denied" &&
-                      "❌ Permission denied - Enable in browser settings"}
-                  </p>
+            <div className={`p-6 rounded-[2rem] border transition-all ${
+              notificationPermission === "denied" 
+                ? "bg-rose-500/5 border-rose-500/20" 
+                : "bg-white/2 border-white/5 hover:border-indigo-500/20"
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-5">
+                  <div className="p-3 bg-white/5 rounded-2xl border border-white/5">
+                    <Monitor className="w-5 h-5 text-slate-400" />
+                  </div>
+                  <div>
+                    <p className="font-black text-white tracking-widest uppercase text-xs">Exo-System Alerts</p>
+                    <p className={`text-[10px] font-black uppercase tracking-wider mt-1 ${
+                      notificationPermission === "granted" ? "text-emerald-400" :
+                      notificationPermission === "denied" ? "text-rose-400" : "text-slate-500"
+                    }`}>
+                      {notificationPermission === "granted" && "Network Authorization Confirmed"}
+                      {notificationPermission === "default" && "Awaiting Signal Permission"}
+                      {notificationPermission === "denied" && "Permission Blocked in Core"}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={
-                    formData.desktopNotifications &&
-                    notificationPermission === "granted"
-                  }
+                <button
                   disabled={notificationPermission === "denied"}
-                  onChange={async () => {
+                  onClick={async () => {
                     if (notificationPermission === "default") {
-                      // Request permission first
                       const granted = await requestNotificationPermission();
-                      if (granted) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          desktopNotifications: true,
-                        }));
-                      }
+                      if (granted) setFormData(prev => ({ ...prev, desktopNotifications: true }));
                     } else if (notificationPermission === "granted") {
-                      setFormData((prev) => ({
-                        ...prev,
-                        desktopNotifications: !prev.desktopNotifications,
-                      }));
+                      setFormData(prev => ({ ...prev, desktopNotifications: !prev.desktopNotifications }));
                     }
                   }}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 peer-disabled:opacity-50 peer-disabled:cursor-not-allowed"></div>
-              </label>
+                  className={`w-10 h-5 rounded-full transition-all relative ${
+                    formData.desktopNotifications && notificationPermission === "granted" ? 'bg-indigo-500/50' : 'bg-white/5'
+                  }`}
+                >
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+                    formData.desktopNotifications && notificationPermission === "granted" ? 'left-5.5' : 'left-0.5'
+                  }`} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Save Button (Mobile) */}
-        <div className="sm:hidden">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className={`w-full flex items-center justify-center gap-2 px-6 py-4 ${
-              saved
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-slate-900 hover:bg-slate-800"
-            } text-white transition-colors rounded-xl font-bold text-lg disabled:opacity-50`}
-          >
-            {saved ? (
-              <>
-                <Check className="w-6 h-6" />
-                Saved!
-              </>
-            ) : (
-              <>
-                <Save className="w-6 h-6" />
-                {saving ? "Saving..." : "Save Changes"}
-              </>
-            )}
-          </button>
         </div>
       </div>
     </div>

@@ -369,3 +369,15 @@ input:focus, select:focus, textarea:focus {
   overflow: hidden;
   position: relative;
 }
+
+.glass-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.glass-modal-body {
+  padding: 2rem;
+}

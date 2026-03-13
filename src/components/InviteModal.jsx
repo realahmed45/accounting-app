@@ -220,38 +220,45 @@ const InviteModal = ({
     });
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl w-full max-w-md max-h-[92vh] flex flex-col">
+    <div className="glass-modal-backdrop sm:items-center p-0 sm:p-8 z-[110] animate-fadeIn">
+      <div className="glass-modal-content max-w-lg animate-zoomIn overflow-hidden flex flex-col h-full sm:h-auto max-h-[95vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-blue-600" />
-            <h2 className="text-base font-semibold text-gray-900">
-              Invite Member
-            </h2>
+        <div className="glass-modal-header border-white/5 py-8">
+          <div className="flex items-center gap-5">
+            <div className="p-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 shadow-[0_0_30px_rgba(79,70,229,0.1)]">
+              <UserPlus className="w-6 h-6 text-indigo-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-white tracking-widest uppercase italic">
+                Neural Invitation
+              </h2>
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-1">
+                Member Expansion Protocol
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/5 text-slate-400 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b flex-shrink-0">
+        <div className="flex p-2 bg-[#020617]/50 border-y border-white/5">
           {[
             { id: "team", label: "Team Member" },
-            { id: "owner", label: "Transfer Ownership" },
-            { id: "pending", label: "Pending" },
+            { id: "owner", label: "Ownership" },
+            { id: "pending", label: "Queue" },
           ].map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex-1 py-3 text-[11px] font-semibold border-b-2 transition-colors ${
+              className={`flex-1 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all ${
                 tab === t.id
-                  ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
+                  ? "bg-white/10 text-white shadow-xl"
+                  : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
               }`}
             >
               {t.label}
@@ -259,63 +266,54 @@ const InviteModal = ({
           ))}
         </div>
 
-        <div className="overflow-y-auto flex-1 p-4 sm:p-5">
+        <div className="overflow-y-auto flex-1 glass-modal-body space-y-8 scroll-smooth pb-12">
           {/* ── TEAM MEMBER TAB ───────────────────────────────────────────── */}
           {tab === "team" && (
-            <div className="space-y-4">
+            <div className="space-y-8 animate-fadeIn">
               {/* Instructions */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <div className="flex items-start gap-2">
-                  <Info className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <div className="text-xs text-blue-800 space-y-1">
-                    <p className="font-medium">Adding a Team Member</p>
-                    <p>
-                      Team members can be given specific permissions to help
-                      manage this account. They will receive an email invitation
-                      to join.
-                    </p>
-                    <ul className="list-disc list-inside space-y-0.5 ml-2 mt-2">
-                      <li>Choose individual permissions, or use "View Only"</li>
-                      <li>
-                        View-only members can see data but cannot make changes
-                      </li>
-                      <li>You can revoke access at any time in Settings</li>
-                    </ul>
+              <div className="p-6 bg-indigo-500/5 border border-indigo-500/10 rounded-[2rem] group hover:border-indigo-500/20 transition-all">
+                <div className="flex items-start gap-5">
+                  <div className="p-3 bg-indigo-500/20 rounded-xl">
+                    <Info className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <div className="text-[11px] text-slate-400 font-medium leading-relaxed uppercase tracking-wide">
+                    <p className="font-black text-white mb-2 tracking-[0.2em]">Protocol Initiation</p>
+                    <p>Assign clearances to architect your collective workspace. Specific permissions ensure data integrity across the neural net.</p>
                   </div>
                 </div>
               </div>
 
-              <form onSubmit={handleSend} className="space-y-4">
+              <form onSubmit={handleSend} className="space-y-10">
                 {error && (
-                  <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <div className="p-6 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-[2rem] text-[10px] font-black uppercase tracking-widest flex items-center gap-4 animate-pulse">
+                    <AlertCircle className="w-5 h-5 shrink-0" />
                     {error}
                   </div>
                 )}
                 {success && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-lg px-3 py-2 text-sm">
-                      <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                  <div className="space-y-6">
+                    <div className="p-6 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-[2rem] text-[10px] font-black uppercase tracking-widest flex items-center gap-4">
+                      <CheckCircle className="w-5 h-5 shrink-0" />
                       {success}
                     </div>
                     {fallbackLink && (
-                      <div className="bg-gray-50 border rounded-lg p-3">
-                        <p className="text-xs text-gray-500 mb-1">
-                          Share this link manually:
+                      <div className="p-6 bg-white/5 border border-white/10 rounded-[2rem] space-y-4 shadow-inner">
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                          Manual Link Extraction:
                         </p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-blue-600 break-all flex-1">
+                        <div className="flex items-center gap-4">
+                          <span className="text-[10px] font-mono text-indigo-400 truncate flex-1 tracking-wider p-3 bg-black/40 rounded-xl border border-white/5">
                             {fallbackLink}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleCopy(fallbackLink)}
-                            className="flex-shrink-0 p-1 border rounded hover:bg-white"
+                            className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all group"
                           >
                             {copied ? (
-                              <CheckCircle className="w-3 h-3 text-green-500" />
+                              <CheckCircle className="w-4 h-4 text-emerald-500" />
                             ) : (
-                              <Copy className="w-3 h-3 text-gray-500" />
+                              <Copy className="w-4 h-4 text-slate-400 group-hover:text-white" />
                             )}
                           </button>
                         </div>
@@ -325,176 +323,116 @@ const InviteModal = ({
                 )}
 
                 {/* Email */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Recipient Identifier (Email)</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="member@example.com"
-                      className="w-full pl-10 pr-3 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., node_01@nexus.com"
+                      className="input-premium pl-16 py-5"
+                      required
                     />
                   </div>
                 </div>
 
                 {/* Display name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Display name
-                    <span className="text-xs font-normal text-gray-400 ml-2">
-                      (optional)
+                <div className="input-group-premium">
+                  <label className="input-label-premium">
+                    System Alias
+                    <span className="text-[9px] font-bold text-slate-600 ml-4 tracking-[0.3em]">
+                      (OPTIONAL_SPEC)
                     </span>
                   </label>
                   <input
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="How they'll appear in the account"
-                    className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., ARCHITECT_ALPHA"
+                    className="input-premium py-5"
                   />
                 </div>
 
                 {/* View-Only quick toggle */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">
-                      Permissions
-                    </span>
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                    <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-3">
+                      <ShieldAlert className="w-4 h-4 text-indigo-400" />
+                      Clearance Matrices
+                    </h3>
                     <button
                       type="button"
                       onClick={handleViewOnlyToggle}
-                      className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                      className={`flex items-center gap-3 text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border transition-all ${
                         viewOnly
-                          ? "bg-gray-100 border-gray-400 text-gray-700 font-medium"
-                          : "border-gray-300 text-gray-500 hover:bg-gray-50"
+                          ? "bg-indigo-500 border-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.5)]"
+                          : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
                       }`}
                     >
-                      <Eye className="w-3 h-3" />
-                      View Only
+                      <Eye className="w-3.5 h-3.5" />
+                      Observe Mode
                     </button>
                   </div>
 
-                  <div className="space-y-6">
-                    {/* Expenses & Cash */}
-                    <div>
-                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                        Expenses &amp; Cash
-                      </p>
-                      <div className="space-y-2">
-                        {[
-                          { key: "makeExpense", label: "Log expenses" },
-                          {
-                            key: "calculateCash",
-                            label: "Calculate cash flow",
-                          },
-                        ].map(({ key, label }) => (
-                          <label
-                            key={key}
-                            className={`flex items-center gap-2.5 cursor-pointer ${
-                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={permissions[key] || false}
-                              onChange={() => togglePermission(key)}
-                              disabled={viewOnly}
-                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
-                            />
-                            <span className="text-sm text-gray-700">
-                              {label}
-                            </span>
-                          </label>
-                        ))}
+                  <div className="grid grid-cols-1 gap-10">
+                    {/* Groups of permissions with glass styling */}
+                    {[
+                      { title: "Fiscal Core", keys: ["makeExpense", "calculateCash"] },
+                      { title: "Architectural Controls", keys: ["addUser", "addCategories", "addBankAccount", "accessSettings"] },
+                      { title: "Network Topology", keys: ["createAccountDownward", "createAccountUpward"] }
+                    ].map((group, groupIdx) => (
+                      <div key={groupIdx} className="space-y-6">
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2">
+                          {group.title}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {group.keys.map((key) => {
+                            const option = PERMISSION_OPTIONS.find(o => o.key === key);
+                            return (
+                              <button
+                                key={key}
+                                type="button"
+                                disabled={viewOnly}
+                                onClick={() => togglePermission(key)}
+                                className={`flex items-center justify-between p-5 rounded-[1.5rem] border transition-all text-left group ${
+                                  viewOnly ? "opacity-30 cursor-not-allowed" :
+                                  permissions[key] ? "bg-indigo-500/10 border-indigo-500/30 ring-1 ring-indigo-500/20" : "bg-white/2 border-white/5 hover:border-white/10 hover:bg-white/5"
+                                }`}
+                              >
+                                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                                  permissions[key] && !viewOnly ? "text-white" : "text-slate-500 group-hover:text-slate-300"
+                                }`}>
+                                  {option?.label}
+                                </span>
+                                <div className={`w-8 h-4 rounded-full transition-all relative ${
+                                  permissions[key] && !viewOnly ? "bg-indigo-500" : "bg-white/10"
+                                }`}>
+                                  <div className={`absolute top-1 w-2 h-2 rounded-full bg-white transition-all ${
+                                    permissions[key] && !viewOnly ? "left-5 shadow-[0_0_10px_white]" : "left-1"
+                                  }`} />
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Access Settings */}
-                    <div>
-                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                        Access Settings
-                      </p>
-                      <div className="space-y-2">
-                        {[
-                          { key: "addUser", label: "Manage users" },
-                          { key: "addCategories", label: "Manage categories" },
-                          {
-                            key: "addBankAccount",
-                            label: "Manage bank accounts",
-                          },
-                          { key: "accessSettings", label: "Access settings" },
-                        ].map(({ key, label }) => (
-                          <label
-                            key={key}
-                            className={`flex items-center gap-2.5 cursor-pointer ${
-                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={permissions[key] || false}
-                              onChange={() => togglePermission(key)}
-                              disabled={viewOnly}
-                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
-                            />
-                            <span className="text-sm text-gray-700">
-                              {label}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Account Structure */}
-                    <div>
-                      <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                        Account Structure
-                      </p>
-                      <div className="space-y-2">
-                        {[
-                          {
-                            key: "createAccountDownward",
-                            label: "Create sub-accounts",
-                          },
-                          {
-                            key: "createAccountUpward",
-                            label: "Link to parent accounts",
-                          },
-                        ].map(({ key, label }) => (
-                          <label
-                            key={key}
-                            className={`flex items-center gap-2.5 cursor-pointer ${
-                              viewOnly ? "opacity-40 cursor-not-allowed" : ""
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={permissions[key] || false}
-                              onChange={() => togglePermission(key)}
-                              disabled={viewOnly}
-                              className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
-                            />
-                            <span className="text-sm text-gray-700">
-                              {label}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full px-4 py-3.5 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-6 btn-primary rounded-[2rem] font-black text-[12px] tracking-[0.4em] uppercase flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] shadow-2xl disabled:opacity-50 transition-all mb-4"
                 >
-                  <UserPlus className="w-4 h-4" />
-                  {loading ? "Sending…" : "Send Invite"}
+                  {loading ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <UserPlus className="w-5 h-5" />
+                  )}
+                  {loading ? "Transmitting..." : "Initialize Protocol"}
                 </button>
               </form>
             </div>
@@ -502,121 +440,80 @@ const InviteModal = ({
 
           {/* ── TRANSFER OWNERSHIP TAB ───────────────────────────────────────────── */}
           {tab === "owner" && (
-            <div className="space-y-4">
-              {/* Comprehensive Instructions */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <div className="flex items-start gap-2">
-                  <ShieldAlert className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div className="text-xs text-amber-900 space-y-2">
-                    <p className="font-semibold text-sm">
-                      ⚠️ Transfer Ownership
-                    </p>
-                    <p>
-                      <strong>This action transfers complete control</strong> of
-                      this account to another user. Before proceeding,
-                      understand what will happen:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>
-                        The new owner will have <strong>full control</strong>{" "}
-                        over all account data, settings, and members
+            <div className="space-y-8 animate-fadeIn">
+              <div className="p-8 bg-rose-500/5 border border-rose-500/20 rounded-[2.5rem] relative overflow-hidden group">
+                <div className="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/10 blur-3xl rounded-full"></div>
+                <div className="flex items-start gap-6 relative z-10">
+                  <div className="p-4 bg-rose-500/20 rounded-2xl shadow-[0_0_20px_rgba(244,63,94,0.2)]">
+                    <ShieldAlert className="w-6 h-6 text-rose-500" />
+                  </div>
+                  <div className="text-[11px] text-slate-400 font-medium leading-relaxed uppercase tracking-wide">
+                    <p className="font-black text-rose-500 mb-3 tracking-[0.3em] italic">Critical: Authority Handover</p>
+                    <p className="mb-4">You are about to delegate <span className="text-white font-black italic">Absolute Control</span>. This operation is non-reversible through the current nexus.</p>
+                    <ul className="space-y-2 text-[9px] font-black text-rose-400/80">
+                      <li className="flex items-center gap-2 italic">
+                        <ArrowRight className="w-3 h-3" />
+                        Complete Node Transfer
                       </li>
-                      <li>
-                        You will become a <strong>regular member</strong> with
-                        limited permissions
+                      <li className="flex items-center gap-2 italic">
+                        <ArrowRight className="w-3 h-3" />
+                        Member Status Relegation
                       </li>
-                      <li>
-                        The new owner can remove you or change your permissions
-                      </li>
-                      <li>
-                        Only transfer ownership to someone you absolutely trust
-                      </li>
-                      <li>
-                        <strong>This action cannot be undone</strong> unless the
-                        new owner transfers it back
+                      <li className="flex items-center gap-2 italic">
+                        <ArrowRight className="w-3 h-3" />
+                        Loss of Root Clearances
                       </li>
                     </ul>
-                    <p className="font-medium mt-2">
-                      💡 If you just want to add someone to help manage the
-                      account, use the "Team Member" tab instead.
-                    </p>
                   </div>
                 </div>
               </div>
 
               {ownerError && (
-                <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <div className="p-6 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-4">
+                  <AlertCircle className="w-5 h-5 shrink-0" />
                   {ownerError}
                 </div>
               )}
 
               {ownerSuccess && (
-                <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-lg px-3 py-2 text-sm">
-                  <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                <div className="p-6 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-4">
+                  <CheckCircle className="w-5 h-5 shrink-0" />
                   {ownerSuccess}
                 </div>
               )}
 
               {!ownerVerified ? (
-                <div className="space-y-4">
-                  {/* Step 1: Enter Unique ID */}
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Crown className="w-5 h-5 text-amber-600" />
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        Step 1: Enter New Owner's Unique ID
+                <div className="space-y-8">
+                  <div className="glass-card p-8 border-white/5 space-y-8 bg-[#020617]/40 ring-1 ring-white/5">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-amber-500/20 rounded-xl border border-amber-500/20">
+                        <Crown className="w-5 h-5 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                      </div>
+                      <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] italic">
+                        Phase I: Target Verification
                       </h3>
                     </div>
 
-                    <p className="text-xs text-gray-600">
-                      You need the <strong>Account Unique ID</strong> of the
-                      person who will become the new owner. This ID is in the
-                      format{" "}
-                      <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">
-                        ACC-XXXXXX
-                      </code>
-                      .
-                    </p>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800 space-y-1">
-                      <p className="font-medium">Where to find a Unique ID:</p>
-                      <ul className="list-disc list-inside ml-2 space-y-0.5">
-                        <li>
-                          Ask the person to go to their{" "}
-                          <strong>Settings</strong> screen
-                        </li>
-                        <li>
-                          The Unique ID is displayed at the top of the Settings
-                          page
-                        </li>
-                        <li>They can copy it and share it with you</li>
-                      </ul>
+                    <div className="p-6 bg-white/5 border border-white/10 rounded-[1.5rem] space-y-4">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose">
+                        Scan the recipient's <span className="text-indigo-400">Neural Signature (ACC-ID)</span> located in their primary infrastructure settings.
+                      </p>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        New Owner's Unique ID{" "}
-                        <span className="text-red-500">*</span>
-                      </label>
+                    <div className="input-group-premium">
+                      <label className="input-label-premium">Recipient ACC-ID</label>
                       <input
                         type="text"
                         value={ownerUniqueId}
                         onChange={(e) => {
-                          const val = e.target.value
-                            .toUpperCase()
-                            .replace(/[^A-Z0-9-]/g, "")
-                            .slice(0, 10);
+                          const val = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 10);
                           setOwnerUniqueId(val);
                           setOwnerError("");
                         }}
                         placeholder="ACC-XXXXXX"
                         maxLength={10}
-                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="input-premium font-mono tracking-[0.3em] py-5 text-center text-lg placeholder:tracking-normal placeholder:opacity-30"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Must be exactly 10 characters (e.g., ACC-A1B2C3)
-                      </p>
                     </div>
 
                     <button
@@ -624,314 +521,231 @@ const InviteModal = ({
                       onClick={async () => {
                         setOwnerError("");
                         if (ownerUniqueId.length !== 10) {
-                          setOwnerError(
-                            "Unique ID must be exactly 10 characters",
-                          );
+                          setOwnerError("Signature must be 10 characters");
                           return;
                         }
                         if (!/^ACC-[A-Z0-9]{6}$/.test(ownerUniqueId)) {
-                          setOwnerError("Invalid format. Must be ACC-XXXXXX");
+                          setOwnerError("Format rejection: ACC-XXXXXX required");
                           return;
                         }
 
                         setOwnerLoading(true);
                         try {
-                          const { accountService } =
-                            await import("../services/api");
-                          const result =
-                            await accountService.findByUniqueId(ownerUniqueId);
+                          const { accountService } = await import("../services/api");
+                          const result = await accountService.findByUniqueId(ownerUniqueId);
                           setOwnerVerified(result.data || result);
                           setOwnerError("");
                         } catch (err) {
-                          setOwnerError(
-                            err?.response?.data?.message ||
-                              "Account not found or invalid ID.",
-                          );
+                          setOwnerError(err?.response?.data?.message || "Signature not found in neural net.");
                           setOwnerVerified(null);
                         } finally {
                           setOwnerLoading(false);
                         }
                       }}
                       disabled={ownerLoading || ownerUniqueId.length !== 10}
-                      className="w-full px-4 py-3.5 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30"
                     >
                       {ownerLoading ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          Verifying...
-                        </>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
                       ) : (
-                        <>
-                          <CheckCircle className="w-4 h-4" />
-                          Verify Account
-                        </>
+                        <CheckCircle className="w-4 h-4 text-emerald-500" />
                       )}
+                      {ownerLoading ? "Verifying..." : "Scan Signature"}
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Step 2: Verify & Confirm */}
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                      <h3 className="text-sm font-semibold text-green-900">
-                        Account Verified
+                <div className="space-y-10 animate-fadeIn">
+                  <div className="glass-card p-8 border-emerald-500/20 bg-emerald-500/5 space-y-8">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl border border-emerald-500/20">
+                        <CheckCircle className="w-5 h-5 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                      </div>
+                      <h3 className="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] italic">
+                        Phase II: Signature Confirmed
                       </h3>
                     </div>
 
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-green-900">
-                        Account Name:
-                      </p>
-                      <p className="text-sm text-green-800">
-                        {ownerVerified.accountName}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-green-900">
-                        Account Type:
-                      </p>
-                      <p className="text-sm text-green-800 capitalize">
-                        {ownerVerified.accountType}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-green-900">
-                        Unique ID:
-                      </p>
-                      <p className="text-sm text-green-800 font-mono">
-                        {ownerVerified.uniqueId}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Visual diagram */}
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <p className="text-xs font-medium text-gray-700 mb-2">
-                      What will happen:
-                    </p>
-                    <div className="flex items-center justify-center gap-3 text-sm">
-                      <div className="text-center">
-                        <div className="bg-amber-100 border border-amber-300 rounded-lg px-3 py-2">
-                          <p className="font-medium text-amber-900">
-                            You (Current Owner)
-                          </p>
-                          <p className="text-xs text-amber-700">
-                            {accountName}
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { label: "Target Designation", value: ownerVerified.accountName },
+                        { label: "Architecture", value: ownerVerified.accountType, capitalize: true },
+                        { label: "Unique Sync ID", value: ownerVerified.uniqueId, mono: true }
+                      ].map((item, idx) => (
+                        <div key={idx} className="p-5 bg-black/30 rounded-2xl border border-white/5 group hover:border-emerald-500/30 transition-all">
+                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">{item.label}</p>
+                          <p className={`text-[10px] font-black text-white tracking-widest ${item.capitalize ? 'capitalize' : ''} ${item.mono ? 'font-mono' : ''}`}>
+                            {item.value}
                           </p>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Becomes member
-                        </p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="relative py-12 flex items-center justify-center gap-8">
+                    <div className="absolute inset-0 flex items-center px-12">
+                      <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    </div>
+                    <div className="relative p-4 bg-[#020617] rounded-2xl border border-white/10 shadow-2xl">
+                      <ArrowRight className="w-6 h-6 text-indigo-400 animate-slideRight" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-8 bg-black/40 p-8 rounded-[2.5rem] border border-white/5 shadow-inner">
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                        <RefreshCw className="w-4 h-4" />
+                        Verification Uplink
+                      </h3>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-loose">
+                        Secure the handover through encrypted external channels.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="input-group-premium">
+                        <label className="input-label-premium text-[10px]">Matrix Handle (WhatsApp)</label>
+                        <input
+                          type="text"
+                          value={ownerWhatsApp}
+                          onChange={(e) => setOwnerWhatsApp(e.target.value)}
+                          placeholder="+X_CHANNEL..."
+                          className="input-premium py-4"
+                        />
                       </div>
-                      <ArrowRight className="w-5 h-5 text-gray-400" />
-                      <div className="text-center">
-                        <div className="bg-emerald-100 border border-emerald-300 rounded-lg px-3 py-2">
-                          <p className="font-medium text-emerald-900">
-                            New Owner
-                          </p>
-                          <p className="text-xs text-emerald-700">
-                            {ownerVerified.accountName}
-                          </p>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Full control
-                        </p>
+                      <div className="input-group-premium">
+                        <label className="input-label-premium text-[10px]">Neural Handle (Telegram)</label>
+                        <input
+                          type="text"
+                          value={ownerTelegram}
+                          onChange={(e) => setOwnerTelegram(e.target.value)}
+                          placeholder="@ID_PROTO..."
+                          className="input-premium py-4"
+                        />
                       </div>
                     </div>
                   </div>
 
-                  {/* Final warning */}
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs text-red-800 space-y-1">
-                        <p className="font-semibold">Before you proceed:</p>
-                        <ul className="list-disc list-inside ml-2 space-y-0.5">
-                          <li>Make sure you trust this person completely</li>
-                          <li>
-                            They will have full control and can remove you
-                          </li>
-                          <li>This action cannot be undone by you</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Verification fields */}
-                  <div className="space-y-3 bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <p className="text-xs font-medium text-gray-700">
-                      Verification Required{" "}
-                      <span className="text-red-500">*</span>
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      For security, please provide the new owner's WhatsApp and
-                      Telegram handles. These will be used to verify the
-                      transfer.
-                    </p>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        WhatsApp Handle <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={ownerWhatsApp}
-                        onChange={(e) => setOwnerWhatsApp(e.target.value)}
-                        placeholder="+1234567890 or username"
-                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Telegram Handle <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={ownerTelegram}
-                        onChange={(e) => setOwnerTelegram(e.target.value)}
-                        placeholder="@username"
-                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col-reverse sm:flex-row gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOwnerVerified(null);
-                        setOwnerUniqueId("");
-                        setOwnerError("");
-                      }}
-                      className="flex-1 px-4 py-3.5 bg-gray-100 text-gray-700 rounded-xl text-sm hover:bg-gray-200"
-                    >
-                      Go Back
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        // Validate required fields
-                        if (!ownerWhatsApp.trim() || !ownerTelegram.trim()) {
-                          setOwnerError(
-                            "WhatsApp and Telegram handles are required for verification.",
-                          );
-                          return;
-                        }
-
-                        setTransferLoading(true);
-                        setOwnerError("");
-                        try {
-                          const { accountService } =
-                            await import("../services/api");
-                          const result = await accountService.transferOwnership(
-                            accountId,
-                            ownerUniqueId,
-                            ownerWhatsApp.trim(),
-                            ownerTelegram.trim(),
-                          );
-                          setOwnerSuccess(
-                            "Ownership transfer initiated successfully! The new owner will receive an invitation to accept.",
-                          );
-                          setTimeout(() => {
-                            onClose();
-                          }, 3000);
-                        } catch (err) {
-                          setOwnerError(
-                            err?.response?.data?.message ||
-                              "Failed to transfer ownership.",
-                          );
-                        } finally {
-                          setTransferLoading(false);
-                        }
-                      }}
-                      disabled={
-                        transferLoading ||
-                        !ownerWhatsApp.trim() ||
-                        !ownerTelegram.trim()
+                  <button
+                    type="button"
+                    disabled={transferLoading || !ownerWhatsApp || !ownerTelegram}
+                    onClick={async () => {
+                      if (!confirm("Are you ABSOLUTELY sure you want to transfer ownership? This cannot be undone.")) return;
+                      setTransferLoading(true);
+                      setOwnerError("");
+                      try {
+                        const { accountService } = await import("../services/api");
+                        const result = await accountService.transferOwnership(
+                          accountId,
+                          ownerUniqueId,
+                          ownerWhatsApp.trim(),
+                          ownerTelegram.trim()
+                        );
+                        setOwnerSuccess("Ownership transfer initiated successfully! The new owner will receive an invitation to accept.");
+                        setTimeout(() => { onClose(); }, 3000);
+                      } catch (err) {
+                        setOwnerError(err?.response?.data?.message || "Failed to transfer ownership.");
+                      } finally {
+                        setTransferLoading(false);
                       }
-                      className="flex-1 px-4 py-3.5 bg-red-600 text-white rounded-xl text-sm hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                    >
-                      {transferLoading ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          Transferring...
-                        </>
-                      ) : (
-                        <>
-                          <Crown className="w-4 h-4" />
-                          Confirm Transfer
-                        </>
-                      )}
-                    </button>
-                  </div>
+                    }}
+                    className="w-full py-6 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] font-black text-[12px] tracking-[0.4em] uppercase shadow-[0_20px_50px_rgba(244,63,94,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-4 mb-2"
+                  >
+                    {transferLoading ? (
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <ShieldAlert className="w-5 h-5" />
+                    )}
+                    {transferLoading ? "Delegating..." : "Finalize Handover"}
+                  </button>
+                  <button
+                    onClick={() => { setOwnerVerified(null); setOwnerUniqueId(""); }}
+                    className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/5 text-slate-500 hover:text-white rounded-2xl text-[9px] font-black uppercase tracking-[0.3em] transition-all"
+                  >
+                    Abort Handover
+                  </button>
                 </div>
               )}
             </div>
           )}
 
-          {/* ── PENDING TAB ─────────────────────────────────────────────── */}
+          {/* ── PENDING TAB ───────────────────────────────────────────── */}
           {tab === "pending" && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">
-                  {pending.length} pending{" "}
-                  {pending.length === 1 ? "invitation" : "invitations"}
-                </p>
-                <button
-                  onClick={loadPending}
-                  disabled={pendingLoading}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 ${pendingLoading ? "animate-spin" : ""}`}
-                  />
-                </button>
+            <div className="space-y-8 animate-fadeIn">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-3">
+                  <RefreshCw className="w-4 h-4 text-emerald-400" />
+                  Invitation Queue
+                </h3>
+                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                  {pending.length} Active Packets
+                </span>
               </div>
 
-              {pendingLoading && (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  Loading…
-                </div>
-              )}
-
-              {!pendingLoading && pending.length === 0 && (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  No pending invitations.
-                </div>
-              )}
-
-              {!pendingLoading &&
-                pending.map((inv) => (
-                  <div
-                    key={inv._id}
-                    className="flex items-start justify-between gap-3 p-3 border rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {inv.email}
-                      </p>
-                      {inv.displayName && (
-                        <p className="text-xs text-gray-500">
-                          {inv.displayName}
-                        </p>
-                      )}
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        Expires {formatDate(inv.expiresAt)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleRevoke(inv)}
-                      disabled={revoking === inv._id}
-                      className="flex-shrink-0 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
-                      title="Revoke invitation"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+              {pendingLoading ? (
+                <div className="flex flex-col items-center justify-center py-24 space-y-6">
+                  <div className="relative w-12 h-12">
+                    <div className="absolute inset-0 border-2 border-indigo-500/20 rounded-xl animate-spin-slow"></div>
+                    <div className="absolute inset-0 border-2 border-t-indigo-500 border-transparent rounded-xl animate-spin"></div>
                   </div>
-                ))}
+                  <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] animate-pulse">Scanning Neural Queue...</p>
+                </div>
+              ) : pending.length === 0 ? (
+                <div className="py-24 flex flex-col items-center justify-center text-center space-y-8 bg-white/2 rounded-[2.5rem] border border-dashed border-white/10">
+                  <div className="p-8 bg-white/5 rounded-[2rem]">
+                    <Mail className="w-12 h-12 text-slate-700" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xl font-black text-white uppercase tracking-widest">Queue Nullified</p>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">No outbound protocols detected.</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {pending.map((inv) => (
+                    <div key={inv._id} className="glass-card p-6 border-white/5 bg-white/2 hover:border-white/20 transition-all group overflow-hidden relative">
+                      <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-full group-hover:h-12 transition-all"></div>
+                      <div className="flex items-center justify-between relative z-10">
+                        <div className="space-y-2 min-w-0 flex-1">
+                          <p className="text-sm font-black text-white truncate tracking-wider uppercase">
+                            {inv.email}
+                          </p>
+                          <div className="flex items-center gap-4 text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                            <span className="flex items-center gap-1.5">
+                              <Calendar className="w-3 h-3 text-indigo-400" />
+                              Synced: {formatDate(inv.createdAt)}
+                            </span>
+                            <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 rounded-md border border-indigo-500/10">
+                              Tier: {inv.viewOnly ? "Observer" : "Architect"}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleCopy(inv.inviteLink)}
+                            className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/5 group/copy"
+                            title="Extract Link"
+                          >
+                            <Copy className="w-4 h-4 text-slate-400 group-hover/copy:text-white" />
+                          </button>
+                          <button
+                            onClick={() => handleRevoke(inv)}
+                            disabled={revoking === inv._id}
+                            className="p-3 bg-rose-500/5 hover:bg-rose-500/20 rounded-xl transition-all border border-rose-500/20 text-rose-500 group/revoke"
+                            title="Purge Protocol"
+                          >
+                            {revoking === inv._id ? (
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4 group-hover/revoke:scale-110 transition-transform" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

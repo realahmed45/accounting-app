@@ -47,64 +47,83 @@ const PasswordGate = ({ isOpen, onSuccess, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-              <Lock className="w-4 h-4 text-amber-600" />
+    <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+      <div className="glass-modal-content max-w-sm animate-zoomIn">
+        <div className="glass-modal-header border-amber-500/10">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-amber-500/20 rounded-xl">
+              <Lock className="w-5 h-5 text-amber-500" />
             </div>
-            <h2 className="text-base font-semibold text-gray-900">
-              View-Only Mode
-            </h2>
+            <div>
+              <h2 className="text-xl font-black text-white tracking-widest uppercase">
+                Secure Mode
+              </h2>
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-0.5">
+                Restricted Protocol Access
+              </p>
+            </div>
           </div>
           <button
             onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-600"
+            className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        <p className="text-sm text-gray-600 mb-4">
-          You are in view-only mode. Enter your password to proceed with this
-          action.
-        </p>
+        <div className="glass-modal-body space-y-6">
+          <p className="text-slate-300 font-medium text-sm leading-relaxed">
+            Authorized signal required. This workspace is currently in <span className="text-amber-400 font-bold">VIEW-ONLY</span> state. Provide credentials for override.
+          </p>
 
-        {error && (
-          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm mb-4">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl flex items-center gap-3 animate-shake">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wider">{error}</span>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            autoFocus
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading || !password}
-              className="flex-1 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading ? "Verifying…" : "Confirm"}
-            </button>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="input-group-premium">
+              <label className="input-label-premium">
+                Neural Key (Password)
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoFocus
+                required
+                className="input-premium"
+              />
+            </div>
+            
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={loading || !password}
+                className="flex-[2] btn-primary py-4 text-xs font-black tracking-widest uppercase hover:scale-[1.02] active:scale-[0.98] shadow-[0_10px_30px_rgba(79,70,229,0.3)]"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    SYNCING...
+                  </span>
+                ) : (
+                  "AUTHORIZE"
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="flex-1 btn-secondary py-4 text-xs font-black tracking-widest uppercase"
+              >
+                EXIT
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

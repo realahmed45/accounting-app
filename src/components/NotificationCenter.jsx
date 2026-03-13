@@ -155,275 +155,275 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#020617] text-slate-300 font-inter selection:bg-indigo-500/30">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="glass-header sticky top-0 z-[60] py-6">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 active:scale-95 group"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6 text-slate-400 group-hover:text-white" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                  <Bell className="w-8 h-8" />
-                  Notification Center
-                </h1>
-                <p className="text-sm text-slate-600 mt-1">
-                  {pagination.total} total notifications
-                </p>
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Bell className="w-8 h-8 text-indigo-400" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 rounded-full border-2 border-[#020617] animate-pulse"></div>
+                  </div>
+                  <h1 className="text-3xl font-black text-white tracking-widest uppercase italic">
+                    Neural Hub
+                  </h1>
+                </div>
+                <div className="flex items-center gap-3 mt-1.5">
+                  <span className="h-[1px] w-8 bg-indigo-500/50"></span>
+                  <p className="text-[10px] text-indigo-400/60 font-black uppercase tracking-[0.2em]">
+                    Active Signal Flux: {pagination.total} Packets
+                  </p>
+                </div>
               </div>
             </div>
 
             <button
               onClick={onOpenSettings}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 transition-colors rounded-lg font-semibold"
+              className="group flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all active:scale-95"
             >
-              <Settings className="w-4 h-4" />
-              Settings
+              <Settings className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 group-hover:rotate-90 transition-all duration-500" />
+              <span className="text-xs font-black tracking-widest uppercase text-slate-400 group-hover:text-white">
+                Matrix Config
+              </span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-slate-900 flex items-center gap-2">
-              <Filter className="w-5 h-5" />
-              Filters
-            </h2>
-            <button
-              onClick={resetFilters}
-              className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
-            >
-              Reset
-            </button>
-          </div>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Controls Panel */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="glass-card p-6 space-y-6 sticky top-32">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs font-black text-white tracking-[0.2em] uppercase flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-indigo-400" />
+                  Signal Filters
+                </h2>
+                <button
+                  onClick={resetFilters}
+                  className="text-[10px] font-black text-indigo-400 hover:text-white uppercase tracking-widest transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Read Status */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Status
-              </label>
-              <select
-                value={filters.isRead}
-                onChange={(e) => handleFilterChange("isRead", e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="false">Unread</option>
-                <option value="true">Read</option>
-              </select>
-            </div>
-
-            {/* Priority */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Priority
-              </label>
-              <select
-                value={filters.priority}
-                onChange={(e) => handleFilterChange("priority", e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="urgent">Urgent</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </div>
-
-            {/* Start Date */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                From Date
-              </label>
-              <input
-                type="date"
-                value={filters.startDate}
-                onChange={(e) =>
-                  handleFilterChange("startDate", e.target.value)
-                }
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* Mark All Read Button */}
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <button
-              onClick={handleMarkAllRead}
-              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-lg font-semibold flex items-center justify-center gap-2"
-            >
-              <CheckCircle2 className="w-4 h-4" />
-              Mark All as Read
-            </button>
-          </div>
-        </div>
-
-        {/* Notifications List */}
-        <div className="space-y-3">
-          {loading ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto mb-4" />
-              <p className="text-slate-600">Loading notifications...</p>
-            </div>
-          ) : notifications?.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-              <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 mb-2">
-                No notifications found
-              </h3>
-              <p className="text-slate-600">
-                {Object.values(filters).some((v) => v !== "")
-                  ? "Try adjusting your filters"
-                  : "You're all caught up!"}
-              </p>
-            </div>
-          ) : (
-            (notifications || []).map((notification) => (
-              <div
-                key={notification._id}
-                id={`notification-${notification._id}`}
-                className={`bg-white rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
-                  !notification.isRead
-                    ? "border-blue-300 bg-blue-50"
-                    : "border-slate-200"
-                } ${
-                  highlightId === notification._id
-                    ? "ring-4 ring-yellow-300"
-                    : ""
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  {/* Priority Icon */}
-                  <div
-                    className={`p-3 rounded-xl border-2 ${getPriorityColor(
-                      notification.priority,
-                    )}`}
+              <div className="space-y-4">
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Stream Status</label>
+                  <select
+                    value={filters.isRead}
+                    onChange={(e) => handleFilterChange("isRead", e.target.value)}
+                    className="input-premium bg-[#0f172a] appearance-none"
                   >
-                    {getPriorityIcon(notification.priority)}
-                  </div>
+                    <option value="" className="bg-[#0f172a]">All Signals</option>
+                    <option value="false" className="bg-[#0f172a]">Unprocessed</option>
+                    <option value="true" className="bg-[#0f172a]">Acknowledged</option>
+                  </select>
+                </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-slate-900">
-                          {notification.title}
-                        </h3>
-                        <p className="text-slate-600 mt-1">
-                          {notification.message}
-                        </p>
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Priority Level</label>
+                  <select
+                    value={filters.priority}
+                    onChange={(e) => handleFilterChange("priority", e.target.value)}
+                    className="input-premium bg-[#0f172a] appearance-none"
+                  >
+                    <option value="" className="bg-[#0f172a]">All Priorities</option>
+                    <option value="urgent" className="bg-[#0f172a]">Urgent</option>
+                    <option value="high" className="bg-[#0f172a]">Priority High</option>
+                    <option value="medium" className="bg-[#0f172a]">Medium</option>
+                    <option value="low" className="bg-[#0f172a]">Standard</option>
+                  </select>
+                </div>
 
-                        {/* Metadata */}
-                        {notification.data &&
-                          typeof notification.data === "object" &&
-                          Object.keys(notification.data).length > 0 && (
-                            <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                              <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                                Details
-                              </p>
-                              <div className="grid grid-cols-2 gap-2 text-sm">
-                                {Object.entries(notification.data || {}).map(
-                                  ([key, value]) => (
-                                    <div key={key}>
-                                      <span className="text-slate-600 font-medium">
-                                        {key.replace(/([A-Z])/g, " $1").trim()}:
-                                      </span>{" "}
-                                      <span className="text-slate-900 font-semibold">
-                                        {typeof value === "object"
-                                          ? JSON.stringify(value)
-                                          : value?.toString() || "N/A"}
-                                      </span>
-                                    </div>
-                                  ),
-                                )}
-                              </div>
-                            </div>
-                          )}
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Time Horizon</label>
+                  <input
+                    type="date"
+                    value={filters.startDate}
+                    onChange={(e) => handleFilterChange("startDate", e.target.value)}
+                    className="input-premium bg-[#0f172a] [color-scheme:dark]"
+                  />
+                </div>
+              </div>
 
-                        <div className="flex items-center gap-4 mt-4 text-sm text-slate-600">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {formatDate(notification.createdAt)}
-                          </span>
-                          <span className="px-2 py-1 bg-slate-100 rounded-md font-medium">
-                            {notification.priority}
-                          </span>
-                          {!notification.isRead && (
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md font-semibold flex items-center gap-1">
-                              <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                              Unread
-                            </span>
-                          )}
-                        </div>
+              <button
+                onClick={handleMarkAllRead}
+                className="w-full btn-primary py-4 text-[10px] font-black tracking-[0.2em] uppercase flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                Flush All Signals
+              </button>
+            </div>
+          </div>
+
+          {/* Feed Panel */}
+          <div className="lg:col-span-3 space-y-4">
+            {loading ? (
+              <div className="glass-card p-20 flex flex-col items-center justify-center space-y-6">
+                <div className="relative w-16 h-16">
+                  <div className="absolute inset-0 border-2 border-indigo-500/20 rounded-2xl animate-spin-slow"></div>
+                  <div className="absolute inset-0 border-2 border-t-indigo-500 border-transparent rounded-2xl animate-spin"></div>
+                </div>
+                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] animate-pulse">
+                  Decrypting Neural Stream...
+                </p>
+              </div>
+            ) : notifications?.length === 0 ? (
+              <div className="glass-card p-20 flex flex-col items-center justify-center text-center space-y-6">
+                <div className="p-6 bg-white/5 rounded-[2rem] border border-white/10">
+                  <Bell className="w-12 h-12 text-slate-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white uppercase tracking-widest">
+                    Silent Frequency
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-2 max-w-xs mx-auto">
+                    No active signals detected in the current matrix parameters.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {(notifications || []).map((notification) => (
+                  <div
+                    key={notification._id}
+                    id={`notification-${notification._id}`}
+                    className={`glass-card p-6 transition-all group relative overflow-hidden ${
+                      !notification.isRead
+                        ? "border-indigo-500/30 bg-indigo-500/5 shadow-[0_0_30px_rgba(79,70,229,0.1)]"
+                        : "border-white/5 opacity-80"
+                    } ${
+                      highlightId === notification._id
+                        ? "ring-2 ring-amber-500/50 scale-[1.01]"
+                        : ""
+                    }`}
+                  >
+                    {!notification.isRead && (
+                      <div className="absolute left-0 top-0 w-1 h-full bg-indigo-500"></div>
+                    )}
+                    
+                    <div className="flex items-start gap-6">
+                      {/* Status Icon */}
+                      <div className={`p-4 rounded-2xl border transition-all ${
+                        getPriorityColor(notification.priority).includes("red") ? "bg-rose-500/10 border-rose-500/20 text-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.1)]" :
+                        getPriorityColor(notification.priority).includes("orange") ? "bg-amber-500/10 border-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.1)]" :
+                        "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
+                      }`}>
+                        {getPriorityIcon(notification.priority)}
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex flex-col gap-2">
-                        {!notification.isRead && (
-                          <button
-                            onClick={() => handleMarkAsRead(notification._id)}
-                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Mark as read"
-                          >
-                            <Eye className="w-5 h-5 text-slate-600" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDelete(notification._id)}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-5 h-5 text-red-600" />
-                        </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-6">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <h3 className="text-lg font-black text-white tracking-tight group-hover:text-indigo-400 transition-colors uppercase">
+                                {notification.title}
+                              </h3>
+                              <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border tracking-widest ${
+                                notification.priority === 'urgent' ? 'border-rose-500/30 text-rose-500 bg-rose-500/10' :
+                                'border-indigo-500/30 text-indigo-400 bg-indigo-500/10'
+                              }`}>
+                                {notification.priority}
+                              </span>
+                            </div>
+                            <p className="text-slate-400 mt-2 text-sm font-medium leading-relaxed">
+                              {notification.message}
+                            </p>
+
+                            {/* Data Grid */}
+                            {notification.data && typeof notification.data === "object" && Object.keys(notification.data).length > 0 && (
+                              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                {Object.entries(notification.data).map(([key, value]) => (
+                                  <div key={key} className="p-3 bg-white/5 rounded-xl border border-white/5 group/node hover:border-indigo-500/30 transition-all">
+                                    <p className="text-[9px] font-black text-indigo-400/50 uppercase tracking-widest mb-1 group-hover/node:text-indigo-400">
+                                      {key.replace(/([A-Z])/g, " $1").trim()}
+                                    </p>
+                                    <p className="text-xs font-bold text-slate-200 truncate">
+                                      {typeof value === "object" ? JSON.stringify(value) : value?.toString() || "N/A"}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            <div className="flex items-center gap-6 mt-6">
+                              <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <Clock className="w-3.5 h-3.5" />
+                                {formatDate(notification.createdAt)}
+                              </div>
+                              {!notification.isRead && (
+                                <div className="flex items-center gap-2 text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] animate-pulse">
+                                  <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                                  LIVE STREAM
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            {!notification.isRead && (
+                              <button
+                                onClick={() => handleMarkAsRead(notification._id)}
+                                className="p-2.5 bg-white/5 hover:bg-emerald-500/20 text-slate-500 hover:text-emerald-400 border border-white/5 hover:border-emerald-500/30 rounded-xl transition-all active:scale-95"
+                                title="Acknowledge Signal"
+                              >
+                                <Eye className="w-5 h-5" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleDelete(notification._id)}
+                              className="p-2.5 bg-white/5 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-white/5 hover:border-rose-500/30 rounded-xl transition-all active:scale-95"
+                              title="Purge Signal"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))
-          )}
-        </div>
+            )}
 
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <button
-              onClick={() =>
-                setPagination((prev) => ({ ...prev, page: prev.page - 1 }))
-              }
-              disabled={pagination.page === 1}
-              className="px-4 py-2 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold flex items-center gap-2"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </button>
+            {/* Pagination Controls */}
+            {pagination.totalPages > 1 && (
+              <div className="pt-10 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
+                  disabled={pagination.page === 1}
+                  className="p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-95 group"
+                >
+                  <ChevronLeft className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                </button>
 
-            <span className="text-slate-700 font-semibold">
-              Page {pagination.page} of {pagination.totalPages}
-            </span>
+                <div className="px-6 py-3 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-3">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sector</span>
+                  <span className="text-sm font-black text-white tabular-nums">{pagination.page} / {pagination.totalPages}</span>
+                </div>
 
-            <button
-              onClick={() =>
-                setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
-              }
-              disabled={pagination.page === pagination.totalPages}
-              className="px-4 py-2 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold flex items-center gap-2"
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
+                  disabled={pagination.page === pagination.totalPages}
+                  className="p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-95 group"
+                >
+                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

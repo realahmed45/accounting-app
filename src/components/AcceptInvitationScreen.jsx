@@ -7,6 +7,7 @@ import {
   User,
   Lock,
   Loader2,
+  RefreshCw,
 } from "lucide-react";
 import { invitationService } from "../services/api";
 
@@ -112,8 +113,14 @@ const AcceptInvitationScreen = ({ token, onAccepted }) => {
   // ── Loading ──────────────────────────────────────────────────────────
   if (fetchLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#020617] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(79,70,229,0.1),transparent_50%)]"></div>
+        <div className="relative">
+          <div className="w-24 h-24 border-2 border-indigo-500/20 rounded-3xl animate-spin-slow"></div>
+          <div className="absolute inset-0 w-24 h-24 border-2 border-t-indigo-500 border-transparent rounded-3xl animate-spin"></div>
+          <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-indigo-400 animate-pulse" />
+        </div>
+        <p className="mt-8 text-[10px] font-black text-indigo-400 uppercase tracking-[0.5em] animate-pulse">Synchronizing Neural Net...</p>
       </div>
     );
   }
@@ -121,20 +128,25 @@ const AcceptInvitationScreen = ({ token, onAccepted }) => {
   // ── Error ────────────────────────────────────────────────────────────
   if (fetchError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-8 text-center space-y-4">
-          <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-            <AlertCircle className="w-7 h-7 text-red-500" />
+      <div className="min-h-screen flex items-center justify-center bg-[#020617] p-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(244,63,94,0.05),transparent_50%)]"></div>
+        <div className="glass-modal-content max-w-sm w-full p-12 text-center space-y-8 animate-zoomIn">
+          <div className="w-20 h-20 bg-rose-500/10 rounded-3xl flex items-center justify-center mx-auto border border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.1)]">
+            <AlertCircle className="w-10 h-10 text-rose-500" />
           </div>
-          <h1 className="text-lg font-semibold text-gray-900">
-            Invitation Not Valid
-          </h1>
-          <p className="text-sm text-gray-500">{fetchError}</p>
+          <div className="space-y-3">
+            <h1 className="text-xl font-black text-white uppercase tracking-widest italic">
+              Protocol Error
+            </h1>
+            <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide leading-loose">
+              {fetchError}
+            </p>
+          </div>
           <button
             onClick={() => window.location.replace("/")}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+            className="w-full py-5 btn-primary rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all"
           >
-            Go to App
+            Return to Nexus
           </button>
         </div>
       </div>
@@ -143,171 +155,195 @@ const AcceptInvitationScreen = ({ token, onAccepted }) => {
 
   // ── Valid invitation ─────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden">
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full"></div>
+      </div>
+
+      <div className="glass-modal-content max-w-lg w-full overflow-hidden animate-fadeIn relative z-10 border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.5)]">
         {/* Banner */}
         <div
-          className={`p-6 text-white ${
+          className={`relative p-10 overflow-hidden ${
             isOwnershipTransfer
-              ? "bg-gradient-to-r from-amber-500 to-orange-600"
-              : "bg-gradient-to-r from-blue-600 to-purple-600"
+              ? "bg-gradient-to-br from-amber-500/20 to-orange-600/20 border-b border-amber-500/20"
+              : "bg-gradient-to-br from-indigo-500/20 to-purple-600/20 border-b border-indigo-500/20"
           }`}
         >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#020617]/40"></div>
+          
+          <div className="relative z-10 flex items-center gap-6 mb-6">
+            <div className={`p-5 rounded-2xl border ${
+              isOwnershipTransfer 
+                ? "bg-amber-500/20 border-amber-500/30 shadow-[0_0_30px_rgba(245,158,11,0.2)]" 
+                : "bg-indigo-500/20 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.2)]"
+            }`}>
               {isOwnershipTransfer ? (
-                <Crown className="w-5 h-5 text-white" />
+                <Crown className="w-8 h-8 text-amber-500" />
               ) : (
-                <Shield className="w-5 h-5 text-white" />
+                <Shield className="w-8 h-8 text-indigo-400" />
               )}
             </div>
             <div>
-              <p className="text-white/80 text-sm">
-                {isOwnershipTransfer
-                  ? "Ownership Transfer"
-                  : "You've been invited"}
+              <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-2 ${
+                isOwnershipTransfer ? "text-amber-500" : "text-indigo-400"
+              }`}>
+                {isOwnershipTransfer ? "Authority Transition" : "Expansion Protocol"}
               </p>
-              <h1 className="text-lg font-bold text-white">
+              <h1 className="text-2xl font-black text-white italic tracking-widest uppercase">
                 {invitation.accountName}
               </h1>
             </div>
           </div>
-          <p className="text-white/90 text-sm">
-            <strong>{invitation.inviterName}</strong>
-            {isOwnershipTransfer
-              ? " is transferring ownership of this account to you."
-              : ` invited you to join this account.`}
-          </p>
+          
+          <div className="relative z-10 p-6 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-sm">
+            <p className="text-[11px] font-medium text-slate-400 leading-relaxed tracking-wide uppercase">
+              <span className="text-white font-black italic mr-2 tracking-widest">
+                {invitation.inviterName}
+              </span>
+              {isOwnershipTransfer
+                ? "has designated you as the new primary sovereign of this node."
+                : `has granted you clearance to access this neural workspace.`}
+            </p>
+          </div>
         </div>
 
         {/* Permissions summary */}
         {!isOwnershipTransfer && (
-          <div className="px-6 py-3 bg-gray-50 border-b">
+          <div className="px-10 py-6 bg-white/2 border-b border-white/5">
             {invitation.viewOnly ? (
-              <p className="text-sm text-gray-600">
-                <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-                  <User className="w-3.5 h-3.5" /> View Only
-                </span>{" "}
-                — you can see everything but cannot make changes.
-              </p>
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-slate-500/10 rounded-lg">
+                  <User className="w-4 h-4 text-slate-400" />
+                </div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Level: <span className="text-white italic">Observer Status</span> (Read Only)
+                </p>
+              </div>
             ) : grantedPermissions.length > 0 ? (
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1">
-                  Your permissions:
+              <div className="space-y-4">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em]">
+                  Clearance Matrix:
                 </p>
-                <p className="text-sm text-gray-700">
-                  {grantedPermissions.join(", ")}
-                </p>
+                <div className="flex flex-wrap gap-2">
+                  {grantedPermissions.map((p, idx) => (
+                    <span key={idx} className="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-black uppercase tracking-widest rounded-lg">
+                      {p}
+                    </span>
+                  ))}
+                </div>
               </div>
             ) : null}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleAccept} className="p-6 space-y-4">
-          <p className="text-sm text-gray-500">
-            Create your password to join as{" "}
-            <strong className="text-gray-700">{invitation.email}</strong>
-          </p>
+        <form onSubmit={handleAccept} className="p-10 space-y-8 glass-modal-body">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              Identity Synchronization
+            </p>
+            <p className="text-xs font-medium text-white tracking-wider">
+              {invitation.email}
+            </p>
+          </div>
 
           {submitError && (
-            <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-6 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-4 animate-pulse">
+              <AlertCircle className="w-5 h-5 shrink-0" />
               {submitError}
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                First name <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="input-group-premium">
+              <label className="input-label-premium">First Designation</label>
+              <div className="relative group">
+                <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
                 <input
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="John"
+                  placeholder="e.g., JOHN"
                   required
-                  className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-premium pl-14 py-4 uppercase"
                 />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last name <span className="text-red-500">*</span>
-              </label>
+            <div className="input-group-premium">
+              <label className="input-label-premium">Secondary Alias</label>
               <input
                 type="text"
                 value={familyName}
                 onChange={(e) => setFamilyName(e.target.value)}
-                placeholder="Smith"
+                placeholder="e.g., SMITH"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input-premium py-4 uppercase"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min 6 characters"
-                required
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          <div className="space-y-6">
+            <div className="input-group-premium">
+              <label className="input-label-premium">Neural Access Key (Password)</label>
+              <div className="relative group">
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="input-premium pl-14 py-4"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm password <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter password"
-                required
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            <div className="input-group-premium">
+              <label className="input-label-premium">Verify Access Key</label>
+              <div className="relative group">
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="input-premium pl-14 py-4"
+                />
+              </div>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className={`w-full px-4 py-2.5 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 ${
+            className={`w-full py-6 text-white rounded-[2rem] font-black text-[12px] tracking-[0.4em] uppercase shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-4 ${
               isOwnershipTransfer
-                ? "bg-amber-500 hover:bg-amber-600"
-                : "bg-blue-600 hover:bg-blue-700"
+                ? "bg-gradient-to-r from-amber-500 to-orange-600 shadow-amber-500/20"
+                : "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-indigo-500/20"
             }`}
           >
             {submitting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <RefreshCw className="w-5 h-5 animate-spin" />
             ) : (
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="w-5 h-5" />
             )}
             {submitting
-              ? "Joining…"
+              ? "INITIATING..."
               : isOwnershipTransfer
-                ? "Accept Ownership"
-                : "Join Account"}
+                ? "Accept Authority"
+                : "Initialize Sync"}
           </button>
 
-          <p className="text-xs text-gray-400 text-center">
-            Invitation expires{" "}
-            {new Date(invitation.expiresAt).toLocaleDateString()}
-          </p>
+          <div className="flex items-center justify-center gap-4 pt-4">
+            <div className="h-px flex-1 bg-white/5"></div>
+            <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.3em]">
+              Packet Expiry: {new Date(invitation.expiresAt).toLocaleDateString()}
+            </p>
+            <div className="h-px flex-1 bg-white/5"></div>
+          </div>
         </form>
       </div>
     </div>

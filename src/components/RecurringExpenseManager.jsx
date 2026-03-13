@@ -139,98 +139,136 @@ const RecurringExpenseManager = ({ accountId }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Loader className="w-6 h-6 animate-spin text-blue-500" />
+      <div className="flex flex-col items-center justify-center p-20 space-y-6">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-2 border-indigo-500/20 rounded-2xl animate-spin-slow"></div>
+          <div className="absolute inset-0 border-2 border-t-indigo-500 border-transparent rounded-2xl animate-spin"></div>
+        </div>
+        <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] animate-pulse">
+          Synchronizing Neural Cycles...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10 animate-fadeIn">
+      {/* Background Ambience */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-pulse"></div>
+        <div className="absolute bottom-[20%] left-[10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <RefreshCw className="w-6 h-6 text-blue-600 mr-2" />
-          <h2 className="text-2xl font-bold text-gray-900">
-            Recurring Expenses
-          </h2>
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-4 mb-2">
+            <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg shadow-indigo-500/20">
+              <RefreshCw className="w-6 h-6 text-white italic" />
+            </div>
+            <h2 className="text-3xl font-black text-white tracking-tight uppercase italic">
+              Neural Cycles
+            </h2>
+          </div>
+          <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] ml-16">
+            Autonomous Financial Orchestration
+          </p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center"
+          className="group flex items-center gap-4 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all hover:scale-[1.05] active:scale-[0.95] shadow-2xl shadow-indigo-500/20"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          New Recurring Expense
+          <div className="p-1.5 bg-white/20 rounded-lg group-hover:rotate-90 transition-transform">
+            <Plus className="w-4 h-4" />
+          </div>
+          Initialize Cycle
         </button>
       </div>
 
       {/* List */}
       {recurringExpenses.length === 0 ? (
-        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-          <RefreshCw className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No recurring expenses
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Set up recurring expenses to automate your regular payments
-          </p>
+        <div className="relative z-10 glass-modal-content border-dashed border-white/10 p-20 text-center space-y-8">
+          <div className="relative inline-block">
+            <RefreshCw className="w-16 h-16 text-slate-800 mx-auto" />
+            <div className="absolute inset-0 bg-indigo-500/20 blur-2xl animate-pulse"></div>
+          </div>
+          <div>
+            <h3 className="text-xl font-black text-white uppercase tracking-widest mb-4">
+              Void Cycle Detect
+            </h3>
+            <p className="text-sm text-slate-500 max-w-md mx-auto font-medium uppercase tracking-widest leading-relaxed">
+              No active recurring transmission patterns identified in the current sector.
+            </p>
+          </div>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+            className="px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black text-white uppercase tracking-[0.3em] transition-all"
           >
-            Create First Recurring Expense
+            Deploy Alpha Cycle
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
-          {recurringExpenses.map((expense) => (
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+          {recurringExpenses.map((expense, idx) => (
             <div
               key={expense._id}
-              className={`bg-white border rounded-lg p-6 hover:shadow-lg transition-all ${
+              className={`glass-modal-content p-8 transition-all duration-500 group relative overflow-hidden ${
                 expense.isActive
-                  ? "border-blue-200"
-                  : "border-gray-200 opacity-60"
+                  ? "border-indigo-500/30 bg-indigo-500/5 shadow-[0_30px_60px_rgba(79,70,229,0.1)] hover:border-indigo-500/50"
+                  : "border-white/5 opacity-50 grayscale hover:grayscale-0 hover:opacity-100"
               }`}
+              style={{ animationDelay: `${idx * 100}ms` }}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">
+              {/* Dynamic Status Bar */}
+              {expense.isActive && (
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-indigo-500 to-purple-600"></div>
+              )}
+
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-4 mb-3">
+                    <h3 className="text-xl font-black text-white uppercase tracking-tight truncate italic">
                       {expense.templateName}
                     </h3>
                     {!expense.isActive && (
-                      <span className="ml-3 px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
-                        Paused
+                      <span className="px-3 py-1 bg-white/5 border border-white/10 text-slate-400 text-[8px] font-black rounded-full uppercase tracking-widest">
+                        Stasis
                       </span>
                     )}
                   </div>
                   {expense.description && (
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-4 line-clamp-2 leading-relaxed">
                       {expense.description}
                     </p>
                   )}
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="font-semibold text-gray-900">
-                      {formatCurrency(expense.amount)}
-                      {expense.isVariable && " (variable)"}
-                    </span>
-                    <span className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {getFrequencyLabel(expense.frequency, expense.interval)}
-                    </span>
-                    <span>Created {expense.totalCreated || 0} times</span>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                      <p className="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-1">Magnitude</p>
+                      <p className="text-lg font-black text-white tracking-tighter italic">
+                        {formatCurrency(expense.amount)}
+                        {expense.isVariable && <span className="text-[10px] text-indigo-400 ml-1">VAR</span>}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                      <p className="text-[8px] font-black text-purple-400 uppercase tracking-widest mb-1">Frequency</p>
+                      <p className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <Calendar className="w-3 h-3 text-purple-400" />
+                        {getFrequencyLabel(expense.frequency, expense.interval)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col gap-3">
                   <button
                     onClick={() => handleToggle(expense._id)}
-                    className={`p-2 rounded transition-all ${
+                    className={`p-3 rounded-xl transition-all duration-300 border ${
                       expense.isActive
-                        ? "hover:bg-yellow-50 text-yellow-600"
-                        : "hover:bg-green-50 text-green-600"
+                        ? "bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]"
+                        : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
                     }`}
-                    title={expense.isActive ? "Pause" : "Resume"}
+                    title={expense.isActive ? "Enter Stasis" : "Resume Stream"}
                   >
                     {expense.isActive ? (
                       <Pause className="w-5 h-5" />
@@ -240,28 +278,36 @@ const RecurringExpenseManager = ({ accountId }) => {
                   </button>
                   <button
                     onClick={() => openEditModal(expense)}
-                    className="p-2 hover:bg-gray-100 rounded transition-all"
+                    className="p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-slate-400 hover:text-white transition-all shadow-lg"
                   >
-                    <Edit2 className="w-5 h-5 text-gray-600" />
+                    <Edit2 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => handleDelete(expense._id)}
-                    className="p-2 hover:bg-red-50 rounded transition-all"
+                    className="p-3 bg-white/5 hover:bg-rose-500/20 border border-white/5 hover:border-rose-500/30 text-slate-500 hover:text-rose-400 rounded-xl transition-all shadow-lg"
                   >
-                    <Trash2 className="w-5 h-5 text-red-600" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
 
-              {/* Next Scheduled */}
-              {expense.isActive && expense.nextScheduled && (
-                <div className="bg-blue-50 rounded-lg p-3 text-sm">
-                  <span className="text-gray-700">Next scheduled: </span>
-                  <span className="font-semibold text-gray-900">
-                    {new Date(expense.nextScheduled).toLocaleDateString()}
+              {/* Progress Footer */}
+              <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse border border-indigo-500 shadow-[0_0_5px_#6366f1]" />
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    Total Flux: {expense.totalCreated || 0} Packets
                   </span>
                 </div>
-              )}
+                {expense.isActive && expense.nextScheduled && (
+                  <div className="flex items-center gap-3 px-4 py-2 bg-white/2 rounded-full border border-white/5">
+                    <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">
+                      Horizon: {new Date(expense.nextScheduled).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -269,169 +315,159 @@ const RecurringExpenseManager = ({ accountId }) => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white">
-              <h3 className="text-xl font-bold text-gray-900">
-                {editingExpense ? "Edit" : "Create"} Recurring Expense
-              </h3>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fadeIn">
+          <div className="absolute inset-0 bg-[#020617]/90 backdrop-blur-2xl" onClick={resetForm}></div>
+          <div className="glass-modal-content w-full max-w-lg border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] z-10 animate-zoomIn max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div className="sticky top-0 z-10 p-8 border-b border-white/5 bg-white/2 backdrop-blur-3xl flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tight italic">
+                  {editingExpense ? "Reconfigure" : "Initialize"} Cycle
+                </h3>
+                <p className="text-[9px] text-indigo-400 font-black uppercase tracking-[0.3em] mt-1">Matrix Parameter Config</p>
+              </div>
               <button
                 onClick={resetForm}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6 text-slate-500 group-hover:text-white" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Template Name *
-                </label>
+            <form onSubmit={handleSubmit} className="p-10 space-y-8">
+              <div className="input-group-premium">
+                <label className="input-label-premium">Template Identifier *</label>
                 <input
                   type="text"
                   value={formData.templateName}
                   onChange={(e) =>
                     setFormData({ ...formData, templateName: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., Monthly Rent"
+                  className="input-premium"
+                  placeholder="e.g. NEURAL_RENT_ALPHA"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
+              <div className="input-group-premium">
+                <label className="input-label-premium">Cycle Description</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  rows="2"
-                  placeholder="Optional description"
+                  className="input-premium min-h-[100px] py-4"
+                  placeholder="Cycle objectives and parameters..."
                 ></textarea>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Amount *
-                </label>
-                <input
-                  type="number"
-                  value={formData.amount}
-                  onChange={(e) =>
-                    setFormData({ ...formData, amount: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Magnitude (USD) *</label>
+                  <input
+                    type="number"
+                    value={formData.amount}
+                    onChange={(e) =>
+                      setFormData({ ...formData, amount: e.target.value })
+                    }
+                    className="input-premium"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                  <div className="flex items-center gap-3 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, isVariable: !formData.isVariable })}
+                      className={`w-10 h-5 rounded-full transition-all relative ${
+                        formData.isVariable ? 'bg-indigo-500' : 'bg-white/10'
+                      }`}
+                    >
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+                        formData.isVariable ? 'left-5.5' : 'left-0.5'
+                      }`} />
+                    </button>
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Variable Magnitude</span>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="input-group-premium">
+                    <label className="input-label-premium">Transmission Start *</label>
+                    <input
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) =>
+                        setFormData({ ...formData, startDate: e.target.value })
+                      }
+                      className="input-premium [color-scheme:dark]"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isVariable"
-                  checked={formData.isVariable}
-                  onChange={(e) =>
-                    setFormData({ ...formData, isVariable: e.target.checked })
-                  }
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label
-                  htmlFor="isVariable"
-                  className="ml-2 text-sm text-gray-700"
-                >
-                  Amount may vary
-                </label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Frequency *
-                  </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Interval Protocol *</label>
                   <select
                     value={formData.frequency}
                     onChange={(e) =>
                       setFormData({ ...formData, frequency: e.target.value })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="input-premium"
                   >
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
+                    <option value="daily">Diurnal (Daily)</option>
+                    <option value="weekly">Septimal (Weekly)</option>
+                    <option value="monthly">Lunar (Monthly)</option>
+                    <option value="yearly">Solar (Yearly)</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Repeat Every
-                  </label>
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Flux Multiplier</label>
                   <input
                     type="number"
                     value={formData.interval}
                     onChange={(e) =>
                       setFormData({ ...formData, interval: e.target.value })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="input-premium"
                     min="1"
+                    placeholder="1"
                   />
                 </div>
               </div>
 
               {formData.frequency === "monthly" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Day of Month
-                  </label>
+                <div className="input-group-premium">
+                  <label className="input-label-premium">Cycle Phase Day (1-31)</label>
                   <input
                     type="number"
                     value={formData.dayOfMonth}
                     onChange={(e) =>
                       setFormData({ ...formData, dayOfMonth: e.target.value })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="input-premium"
                     min="1"
                     max="31"
                   />
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Start Date *
-                </label>
-                <input
-                  type="date"
-                  value={formData.startDate}
-                  onChange={(e) =>
-                    setFormData({ ...formData, startDate: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="flex space-x-3 pt-4">
+              <div className="flex gap-6 pt-6">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  className="flex-1 py-5 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/5 text-[10px] font-black text-slate-500 hover:text-white uppercase tracking-[0.3em] transition-all"
                 >
-                  Cancel
+                  Abort
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="flex-3 py-5 px-10 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-indigo-500/20"
                 >
-                  {editingExpense ? "Update" : "Create"}
+                  {editingExpense ? "Sync Parameters" : "Engage Cycle"}
                 </button>
               </div>
             </form>

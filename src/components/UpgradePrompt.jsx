@@ -42,59 +42,77 @@ const UpgradePrompt = ({ feature, requiredPlan = "professional", onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+    <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+      <div className="glass-modal-content max-w-sm animate-zoomIn overflow-hidden">
         {/* Header */}
         <div
-          className={`bg-gradient-to-r ${
+          className={`p-8 text-white relative bg-gradient-to-br ${
             planColors[requiredPlan] || planColors.professional
-          } p-6 text-white relative`}
+          } shadow-[inset_0_0_50px_rgba(255,255,255,0.1)]`}
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-all"
+            className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-xl transition-all"
           >
             <X className="w-5 h-5" />
           </button>
-          <Zap className="w-12 h-12 mb-3" />
-          <h2 className="text-2xl font-bold mb-2">Upgrade Required</h2>
-          <p className="text-blue-100">
-            {feature
-              ? `${feature} is available on ${requiredPlan} plan and above`
-              : `Upgrade to ${requiredPlan} for premium features`}
+          
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-4 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/20 shadow-2xl animate-float">
+              <Zap className="w-8 h-8 text-white fill-white/20" />
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-black italic tracking-widest uppercase">
+            Evolution
+          </h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mt-1">
+            System Upgrade Required
           </p>
+          
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <p className="text-sm font-bold leading-relaxed opacity-90">
+              {feature
+                ? `The "${feature}" protocol requires <span className="text-white underline decoration-white/30 decoration-2 underline-offset-4">${requiredPlan.toUpperCase()}</span> clearance.`
+                : `Elevate your neural throughput to the ${requiredPlan} tier.`}
+            </p>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <h3 className="font-semibold text-gray-900 mb-4 capitalize">
-            {requiredPlan} Plan Includes:
-          </h3>
-          <ul className="space-y-3 mb-6">
-            {planBenefits[requiredPlan]?.map((benefit, index) => (
-              <li key={index} className="flex items-start">
-                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
-                <span className="text-gray-700">{benefit}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="glass-modal-body space-y-8">
+          <div>
+            <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-6">
+              Clearance Benefits
+            </h3>
+            <ul className="space-y-4">
+              {planBenefits[requiredPlan]?.map((benefit, index) => (
+                <li key={index} className="flex items-center gap-4 group">
+                  <div className="p-1.5 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500 transition-colors">
+                    <Check className="w-3 h-3 text-emerald-400 group-hover:text-white" />
+                  </div>
+                  <span className="text-slate-300 font-bold text-xs uppercase tracking-wider">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* CTA Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             <button
               onClick={handleUpgradeClick}
-              className={`w-full py-3 px-6 bg-gradient-to-r ${
+              className={`w-full py-5 rounded-2xl bg-gradient-to-r ${
                 planColors[requiredPlan] || planColors.professional
-              } text-white rounded-lg hover:opacity-90 transition-all font-semibold flex items-center justify-center`}
+              } text-white font-black text-[10px] tracking-[0.3em] uppercase transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl flex items-center justify-center gap-2`}
             >
-              <Zap className="w-5 h-5 mr-2" />
-              View Plans & Upgrade
+              <Zap className="w-4 h-4 fill-white" />
+              Upgrade Matrix
             </button>
             <button
               onClick={onClose}
-              className="w-full py-3 px-6 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all font-semibold"
+              className="w-full py-4 bg-white/5 border border-white/5 text-slate-500 hover:text-white rounded-2xl font-black text-[10px] tracking-[0.3em] uppercase transition-all"
             >
-              Maybe Later
+              Dismiss
             </button>
           </div>
         </div>

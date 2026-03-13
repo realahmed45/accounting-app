@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { LogIn, UserPlus, Mail, Lock, User, Phone, DollarSign, TrendingUp } from "lucide-react";
+import { LogIn, UserPlus, Mail, Lock, User, Phone, DollarSign, TrendingUp, AlertCircle, RefreshCw, ArrowRight } from "lucide-react";
 import PlanSelectionScreen from "./PlanSelectionScreen";
 
 const AuthScreen = () => {
@@ -55,66 +55,61 @@ const AuthScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
+      {/* Neural Background Mesh */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"
+          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse"
           style={{ animationDuration: '8s' }}
         ></div>
         <div 
-          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"
+          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse"
           style={{ animationDuration: '10s', animationDelay: '2s' }}
         ></div>
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[150px] animate-pulse"
-          style={{ animationDuration: '12s', animationDelay: '4s' }}
-        ></div>
-        
-        {/* Floating Icons for Aesthetic Flare */}
-        <div className="absolute top-[15%] right-[15%] opacity-20 animate-float" style={{ animationDuration: '6s' }}>
-          <DollarSign className="w-12 h-12 text-indigo-400" />
-        </div>
-        <div className="absolute bottom-[20%] left-[10%] opacity-10 animate-float" style={{ animationDuration: '8s', animationDelay: '1s' }}>
-          <TrendingUp className="w-16 h-16 text-emerald-400" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03] animate-spin-slow">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/10 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full"></div>
         </div>
       </div>
 
       <div className="max-w-md w-full relative z-10">
         {/* Header */}
-        <div className="text-center mb-6 sm:mb-8 animate-fadeIn">
-          <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 shadow-2xl animate-scaleIn">
-            <span className="text-white text-3xl sm:text-4xl font-black">
-              $
-            </span>
+        <div className="text-center mb-10 animate-fadeIn">
+          <div className="inline-flex items-center justify-center p-1 bg-white/5 rounded-[2.5rem] border border-white/10 shadow-2xl mb-8 group overflow-hidden">
+            <div className="relative p-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] group-hover:scale-105 transition-transform duration-500">
+               <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+               <span className="relative text-white text-4xl font-black italic tracking-tighter">
+                W
+              </span>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 tracking-tight px-4">
-            Weekly Accounting
+          <h1 className="text-4xl sm:text-5xl font-black text-white mb-4 tracking-[-0.05em] px-4 uppercase italic">
+            Neural<span className="text-indigo-500">Hub</span>
           </h1>
-          <p className="text-slate-300 text-base sm:text-lg font-medium px-4">
-            {isLogin ? "👋 Welcome back!" : "🚀 Start your journey"}
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] px-4">
+            {isLogin ? "Authorization Protocol" : "Network Integration"}
           </p>
         </div>
 
         {/* Auth Card */}
-        <div className="glass-card p-6 sm:p-10 animate-scaleIn mx-3 sm:mx-0 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-50"></div>
+        <div className="glass-modal-content p-8 sm:p-12 animate-zoomIn mx-3 sm:mx-0 shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-white/5">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
           
           {/* Toggle Tabs */}
-          <div className="flex gap-2 mb-8 p-1.5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
+          <div className="flex p-1.5 bg-[#020617]/50 rounded-[1.5rem] border border-white/5 mb-10">
             <button
               onClick={() => {
                 setIsLogin(true);
                 setError("");
               }}
-              className={`flex-1 py-3.5 rounded-xl font-black transition-all text-sm tracking-tight flex items-center justify-center gap-2 ${
+              className={`flex-1 py-4 rounded-xl font-black transition-all text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 ${
                 isLogin
-                  ? "bg-indigo-600 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-xl"
+                  : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
               }`}
             >
               <LogIn className="w-4 h-4" />
-              LOGIN
+              Access
             </button>
             <button
               onClick={() => {
@@ -122,86 +117,82 @@ const AuthScreen = () => {
                 setError("");
                 setShowPlanSelection(false);
               }}
-              className={`flex-1 py-3.5 rounded-xl font-black transition-all text-sm tracking-tight flex items-center justify-center gap-2 ${
+              className={`flex-1 py-4 rounded-xl font-black transition-all text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 ${
                 !isLogin
-                  ? "bg-indigo-600 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-xl"
+                  : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
               }`}
             >
               <UserPlus className="w-4 h-4" />
-              CREATE ACCOUNT
+              Integrate
             </button>
           </div>
 
           {error && (
-            <div className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs font-bold uppercase tracking-widest animate-slideDown flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-500 flex-shrink-0">!</span>
+            <div className="mb-10 p-6 bg-rose-500/5 border border-rose-500/10 text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest animate-pulse flex items-center gap-4">
+              <AlertCircle className="w-5 h-5 shrink-0" />
               {error}
             </div>
           )}
 
           {/* Login Form */}
           {isLogin ? (
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-8">
               <div className="input-group-premium">
-                <label className="input-label-premium flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5" />
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={loginData.email}
-                  onChange={(e) =>
-                    setLoginData({ ...loginData, email: e.target.value })
-                  }
-                  className="input-premium"
-                  placeholder="name@company.com"
-                  autoComplete="email"
-                />
+                <label className="input-label-premium">Node Identifier (Email)</label>
+                <div className="relative group">
+                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <input
+                    type="email"
+                    required
+                    value={loginData.email}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, email: e.target.value })
+                    }
+                    className="input-premium pl-16 py-5"
+                    placeholder="user@nexus.com"
+                    autoComplete="email"
+                  />
+                </div>
               </div>
 
               <div className="input-group-premium">
-                <label className="input-label-premium flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5" />
-                  Password
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={loginData.password}
-                  onChange={(e) =>
-                    setLoginData({ ...loginData, password: e.target.value })
-                  }
-                  className="input-premium"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                />
+                <label className="input-label-premium">Security Pattern (Password)</label>
+                <div className="relative group">
+                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <input
+                    type="password"
+                    required
+                    value={loginData.password}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, password: e.target.value })
+                    }
+                    className="input-premium pl-16 py-5"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                  />
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary py-4 text-sm font-black tracking-widest uppercase mt-4 hover:scale-[1.02] active:scale-[0.98] shadow-[0_10px_30px_rgba(99,102,241,0.3)]"
+                className="w-full btn-primary py-6 rounded-[2rem] font-black text-[12px] tracking-[0.4em] uppercase mt-4 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-indigo-500/20 disabled:opacity-50 flex items-center justify-center gap-4"
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    AUTHENTICATING...
-                  </span>
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : (
-                  "SIGN IN TO HUB"
+                  <LogIn className="w-5 h-5" />
                 )}
+                {loading ? "VERIFYING..." : "ACTIVATE LINK"}
               </button>
             </form>
           ) : (
             /* Register Form */
-            <form onSubmit={handleRegister} className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleRegister} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="input-group-premium">
-                  <label className="input-label-premium">
-                    First Name
-                  </label>
+                  <label className="input-label-premium">Designation</label>
                   <input
                     type="text"
                     required
@@ -212,16 +203,13 @@ const AuthScreen = () => {
                         firstName: e.target.value,
                       })
                     }
-                    className="input-premium"
-                    placeholder="John"
-                    autoComplete="given-name"
+                    className="input-premium py-4"
+                    placeholder="First"
                   />
                 </div>
 
                 <div className="input-group-premium">
-                  <label className="input-label-premium">
-                    Family Name
-                  </label>
+                  <label className="input-label-premium">Alias</label>
                   <input
                     type="text"
                     required
@@ -232,18 +220,14 @@ const AuthScreen = () => {
                         familyName: e.target.value,
                       })
                     }
-                    className="input-premium"
-                    placeholder="Doe"
-                    autoComplete="family-name"
+                    className="input-premium py-4"
+                    placeholder="Last"
                   />
                 </div>
               </div>
 
               <div className="input-group-premium">
-                <label className="input-label-premium flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5" />
-                  Email Address
-                </label>
+                <label className="input-label-premium">Network Handle (Email)</label>
                 <input
                   type="email"
                   required
@@ -254,40 +238,13 @@ const AuthScreen = () => {
                       email: e.target.value,
                     })
                   }
-                  className="input-premium"
-                  placeholder="name@company.com"
-                  autoComplete="email"
+                  className="input-premium py-4"
+                  placeholder="user@nexus.com"
                 />
               </div>
 
               <div className="input-group-premium">
-                <label className="input-label-premium flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5" />
-                  Phone Number 
-                  <span className="text-[10px] text-slate-500 font-normal lowercase ml-auto">
-                    (Optional)
-                  </span>
-                </label>
-                <input
-                  type="tel"
-                  value={registerData.phoneNumber}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...registerData,
-                      phoneNumber: e.target.value,
-                    })
-                  }
-                  className="input-premium"
-                  placeholder="+1 (555) 000-0000"
-                  autoComplete="tel"
-                />
-              </div>
-
-              <div className="input-group-premium">
-                <label className="input-label-premium flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5" />
-                  Password
-                </label>
+                <label className="input-label-premium">Sync Key (Password)</label>
                 <input
                   type="password"
                   required
@@ -299,43 +256,60 @@ const AuthScreen = () => {
                       password: e.target.value,
                     })
                   }
-                  className="input-premium"
+                  className="input-premium py-4"
                   placeholder="••••••••"
-                  autoComplete="new-password"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary py-4 text-sm font-black tracking-widest uppercase mt-4 hover:scale-[1.02] active:scale-[0.98] shadow-[0_10px_30px_rgba(99,102,241,0.3)]"
+                className="w-full btn-primary py-6 rounded-[2rem] font-black text-[12px] tracking-[0.4em] uppercase mt-4 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-indigo-500/20 disabled:opacity-50 flex items-center justify-center gap-4"
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    PREPARING...
-                  </span>
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : (
-                  "SELECT PLAN & REGISTER →"
+                  <ArrowRight className="w-5 h-5" />
                 )}
+                {loading ? "INITIATING..." : "CONFIGURE NODE →"}
               </button>
             </form>
           )}
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-300 text-xs sm:text-sm mt-6 sm:mt-8 font-medium px-4">
-          Manage multiple accounts • Track expenses • Upload bill photos
-        </p>
+        <div className="mt-12 space-y-4 px-4">
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px flex-1 bg-white/5"></div>
+            <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.3em]">
+              Centralized Neural Asset Control
+            </p>
+            <div className="h-px flex-1 bg-white/5"></div>
+          </div>
+          <div className="flex justify-center gap-8">
+            {[
+              { icon: DollarSign, label: "Fiscal" },
+              { icon: TrendingUp, label: "Analytics" },
+              { icon: Phone, label: "Support" }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-[8px] font-black text-slate-500 uppercase tracking-widest group cursor-default">
+                <item.icon className="w-3 h-3 group-hover:text-indigo-400 transition-colors" />
+                {item.label}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Full-screen Plan Selection Component */}
       {showPlanSelection && (
-        <PlanSelectionScreen
-          userEmail={registerData.email}
-          onSelectPlan={handlePlanSelected}
-          onSkip={() => handlePlanSelected("free")}
-        />
+        <div className="fixed inset-0 z-[100] animate-fadeIn">
+          <PlanSelectionScreen
+            userEmail={registerData.email}
+            onSelectPlan={handlePlanSelected}
+            onSkip={() => handlePlanSelected("free")}
+          />
+        </div>
       )}
     </div>
   );

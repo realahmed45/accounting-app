@@ -1309,9 +1309,12 @@ function App() {
       {/* Sidebar - Desktop: Fixed, Mobile: Overlay */}
       <Sidebar 
         isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
+        setIsOpen={setIsSidebarOpen} 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        user={user}
+        logout={logout}
+        hasPermission={hasPermission}
       />
 
       {/* Main Content Area */}
@@ -2839,132 +2842,152 @@ function App() {
         </div>
       )}
       {activeModal === "addExpense" && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] overflow-y-auto">
-          <div className="bg-white shadow-xl max-w-md w-full p-4 sm:p-6 my-0 sm:my-8 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Add Expense</h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleAddExpense} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Date
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={expenseForm.date}
-                    onChange={(e) =>
-                      setExpenseForm({ ...expenseForm, date: e.target.value })
-                    }
-                    placeholder="YYYY-MM-DD or select from calendar"
-                    pattern="\d{4}-\d{2}-\d{2}"
-                    className="w-full px-4 py-3.5 pr-12 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    required
-                  />
-                  <input
-                    type="date"
-                    value={expenseForm.date}
-                    onChange={(e) =>
-                      setExpenseForm({ ...expenseForm, date: e.target.value })
-                    }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 opacity-0 cursor-pointer"
-                    title="Pick from calendar"
-                  />
-                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+        <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+          <div className="glass-modal-content max-w-lg animate-zoomIn">
+            <div className="glass-modal-header">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-indigo-500/20 rounded-xl">
+                  <Receipt className="w-5 h-5 text-indigo-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+                    Log Expense
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-0.5">
+                    Financial Protocol {new Date().getFullYear()}
+                  </p>
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Amount
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={expenseForm.amount}
-                  onChange={(e) =>
-                    setExpenseForm({ ...expenseForm, amount: e.target.value })
-                  }
-                  placeholder="0.00"
-                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  required
-                />
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddExpense} className="glass-modal-body space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="input-group-premium">
+                  <label className="input-label-premium">
+                    Deployment Date
+                  </label>
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={expenseForm.date}
+                      onChange={(e) =>
+                        setExpenseForm({ ...expenseForm, date: e.target.value })
+                      }
+                      placeholder="YYYY-MM-DD"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      className="input-premium pr-10"
+                      required
+                    />
+                    <input
+                      type="date"
+                      value={expenseForm.date}
+                      onChange={(e) =>
+                        setExpenseForm({ ...expenseForm, date: e.target.value })
+                      }
+                      className="absolute right-0 top-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="input-group-premium">
+                  <label className="input-label-premium">
+                    Fiscal Amount
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={expenseForm.amount}
+                      onChange={(e) =>
+                        setExpenseForm({ ...expenseForm, amount: e.target.value })
+                      }
+                      placeholder="0.00"
+                      className="input-premium pl-8"
+                      required
+                    />
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Category
+
+              <div className="input-group-premium">
+                <label className="input-label-premium">
+                  Logic Class (Category)
                 </label>
                 <select
                   value={expenseForm.category}
                   onChange={(e) =>
                     setExpenseForm({ ...expenseForm, category: e.target.value })
                   }
-                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="input-premium appearance-none bg-slate-900"
                   required
                 >
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat.name}>
+                    <option key={cat._id} value={cat.name} className="bg-slate-900">
                       {cat.name}
                     </option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Note (optional)
+
+              <div className="input-group-premium">
+                <label className="input-label-premium">
+                  Audit Notes
                 </label>
                 <textarea
                   value={expenseForm.note}
                   onChange={(e) =>
                     setExpenseForm({ ...expenseForm, note: e.target.value })
                   }
-                  placeholder="Add a note..."
+                  placeholder="Operational details..."
                   rows="2"
-                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="input-premium resize-none"
                 />
               </div>
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                  <CreditCard className="w-4 h-4" />
-                  Payment Source
+
+              <div className="space-y-3">
+                <label className="input-label-premium flex items-center gap-2">
+                  <CreditCard className="w-3.5 h-3.5" />
+                  Liquidity Source
                 </label>
-                <div className="border border-gray-200 divide-y divide-gray-100 rounded-xl overflow-hidden">
+                <div className="bg-white/5 rounded-2xl border border-white/5 overflow-hidden divide-y divide-white/5">
                   {/* Cash option */}
                   <button
                     type="button"
                     onClick={() =>
                       setExpenseForm({ ...expenseForm, bankAccountId: "" })
                     }
-                    className={`w-full flex items-center justify-between px-4 py-3 transition-colors text-left ${
+                    className={`w-full flex items-center justify-between px-5 py-4 transition-all ${
                       expenseForm.bankAccountId === ""
-                        ? "bg-emerald-600 text-white"
-                        : "hover:bg-gray-50 text-gray-800"
+                        ? "bg-emerald-500/20 text-white"
+                        : "hover:bg-white/5 text-slate-400"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div
-                        className={`p-2 rounded ${expenseForm.bankAccountId === "" ? "bg-emerald-500" : "bg-emerald-100"}`}
+                        className={`p-2 rounded-xl transition-colors ${expenseForm.bankAccountId === "" ? "bg-emerald-500 shadow-lg shadow-emerald-500/50" : "bg-emerald-500/10"}`}
                       >
                         <Wallet
-                          className={`w-4 h-4 ${expenseForm.bankAccountId === "" ? "text-white" : "text-emerald-600"}`}
+                          className={`w-4 h-4 ${expenseForm.bankAccountId === "" ? "text-white" : "text-emerald-500"}`}
                         />
                       </div>
-                      <span className="font-semibold text-sm">Cash</span>
+                      <span className="font-bold text-sm tracking-tight">CASH BOX</span>
                     </div>
-                    <span
-                      className={`text-sm font-bold ${expenseForm.bankAccountId === "" ? "text-white" : "text-gray-900"}`}
-                    >
+                    <span className="text-sm font-black tabular-nums">
                       {formatAmount(
                         getExpectedCashAmount(),
                         currentAccount?.currency,
                       )}
                     </span>
                   </button>
+                  
                   {/* Bank accounts */}
                   {bankAccounts.map((ba) => {
                     const isSelected = expenseForm.bankAccountId === ba._id;
@@ -2978,43 +3001,35 @@ function App() {
                             bankAccountId: ba._id,
                           })
                         }
-                        className={`w-full flex items-center justify-between px-4 py-3 transition-colors text-left ${
+                        className={`w-full flex items-center justify-between px-5 py-4 transition-all ${
                           isSelected
-                            ? "bg-indigo-600 text-white"
-                            : "hover:bg-gray-50 text-gray-800"
+                            ? "bg-indigo-500/20 text-white"
+                            : "hover:bg-white/5 text-slate-400"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                           <div
-                            className={`p-2 rounded ${isSelected ? "bg-indigo-500" : "bg-blue-100"}`}
+                            className={`p-2 rounded-xl transition-colors ${isSelected ? "bg-indigo-500 shadow-lg shadow-indigo-500/50" : "bg-indigo-500/10"}`}
                           >
                             <CreditCard
-                              className={`w-4 h-4 ${isSelected ? "text-white" : "text-blue-600"}`}
+                              className={`w-4 h-4 ${isSelected ? "text-white" : "text-indigo-400"}`}
                             />
                           </div>
-                          <div>
-                            <div className="font-semibold text-sm">
+                          <div className="text-left">
+                            <div className="font-bold text-sm tracking-tight uppercase">
                               {ba.name}
                               {ba.lastFourDigits && (
-                                <span
-                                  className={`ml-2 font-normal text-xs ${isSelected ? "text-indigo-200" : "text-gray-400"}`}
-                                >
-                                  ···{ba.lastFourDigits}
+                                <span className={`ml-2 opacity-40 font-black text-[10px]`}>
+                                  ··· {ba.lastFourDigits}
                                 </span>
                               )}
                             </div>
-                            {ba.bankName && (
-                              <div
-                                className={`text-xs ${isSelected ? "text-indigo-200" : "text-gray-400"}`}
-                              >
-                                {ba.bankName}
-                              </div>
-                            )}
+                            <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mt-0.5">
+                              {ba.bankName || "Liquidity Node"}
+                            </div>
                           </div>
                         </div>
-                        <span
-                          className={`text-sm font-bold ${isSelected ? "text-white" : "text-gray-900"}`}
-                        >
+                        <span className="text-sm font-black tabular-nums">
                           {formatAmount(ba.balance, currentAccount?.currency)}
                         </span>
                       </button>
@@ -3022,19 +3037,20 @@ function App() {
                   })}
                 </div>
               </div>
-              <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+
+              <div className="flex gap-4 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-indigo-600 text-white px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition-colors font-semibold active:scale-[0.99]"
+                  className="flex-[2] btn-primary py-4 text-xs font-black tracking-widest uppercase hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  Add Expense
+                  AUTHORIZE EXPENSE
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-6 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex-1 btn-secondary py-4 text-xs font-black tracking-widest uppercase hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400"
                 >
-                  Cancel
+                  CANCEL
                 </button>
               </div>
             </form>
@@ -3042,81 +3058,113 @@ function App() {
         </div>
       )}
       {activeModal === "lockWeek" && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
-          <div className="bg-white shadow-xl max-w-md w-full p-4 sm:p-6 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Lock Week</h3>
+        <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+          <div className="glass-modal-content max-w-md animate-zoomIn">
+            <div className="glass-modal-header">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-amber-500/20 rounded-xl">
+                  <Lock className="w-5 h-5 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+                    Secure Locked State
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-0.5">
+                    Immutable Protocol Authorization
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={() => setActiveModal(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
-            <p className="text-gray-600 mb-4">
-              Enter the unlock code to lock this week. Once locked, no changes
-              can be made.
-            </p>
-            <input
-              type="password"
-              value={unlockWeekCode}
-              onChange={(e) => setUnlockWeekCode(e.target.value)}
-              placeholder="Enter unlock code"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            />
-            <div className="flex flex-col-reverse sm:flex-row gap-3">
-              <button
-                onClick={handleLockWeek}
-                className="flex-1 bg-yellow-500 text-white px-6 py-3.5 rounded-xl hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2 active:scale-[0.99]"
-              >
-                <Lock className="w-4 h-4" />
-                Lock Week
-              </button>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="px-6 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
+
+            <div className="glass-modal-body space-y-6">
+              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4">
+                <AlertCircle className="w-6 h-6 text-amber-500 shrink-0 mt-0.5" />
+                <p className="text-amber-200/80 text-sm font-medium leading-relaxed">
+                  Warning: Locking this week will make all financial records <span className="text-white font-bold underline">immutable</span>. Ensure all audits are complete.
+                </p>
+              </div>
+
+              <div className="input-group-premium">
+                <label className="input-label-premium">
+                  Security Override Code
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={unlockWeekCode}
+                    onChange={(e) => setUnlockWeekCode(e.target.value)}
+                    placeholder="Enter clearance code"
+                    className="input-premium pl-10"
+                  />
+                  <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={handleLockWeek}
+                  className="flex-[2] bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white py-4 rounded-xl text-xs font-black tracking-widest uppercase transition-all shadow-[0_10px_30px_rgba(217,119,6,0.2)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" />
+                  INITIATE LOCKDOWN
+                </button>
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="flex-1 btn-secondary py-4 text-xs font-black tracking-widest uppercase"
+                >
+                  ABORT
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
       {/* Create Account Modal */}
       {showCreateAccountModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] animate-fadeIn">
-          <div className="bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl p-5 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto transform transition-all animate-slideUp">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                {accountKind === ""
-                  ? "Create Account"
-                  : accountKind === "personal"
-                    ? "Personal Account"
-                    : "Business Account"}
-              </h3>
+        <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+          <div className="glass-modal-content max-w-lg animate-zoomIn">
+            <div className="glass-modal-header">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-indigo-500/20 rounded-xl">
+                  <Building2 className="w-5 h-5 text-indigo-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-widest uppercase">
+                    Initialize Node
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-0.5">
+                    Workspace Architect v1.0
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={() => {
                   setShowCreateAccountModal(false);
                   resetAccountForm();
                 }}
-                className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
+                className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
+            <form onSubmit={handleCreateAccount} className="glass-modal-body space-y-6">
+              {error && (
+                <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl flex items-center gap-3 animate-shake">
+                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <span className="text-xs font-bold uppercase tracking-wider">{error}</span>
+                </div>
+              )}
 
-            {/* Business Account Form */}
-            <form onSubmit={handleCreateAccount} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Category <span className="text-red-500">*</span>
+              <div className="input-group-premium">
+                <label className="input-label-premium">
+                  Industry Vertical (Category)
                 </label>
                 <select
                   value={selectedCategory}
@@ -3125,69 +3173,82 @@ function App() {
                     setSelectedSubcategory("");
                     setCustomDescription("");
                   }}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                  className="input-premium bg-slate-900"
                   required
                 >
-                  <option value="">Select a category...</option>
+                  <option value="" className="bg-slate-900">Select business type...</option>
                   {getCategoryList().map((cat) => (
-                    <option key={cat} value={cat}>
+                    <option key={cat} value={cat} className="bg-slate-900">
                       {cat}
                     </option>
                   ))}
                 </select>
               </div>
+
               {selectedCategory && selectedCategory !== "Other" && (
-                <div className="animate-slideDown">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subcategory <span className="text-red-500">*</span>
+                <div className="input-group-premium animate-fadeIn">
+                  <label className="input-label-premium">
+                    Operational Niche
                   </label>
                   <select
                     value={selectedSubcategory}
                     onChange={(e) => setSelectedSubcategory(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                    className="input-premium bg-slate-900"
                     required
                   >
-                    <option value="">Select a subcategory...</option>
+                    <option value="" className="bg-slate-900">Select specific niche...</option>
                     {getSubcategories(selectedCategory).map((sub) => (
-                      <option key={sub} value={sub}>
+                      <option key={sub} value={sub} className="bg-slate-900">
                         {sub}
                       </option>
                     ))}
                   </select>
                 </div>
               )}
+
               {selectedCategory === "Other" && (
-                <div className="animate-slideDown">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Business Description <span className="text-red-500">*</span>
+                <div className="input-group-premium animate-fadeIn">
+                  <label className="input-label-premium">
+                    Custom Operational Descript
                   </label>
                   <input
                     type="text"
                     value={customDescription}
                     onChange={(e) => setCustomDescription(e.target.value)}
-                    placeholder="Describe your business..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
+                    placeholder="Enter focus area..."
+                    className="input-premium"
                     required
                   />
                 </div>
               )}
-              <div className="pt-3">
+
+              <div className="flex gap-4 pt-2">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-[2] btn-primary py-4 text-xs font-black tracking-widest uppercase hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Creating...
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white" />
+                      DEPLOYING NODE...
                     </>
                   ) : (
                     <>
-                      <Plus className="w-5 h-5" />
-                      Create Account
+                      <Plus className="w-4 h-4" />
+                      CREATE WORKSPACE
                     </>
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreateAccountModal(false);
+                    resetAccountForm();
+                  }}
+                  className="flex-1 btn-secondary py-4 text-xs font-black tracking-widest uppercase"
+                >
+                  EXIT
                 </button>
               </div>
             </form>
@@ -3275,86 +3336,85 @@ function App() {
       )}
       {/* Status Modal (Success/Error) */}
       {statusModal.show && (
-        <div className="fixed inset-0 z-[70] bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div
-            className={`bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative transform transition-all animate-bounce-in ${
-              statusModal.type === "success"
-                ? "border-4 border-green-500"
-                : "border-4 border-red-500"
-            }`}
-          >
-            {/* Close button */}
-            <button
-              onClick={() =>
-                setStatusModal({ show: false, type: "", message: "" })
-              }
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
+        <div className="glass-modal-backdrop z-[100] animate-fadeIn">
+          <div className="glass-modal-content max-w-sm animate-zoomIn">
+            <div className="glass-modal-body text-center space-y-6">
+              <button
+                onClick={() => setStatusModal({ show: false, type: "", message: "" })}
+                className="absolute top-4 right-4 p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            {/* Icon */}
-            <div
-              className={`flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full ${
-                statusModal.type === "success" ? "bg-green-100" : "bg-red-100"
-              }`}
-            >
-              {statusModal.type === "success" ? (
-                <CheckCircle2 className="w-12 h-12 text-green-600" />
-              ) : (
-                <AlertCircle className="w-12 h-12 text-red-600" />
-              )}
+              <div className="flex justify-center pt-4">
+                <div className={`w-20 h-20 rounded-3xl flex items-center justify-center animate-bounce-in ${
+                  statusModal.type === "success" 
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.2)]" 
+                    : "bg-rose-500/20 text-rose-400 border border-rose-500/20 shadow-[0_0_40px_rgba(244,63,94,0.2)]"
+                }`}>
+                  {statusModal.type === "success" ? (
+                    <CheckCircle2 className="w-12 h-12" />
+                  ) : (
+                    <AlertCircle className="w-12 h-12" />
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className={`text-2xl font-black uppercase tracking-widest ${
+                  statusModal.type === "success" ? "text-emerald-400" : "text-rose-400"
+                }`}>
+                  {statusModal.type === "success" ? "Protocol Success" : "System Error"}
+                </h3>
+                <p className="text-slate-400 font-medium leading-relaxed px-4">
+                  {statusModal.message}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setStatusModal({ show: false, type: "", message: "" })}
+                className={`w-full py-4 rounded-xl font-black text-xs tracking-[0.2em] uppercase transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  statusModal.type === "success"
+                    ? "bg-emerald-500 text-white shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-emerald-400"
+                    : "bg-rose-500 text-white shadow-[0_10px_30px_rgba(244,63,94,0.3)] hover:bg-rose-400"
+                }`}
+              >
+                ACKNOWLEDGE
+              </button>
             </div>
-
-            {/* Title */}
-            <h3
-              className={`text-2xl font-bold text-center mb-3 ${
-                statusModal.type === "success"
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {statusModal.type === "success" ? "Success!" : "Error!"}
-            </h3>
-
-            {/* Message */}
-            <p className="text-gray-700 text-center text-lg mb-6">
-              {statusModal.message}
-            </p>
-
-            {/* OK Button */}
-            <button
-              onClick={() =>
-                setStatusModal({ show: false, type: "", message: "" })
-              }
-              className={`w-full py-3 rounded-lg font-semibold text-white transition-colors ${
-                statusModal.type === "success"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
-            >
-              OK
-            </button>
           </div>
         </div>
       )}
+
       {/* Loading Modal */}
       {loading && (
-        <div className="fixed inset-0 z-[75] bg-black bg-opacity-70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center">
-            {/* Animated Spinner */}
-            <div className="flex justify-center mb-6">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 border-4 border-indigo-200 rounded-full"></div>
-                <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+        <div className="glass-modal-backdrop z-[110] animate-fadeIn backdrop-blur-xl">
+          <div className="text-center space-y-8 animate-zoomIn">
+            <div className="relative w-32 h-32 mx-auto">
+              <div className="absolute inset-0 border-4 border-indigo-500/20 rounded-[2.5rem] animate-spin-slow"></div>
+              <div className="absolute inset-2 border-4 border-t-indigo-500 border-r-transparent border-b-indigo-500 border-l-transparent rounded-[2rem] animate-spin"></div>
+              <div className="absolute inset-4 border-4 border-purple-500/40 rounded-[1.5rem] animate-reverse-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-full animate-pulse shadow-[0_0_15px_rgba(255,255,255,0.8)]"></div>
               </div>
             </div>
 
-            {/* Loading Text */}
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
-              {loadingMessage || "Processing..."}
-            </h3>
-            <p className="text-gray-500 text-sm">Please wait a moment</p>
+            <div className="space-y-3">
+              <h3 className="text-2xl font-black text-white tracking-[0.3em] uppercase animate-pulse">
+                {loadingMessage || "Syncing Data"}
+              </h3>
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-1 w-12 bg-indigo-500/30 rounded-full overflow-hidden">
+                  <div className="h-full bg-indigo-500 animate-loading-bar"></div>
+                </div>
+                <p className="text-[10px] text-indigo-400/60 font-black uppercase tracking-widest">
+                  Neural Link Active
+                </p>
+                <div className="h-1 w-12 bg-indigo-500/30 rounded-full overflow-hidden">
+                  <div className="h-full bg-indigo-500 animate-loading-bar"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

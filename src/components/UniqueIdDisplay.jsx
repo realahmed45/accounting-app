@@ -24,16 +24,17 @@ const UniqueIdDisplay = ({ uniqueId }) => {
 
   if (!uniqueId) {
     return (
-      <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
-        <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+      <div className="glass-modal-content p-8 border-amber-500/20 bg-amber-500/5 animate-scaleIn">
+        <div className="flex items-start gap-5">
+          <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+            <Info className="w-6 h-6 text-amber-500" />
+          </div>
           <div>
-            <p className="text-sm font-semibold text-yellow-900">
-              Account ID Not Generated
+            <p className="text-sm font-black text-amber-500 uppercase tracking-[0.2em] mb-2">
+              Signature Void Detect
             </p>
-            <p className="text-xs text-yellow-700 mt-1">
-              This account was created before the unique ID system. Please
-              contact support.
+            <p className="text-xs text-slate-500 font-medium uppercase tracking-widest leading-relaxed">
+              This node was initialized before the unique protocol. Please re-synchronize or contact terminal support.
             </p>
           </div>
         </div>
@@ -42,96 +43,90 @@ const UniqueIdDisplay = ({ uniqueId }) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-300 rounded-xl p-5 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, transparent, transparent 10px, currentColor 10px, currentColor 11px)",
-            color: "#0f172a",
-          }}
-        />
+    <div className="glass-modal-content p-8 relative overflow-hidden group border-white/5 hover:border-white/10 transition-all duration-500 shadow-[0_30px_60px_rgba(0,0,0,0.4)]">
+      {/* Neural Link Overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-1000"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/5 blur-3xl translate-y-16 -translate-x-16 group-hover:scale-150 transition-transform duration-1000"></div>
       </div>
 
-      <div className="relative">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="bg-emerald-600 p-2 rounded-lg">
-              <Hash className="w-5 h-5 text-white" />
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-2xl shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform duration-500">
+              <Hash className="w-6 h-6 text-white italic" />
             </div>
             <div>
-              <p className="text-xs text-slate-600 font-semibold uppercase tracking-wide">
-                Account Unique ID
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] mb-1">
+                Neural Signature
               </p>
               <button
                 onClick={() => setShowInfo(!showInfo)}
-                className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 mt-0.5"
+                className="text-[9px] text-indigo-400 hover:text-indigo-300 font-black uppercase tracking-[0.2em] flex items-center gap-2 transition-colors"
               >
-                <Info className="w-3 h-3" />
-                What's this for?
+                <Info className="w-3.5 h-3.5" />
+                Access Protocol Intel
               </button>
             </div>
           </div>
           <button
             onClick={handleCopy}
-            className="p-3 bg-white hover:bg-emerald-50 border-2 border-slate-300 hover:border-emerald-500 rounded-xl transition-all group"
-            title="Copy to clipboard"
+            className={`p-4 rounded-2xl transition-all duration-300 border relative overflow-hidden group/btn ${
+              copied 
+                ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" 
+                : "bg-white/2 border-white/5 hover:border-white/10 text-slate-500 hover:text-white"
+            }`}
+            title="Siphon Signature"
           >
             {copied ? (
-              <Check className="w-5 h-5 text-emerald-600" />
+              <Check className="w-5 h-5 animate-scaleIn" />
             ) : (
-              <Copy className="w-5 h-5 text-slate-600 group-hover:text-emerald-600" />
+              <Copy className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
             )}
+            {copied && <div className="absolute inset-0 bg-emerald-500/20 animate-pulse"></div>}
           </button>
         </div>
 
-        <div className="bg-white border-2 border-slate-300 rounded-xl p-4 mb-3">
-          <p className="text-3xl font-bold text-slate-900 tracking-wider font-mono text-center select-all">
-            {uniqueId}
-          </p>
+        <div className="relative mb-8 group/key">
+          <div className="absolute inset-0 bg-indigo-500/10 blur-2xl opacity-0 group-hover/key:opacity-100 transition-opacity duration-700"></div>
+          <div className="relative bg-black/40 border border-white/10 rounded-2xl p-6 shadow-inner overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 opacity-10 font-bold text-[8px] tracking-[0.5em] text-white">KEY_SIGNED</div>
+            <p className="text-4xl font-black text-white tracking-[0.15em] font-mono text-center select-all drop-shadow-[0_0_15px_rgba(99,102,241,0.3)] group-hover/key:scale-[1.02] transition-transform duration-500 italic">
+              {uniqueId}
+            </p>
+          </div>
         </div>
 
         {showInfo && (
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 space-y-2">
-            <p className="text-sm font-semibold text-blue-900">
-              🔗 How to use your Account ID:
+          <div className="glass-modal-content bg-white/2 border-white/5 p-6 animate-slideUp space-y-4">
+            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] flex items-center gap-3">
+              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping" />
+              Protocol Capabilities
             </p>
-            <ul className="text-xs text-blue-800 space-y-1.5 ml-4">
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold">•</span>
-                <span>
-                  <strong>Transfer Ownership:</strong> Share this ID with
-                  someone to transfer full account ownership to them
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold">•</span>
-                <span>
-                  <strong>Link to Parent:</strong> Use another account's ID to
-                  establish a hierarchical relationship
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold">•</span>
-                <span>
-                  <strong>Account Identification:</strong> Uniquely identifies
-                  this account in all system operations
-                </span>
-              </li>
-            </ul>
-            <p className="text-xs text-blue-700 mt-3 border-t border-blue-200 pt-2">
-              💡 <strong>Tip:</strong> Click the copy button to easily share
-              this ID with team members or support.
-            </p>
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { label: "Authority Transition", desc: "Initialize ownership delegation to secondary nodes." },
+                { label: "Linear Integration", desc: "Forge hierarchical bonds between disparate neural clusters." },
+                { label: "Matrix Identifier", desc: "Immutable reference point for all system-wide operations." }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4 p-3 rounded-xl bg-white/2 hover:bg-white/5 transition-colors group/item">
+                  <div className="w-1 h-auto bg-indigo-500/20 group-hover/item:bg-indigo-500 transition-colors rounded-full" />
+                  <div>
+                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">{item.label}</p>
+                    <p className="text-[9px] text-slate-500 font-medium uppercase tracking-tight opacity-70 leading-normal">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {!showInfo && (
-          <p className="text-xs text-slate-500 text-center">
-            Share this ID to link accounts or transfer ownership
-          </p>
+          <div className="flex items-center justify-center gap-3 text-[9px] text-slate-600 font-black uppercase tracking-[0.3em] group-hover:text-slate-400 transition-colors">
+            <span className="w-8 h-[1px] bg-white/10" />
+            Distribute Signature for Grid Linking
+            <span className="w-8 h-[1px] bg-white/10" />
+          </div>
         )}
       </div>
     </div>

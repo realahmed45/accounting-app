@@ -579,7 +579,7 @@ function App() {
             <div className="space-y-3">
               <button
                 onClick={handleCreateAccountClick}
-                className="w-full bg-indigo-600 text-white px-4 py-3 hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center gap-2"
+                className="w-full bg-indigo-600 text-white px-4 py-3 hover:bg-indigo-700 transition-colors font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 rounded-xl"
               >
                 <Plus className="w-5 h-5" />
                 Create Your First Account
@@ -600,12 +600,12 @@ function App() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] animate-fadeIn">
             <div className="bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl p-5 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto transform transition-all animate-slideUp">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
                   {accountKind === ""
-                    ? "Create Account"
+                    ? "Initialize Account"
                     : accountKind === "personal"
-                      ? "Personal Account"
-                      : "Business Account"}
+                      ? "Personal Node"
+                      : "Business Entity"}
                 </h3>
                 <button
                   onClick={() => {
@@ -638,7 +638,7 @@ function App() {
                       setSelectedSubcategory("");
                       setCustomDescription("");
                     }}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-slate-300 font-bold text-slate-900 bg-white"
                     required
                   >
                     <option value="">Select a category...</option>
@@ -657,7 +657,7 @@ function App() {
                     <select
                       value={selectedSubcategory}
                       onChange={(e) => setSelectedSubcategory(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300 font-medium"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-slate-300 font-bold text-slate-900 bg-white"
                       required
                     >
                       <option value="">Select a subcategory...</option>
@@ -680,7 +680,7 @@ function App() {
                       value={customDescription}
                       onChange={(e) => setCustomDescription(e.target.value)}
                       placeholder="Describe your business..."
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-gray-300"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-slate-300 font-bold text-slate-900 bg-white"
                       required
                     />
                   </div>
@@ -1467,13 +1467,13 @@ function App() {
 
             <button
               onClick={() => {
-                if (canOpenAddExpense) {
+                if (canAddExpenseSubscription()) {
                   setActiveModal("addExpense");
                 }
               }}
-              disabled={!canOpenAddExpense}
+              disabled={!canAddExpenseSubscription()}
               className={`flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all ${
-                canOpenAddExpense
+                canAddExpenseSubscription()
                   ? "text-white bg-gradient-to-br from-indigo-600 to-purple-600 shadow-md"
                   : "text-slate-300 bg-slate-100 cursor-not-allowed"
               }`}

@@ -20,7 +20,6 @@ import DailyBreakdown from "./components/dashboard/DailyBreakdown";
 import SettingsScreen from "./components/settings/SettingsScreen";
 import ReportsScreen from "./components/ReportsScreen"; // NEW
 import QuickStatsWidget from "./components/QuickStatsWidget"; // NEW
-import BulkOperationsBar from "./components/BulkOperationsBar"; // NEW
 import {
   weekService,
   expenseService,

@@ -166,91 +166,84 @@ const MyScheduleView = ({ accountId }) => {
 
   if (loading)
     return (
-      <div className="flex flex-col items-center justify-center py-40">
-        <div className="w-16 h-16 relative">
-          <div className="absolute inset-0 bg-indigo-500 rounded-full blur-2xl opacity-20 animate-pulse" />
-          <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin relative z-10" />
+      <div className="flex flex-col items-center justify-center py-40 animate-fadeIn">
+        <div className="w-20 h-20 relative">
+          <div className="absolute inset-0 bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse" />
+          <div className="w-20 h-20 border-[6px] border-white/5 border-t-indigo-500 rounded-full animate-spin relative z-10 shadow-[0_0_20px_rgba(79,70,229,0.2)]" />
         </div>
-        <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-[10px] mt-8">
-          Fetching Personal Feed...
+        <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[10px] mt-10 opacity-70">
+          Syncing Neural Persona...
         </p>
       </div>
     );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-1000">
-      {/* 🎯 BEGINNER INSTRUCTIONS BOX */}
-      <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-2 border-blue-400/30 rounded-3xl p-6 backdrop-blur-sm">
-        <div className="flex items-start gap-4">
-          <div className="bg-blue-500 text-white p-3 rounded-xl flex-shrink-0">
-            <Lightbulb className="w-6 h-6" />
+    <div className="max-w-6xl mx-auto space-y-12 animate-fadeIn">
+      {/* 🎯 INTELLIGENCE BRIEFING */}
+      <div className="glass-panel border-indigo-500/20 bg-indigo-500/5 group p-8">
+        <div className="flex items-start gap-6">
+          <div className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-600/20 group-hover:rotate-12 transition-transform duration-500">
+            <Lightbulb className="w-7 h-7" />
           </div>
-          <div className="flex-1 space-y-4">
-            <h3 className="text-xl font-black text-white flex items-center gap-2">
-              <span className="text-red-500 text-2xl">!</span> My Hub - Quick
-              Guide
+          <div className="flex-1">
+            <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-6 flex items-center gap-3">
+               Field Intelligence Protocol
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 1. View Your Shifts
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-indigo-500/20 transition-all">
+                <h4 className="font-black text-indigo-400 text-[10px] uppercase tracking-widest mb-2">
+                  01. Chronological Awareness
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Below you'll see all shifts assigned to you. Each card shows
-                  the date, shift type, and time range.
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Monitor all active work cycles allocated to your ID. Review temporal windows and shift assignments in real-time.
                 </p>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 2. Check-In &
-                  Check-Out
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all">
+                <h4 className="font-black text-purple-400 text-[10px] uppercase tracking-widest mb-2">
+                  02. Biometric Verification
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  On shift days, click "INITIATE PROOF" to check in using your
-                  camera & GPS. Click "CHECK OUT" when done.
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Execute "INITIATE PROOF" on deployment days. System requires synchronized GPS and visual signals for authorization.
                 </p>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 3. Stats at a Glance
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-emerald-500/20 transition-all">
+                <h4 className="font-black text-emerald-400 text-[10px] uppercase tracking-widest mb-2">
+                  03. Neural Performance
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  The three cards above show: your next shift date, available
-                  vacation days, and bonus overtime days earned.
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Track your operational efficiency: monitor upcoming deployment windows and accumulated overtime neural credits.
                 </p>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-blue-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 4. Camera & GPS
-                  Required
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-amber-500/20 transition-all">
+                <h4 className="font-black text-amber-400 text-[10px] uppercase tracking-widest mb-2">
+                  04. Sensor Permissions
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Your browser will ask for camera and location permissions
-                  during check-in. This verifies you're at work!
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Ensure environment sensors (Camera/GPS) are authorized. Verification protocols fail if data streams are interrupted.
                 </p>
               </div>
             </div>
 
-            <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3 flex items-center gap-3">
-              <HelpCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-              <p className="text-amber-200 text-xs font-semibold">
-                <span className="text-red-500 font-bold">!</span> First time
-                here? If you don't see any shifts, ask your manager to assign
-                you some! Try exploring this page to understand the layout.
-              </p>
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <div className="flex items-center gap-3 text-amber-400/80">
+                <HelpCircle className="w-5 h-5 flex-shrink-0" />
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+                  Pro Tip: If Roster is empty, coordinate with your Hive Manager for assignment.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Stats Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <PremiumStatCard
-          label="Operational Window"
+          label="Next Window"
           value={
             myShifts[0]
               ? new Date(myShifts[0].date).toLocaleDateString(undefined, {
@@ -260,44 +253,47 @@ const MyScheduleView = ({ accountId }) => {
               : "Standby"
           }
           icon={<Target className="w-6 h-6" />}
-          gradient="from-indigo-600 to-blue-500"
-          sub="Next Deployment"
+          gradient="from-indigo-600 to-indigo-900"
+          sub="Primary Deployment"
         />
         <PremiumStatCard
-          label="Available Leave"
+          label="Neural Quota"
           value={timeOff ? timeOff.remainingDays : "0"}
           icon={<Zap className="w-6 h-6" />}
-          gradient="from-purple-600 to-pink-600"
-          sub="Standard Quota"
+          gradient="from-purple-600 to-purple-900"
+          sub="Authorized Leave"
         />
         <PremiumStatCard
-          label="Overtime Credit"
+          label="Velocity Credits"
           value={`+${timeOff?.extraEarnedDays || 0}`}
           icon={<TrendingUp className="w-6 h-6" />}
-          gradient="from-cyan-600 to-teal-500"
-          sub="Neural Reward Bonus"
+          gradient="from-emerald-600 to-emerald-900"
+          sub="Overtime Override"
         />
       </div>
 
       {/* Roster Section */}
-      <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] p-10 border border-white/10 shadow-2xl overflow-hidden relative">
-        <div className="absolute top-0 right-0 p-20 bg-indigo-500/10 blur-[100px] -mr-40 -mt-40 rounded-full" />
-
-        <div className="relative z-10 mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="glass-panel p-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] -mr-32 -mt-32 rounded-full" />
+        
+        <div className="relative z-10 mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
-            <h2 className="text-4xl font-black text-white tracking-tighter">
-              Mission Roster
+            <h2 className="text-4xl font-black text-white tracking-widest uppercase">
+               Mission Roster
             </h2>
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mt-2">
-              Active Assigned Shifts
-            </p>
+            <div className="flex items-center gap-3 mt-4">
+              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+              <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-[10px]">
+                Authentication Protocol Active
+              </p>
+            </div>
           </div>
-          <div className="bg-white/5 px-6 py-3 rounded-2xl border border-white/10 flex items-center gap-3">
-            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">
-              Queue Capacity
+          <div className="bg-white/5 px-8 py-4 rounded-3xl border border-white/10 flex items-center gap-4 backdrop-blur-md">
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">
+              Cycle Capacity
             </span>
-            <span className="text-xl font-black text-white">
-              {myShifts.length}
+            <span className="text-3xl font-black text-white tabular-nums">
+              {myShifts.length.toString().padStart(2, '0')}
             </span>
           </div>
         </div>
@@ -371,72 +367,69 @@ const MyScheduleView = ({ accountId }) => {
               return (
                 <div
                   key={shift._id}
-                  className={`group relative p-8 rounded-[2.5rem] border-2 transition-all duration-500 hover:shadow-[0_0_40px_rgba(99,102,241,0.2)] ${
+                  className={`group relative glass-card p-10 border-2 transition-all duration-700 animate-fadeIn ${
                     isToday
-                      ? "border-indigo-500/50 bg-indigo-500/5 shadow-2xl"
-                      : "border-white/5 bg-white/[0.02] hover:border-white/20"
+                      ? "border-indigo-500/40 bg-indigo-500/5 shadow-[0_0_50px_rgba(79,70,229,0.15)]"
+                      : "border-white/5 hover:border-white/10"
                   }`}
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                    <div className="flex items-center gap-8">
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-10 relative z-10">
+                    <div className="flex flex-col sm:flex-row items-center gap-10">
                       <div className="relative">
                         {isToday && (
-                          <div className="absolute inset-0 bg-indigo-500 blur-xl opacity-40 animate-pulse" />
+                          <div className="absolute inset-0 bg-indigo-500 blur-3xl opacity-30 animate-pulse" />
                         )}
-                        <div className="text-center p-4 rounded-3xl bg-white/5 backdrop-blur-md shadow-2xl border border-white/10 min-w-[100px] relative z-20">
-                          <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                        <div className="text-center p-6 rounded-[2rem] bg-slate-900 border border-white/5 shadow-2xl min-w-[120px] relative z-20 group-hover:scale-110 transition-transform duration-500">
+                          <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 opacity-70">
                             {shiftDate.toLocaleDateString(undefined, {
                               weekday: "short",
                             })}
                           </p>
-                          <p className="text-3xl font-black text-white mt-1 leading-none">
-                            {shiftDate.getDate()}
+                          <p className="text-4xl font-black text-white leading-none tracking-tighter">
+                            {shiftDate.getDate().toString().padStart(2, '0')}
                           </p>
                         </div>
                       </div>
 
-                      <div>
-                        <div className="flex items-center gap-3">
+                      <div className="text-center sm:text-left">
+                        <div className="flex items-center justify-center sm:justify-start gap-4">
                           <div
-                            className="w-3 h-3 rounded-full blur-[2px]"
+                            className="w-3 h-3 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                             style={{ backgroundColor: color }}
                           />
-                          <h3 className="text-2xl font-black text-white tracking-tight">
+                          <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
                             {label}
                           </h3>
                         </div>
-                        <div className="flex flex-wrap items-center gap-6 mt-4">
-                          <div className="flex items-center gap-2.5 px-4 py-2 bg-white/5 rounded-2xl text-sm font-black text-gray-300 border border-white/5">
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 mt-6">
+                          <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 rounded-2xl text-xs font-black text-slate-300 border border-white/5 tracking-widest uppercase">
                             <Clock className="w-4 h-4 text-indigo-400" />
                             {startTime} — {endTime}
                           </div>
                           {shift.notes && (
-                            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-400 border border-purple-500/20">
-                              <Info className="w-4 h-4" /> Priority Note
+                            <div className="flex items-center gap-3 px-5 py-2.5 bg-purple-500/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-400 border border-purple-500/20">
+                              <Info className="w-4 h-4" /> SECURE NOTE
                             </div>
                           )}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-center lg:justify-end">
                       {isToday ? (
                         shift.hasCheckedOut ? (
-                          <div className="px-8 py-4 bg-green-500/10 rounded-2xl border border-green-500/20 text-green-400 font-black text-sm flex items-center gap-3">
-                            <CheckCircle2 className="w-5 h-5" /> COMPLETED
+                          <div className="px-10 py-5 bg-emerald-500/10 rounded-3xl border border-emerald-500/20 text-emerald-400 font-black text-xs tracking-widest flex items-center gap-4 uppercase shadow-lg shadow-emerald-500/5">
+                            <CheckCircle2 className="w-6 h-6 stroke-[3px]" /> CYCLE COMPLETE
                           </div>
                         ) : shift.hasCheckedIn ? (
                           <button
                             disabled={checkingOut === shift._id}
                             onClick={() => handleCheckOut(shift)}
-                            className="group relative flex items-center gap-4 bg-rose-600 hover:bg-rose-500 disabled:bg-gray-800 text-white px-10 py-5 rounded-[2rem] font-black text-lg transition-all shadow-2xl shadow-rose-900 active:scale-95 overflow-hidden"
+                            className="group relative flex items-center gap-4 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 disabled:from-slate-800 disabled:to-slate-900 text-white px-12 py-6 rounded-[2.5rem] font-black text-sm uppercase tracking-widest transition-all shadow-[0_20px_40px_rgba(225,29,72,0.3)] active:scale-95 group-hover:-translate-y-1 duration-500 overflow-hidden"
                           >
-                            <div
-                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"
-                              style={{ backgroundSize: "200% 100%" }}
-                            />
+                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                             {checkingOut === shift._id ? (
-                              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                              <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
                             ) : (
                               <>
                                 <Camera className="w-6 h-6 transition-transform group-hover:rotate-12" />
@@ -448,14 +441,11 @@ const MyScheduleView = ({ accountId }) => {
                           <button
                             disabled={checkingIn === shift._id}
                             onClick={() => handleCheckIn(shift)}
-                            className="group relative flex items-center gap-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 text-white px-10 py-5 rounded-[2rem] font-black text-lg transition-all shadow-2xl shadow-indigo-900 active:scale-95 overflow-hidden"
+                            className="group relative flex items-center gap-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:from-slate-800 disabled:to-slate-900 text-white px-12 py-6 rounded-[2.5rem] font-black text-sm uppercase tracking-widest transition-all shadow-[0_20px_40px_rgba(79,70,229,0.3)] active:scale-95 group-hover:-translate-y-1 duration-500 overflow-hidden"
                           >
-                            <div
-                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"
-                              style={{ backgroundSize: "200% 100%" }}
-                            />
+                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                             {checkingIn === shift._id ? (
-                              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                              <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
                             ) : (
                               <>
                                 <Camera className="w-6 h-6 transition-transform group-hover:rotate-12" />
@@ -465,13 +455,9 @@ const MyScheduleView = ({ accountId }) => {
                           </button>
                         )
                       ) : (
-                        <div className="px-8 py-4 bg-white/5 rounded-2xl border border-white/5 text-gray-400 font-bold text-sm flex items-center gap-3 italic">
-                          Scheduled for{" "}
-                          {shiftDate.toLocaleDateString(undefined, {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                          <ChevronRight className="w-4 h-4" />
+                        <div className="px-10 py-5 bg-white/5 rounded-3xl border border-white/5 text-slate-500 font-bold text-xs flex items-center gap-4 uppercase tracking-widest backdrop-blur-md">
+                          Inactive <span className="text-slate-700">|</span> Standby Sequence
+                          <ChevronRight className="w-5 h-5 text-slate-700" />
                         </div>
                       )}
                     </div>
@@ -492,35 +478,34 @@ const MyScheduleView = ({ accountId }) => {
         )}
       </div>
 
-      {/* Neural Privacy Notice */}
-      <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1a] rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between gap-10 border border-white/10 shadow-3xl overflow-hidden relative">
-        <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-500/10 blur-[50px] rounded-full" />
+      {/* Verification Notice */}
+      <div className="glass-panel p-10 flex flex-col md:flex-row items-center justify-between gap-10 overflow-hidden relative group">
+        <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-indigo-500/5 blur-[80px] rounded-full group-hover:bg-indigo-500/10 transition-colors duration-1000" />
 
-        <div className="relative z-10 flex gap-6 items-start">
-          <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center border border-white/10 shadow-inner">
-            <MapPin className="w-8 h-8 text-indigo-400 animate-bounce" />
+        <div className="relative z-10 flex gap-8 items-start">
+          <div className="w-20 h-20 bg-indigo-500/10 rounded-[2rem] flex items-center justify-center border border-indigo-500/20 shadow-inner group-hover:scale-110 transition-transform duration-700">
+            <MapPin className="w-10 h-10 text-indigo-400 animate-bounce" />
           </div>
           <div>
-            <h4 className="text-2xl font-black text-white tracking-tight">
-              Geo-Verified Environment
+            <h4 className="text-3xl font-black text-white tracking-widest uppercase">
+              Geo-Spatial Auth
             </h4>
-            <p className="text-gray-400 font-medium mt-2 leading-relaxed max-w-lg">
-              Automated protocols capture neural GPS coordinates and visual
-              proof during check-in. This data is encrypted end-to-end to ensure
-              operational integrity.
+            <p className="text-slate-400 font-medium mt-4 leading-relaxed max-w-lg text-sm">
+              Automated protocols capture high-fidelity GPS coordinates and encrypted visual proof. 
+              Data is transmitted via AES-256 secure channels for operational integrity.
             </p>
           </div>
         </div>
 
-        <div className="relative z-10 group cursor-pointer">
-          <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-          <div className="bg-indigo-600/10 px-8 py-6 rounded-[2rem] border border-indigo-500/30 backdrop-blur-md relative z-10">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300 mb-3">
-              Verification Badge
+        <div className="relative z-10 group/badge cursor-pointer">
+          <div className="absolute inset-0 bg-indigo-500 blur-3xl opacity-0 group-hover/badge:opacity-20 transition-opacity" />
+          <div className="bg-white/5 px-10 py-8 rounded-[2.5rem] border border-white/10 backdrop-blur-2xl relative z-10 shadow-2xl">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4 text-center">
+              Security Clearance
             </p>
-            <div className="flex items-center gap-3 font-black text-lg text-white">
-              <CheckCircle2 className="w-6 h-6 text-indigo-400" />
-              SYSTEM SECURED
+            <div className="flex items-center gap-4 font-black text-xl text-white tracking-widest">
+              <CheckCircle2 className="w-7 h-7 text-indigo-400 animate-pulse" />
+              SYSTEM VERIFIED
             </div>
           </div>
         </div>
@@ -530,23 +515,23 @@ const MyScheduleView = ({ accountId }) => {
 };
 
 const PremiumStatCard = ({ label, value, icon, gradient, sub }) => (
-  <div className="group relative bg-[#1a1a2e] rounded-[2.5rem] p-1 border border-white/5 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]">
+  <div className="group relative glass-card p-1 border-white/5 transition-all duration-700 hover:-translate-y-4">
     <div
-      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity rounded-[2.5rem]`}
+      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity rounded-[2.8rem] blur-2xl`}
     />
-    <div className="bg-[#0f0f1a] rounded-[2.3rem] p-8 h-full relative z-10 border border-white/5">
+    <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2.8rem] p-10 h-full relative z-10 border border-white/5 shadow-2xl">
       <div
-        className={`w-14 h-14 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center text-white shadow-3xl mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}
+        className={`w-16 h-16 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center text-white shadow-2xl mb-8 transition-all duration-700 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-[0_0_30px_rgba(79,70,229,0.4)]`}
       >
-        {icon}
+        {React.cloneElement(icon, { className: "w-8 h-8" })}
       </div>
-      <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">
+      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">
         {label}
       </p>
-      <h3 className="text-3xl font-black text-white tracking-tighter">
+      <h3 className="text-4xl font-black text-white tracking-tighter tabular-nums">
         {value}
       </h3>
-      <p className="text-xs font-bold text-indigo-400 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 uppercase tracking-widest">
+      <p className="text-[10px] font-black text-indigo-400 mt-6 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0 uppercase tracking-widest">
         {sub}
       </p>
     </div>

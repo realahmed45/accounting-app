@@ -89,10 +89,10 @@ const TransferOwnershipModal = ({
       if (onSuccess) onSuccess();
     } catch (err) {
       console.error("[Transfer Modal] CRITICAL CATCH:", err);
-      trace("CATCH BLOCK ERROR", { 
-        msg: err.message, 
+      trace("CATCH BLOCK ERROR", {
+        msg: err.message,
         stack: err.stack,
-        resp: err.response?.data
+        resp: err.response?.data,
       });
       setError(err?.response?.data?.message || "Failed to initiate transfer.");
     } finally {
@@ -108,10 +108,10 @@ const TransferOwnershipModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl w-full max-w-md max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b">
           <div className="flex items-center gap-2">
             <Crown className="w-5 h-5 text-amber-500" />
             <h2 className="text-base font-semibold text-gray-900">
@@ -126,7 +126,7 @@ const TransferOwnershipModal = ({
           </button>
         </div>
 
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           {done ? (
             <div className="text-center space-y-4">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -203,7 +203,7 @@ const TransferOwnershipModal = ({
                     onChange={(e) => setToEmail(e.target.value)}
                     placeholder="newowner@example.com"
                     required
-                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-3 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -221,7 +221,7 @@ const TransferOwnershipModal = ({
                   value={toWhatsApp}
                   onChange={(e) => setToWhatsApp(e.target.value)}
                   placeholder="+1 234 567 8900"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -238,7 +238,7 @@ const TransferOwnershipModal = ({
                   value={toTelegram}
                   onChange={(e) => setToTelegram(e.target.value)}
                   placeholder="@username"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <p className="text-xs text-gray-400 mt-1">
                   WhatsApp and Telegram notifications will be enabled in a
@@ -246,18 +246,18 @@ const TransferOwnershipModal = ({
                 </p>
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  className="flex-1 px-4 py-3.5 text-sm border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3.5 text-sm bg-amber-500 text-white rounded-xl hover:bg-amber-600 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <Crown className="w-4 h-4" />
                   {loading ? "Initiating…" : "Transfer Ownership"}

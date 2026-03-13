@@ -121,28 +121,28 @@ const DailyBreakdown = ({
     if (count === 0) return null;
 
     return (
-      <div className="border-2 border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all">
+      <div className="glass-card !bg-white/5 border-white/5 overflow-hidden hover:border-white/10 transition-all duration-300">
         <button
           onClick={() => toggleSection(dateStr, section)}
-          className={`w-full px-4 py-3.5 bg-gradient-to-r from-${color}-50 to-${color}-100/50 hover:from-${color}-100 hover:to-${color}-50 flex items-center justify-between transition-all group border-l-4 border-${color}-500`}
+          className={`w-full px-5 py-4 bg-transparent hover:bg-white/5 flex items-center justify-between transition-all group border-l-4 border-l-${color}-500/50`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <ChevronRight
-              className={`w-5 h-5 text-${color}-600 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+              className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${isExpanded ? "rotate-90 text-white" : ""}`}
             />
-            <div className={`p-2 rounded-lg bg-${color}-500 shadow-md`}>
-              <Icon className="w-5 h-5 text-white" />
+            <div className={`p-2.5 rounded-xl bg-${color}-500/20 text-${color}-400 shadow-lg group-hover:scale-110 transition-transform`}>
+              <Icon className="w-5 h-5" />
             </div>
-            <span className="font-bold text-slate-800 text-base">{title}</span>
+            <span className="font-bold text-white text-base tracking-tight">{title}</span>
             <span
-              className={`px-3 py-1 bg-gradient-to-r from-${color}-600 to-${color}-700 text-white text-xs rounded-full font-black shadow-sm`}
+              className={`px-2.5 py-0.5 bg-${color}-500/20 text-${color}-400 text-[10px] rounded-full font-black border border-${color}-500/30 uppercase tracking-widest`}
             >
               {count}
             </span>
           </div>
         </button>
         {isExpanded && (
-          <div className="p-4 bg-white space-y-3 border-t-2 border-${color}-100">
+          <div className="p-5 bg-white/5 space-y-4 border-t border-white/5">
             {children}
           </div>
         )}
@@ -151,32 +151,36 @@ const DailyBreakdown = ({
   };
 
   return (
-    <div className="bg-gradient-to-br from-white via-slate-50 to-white">
+    <div className="space-y-6 animate-fade-in">
       {/* Header with Instructions */}
-      <div className="p-6 border-b border-slate-200 bg-white">
-        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-3 rounded-xl shadow-lg">
-              <Calendar className="w-6 h-6 text-white" />
+      <div className="p-6 glass-card !bg-slate-900/20 border-white/5 relative overflow-hidden group">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-600/5 rounded-full blur-[100px] group-hover:bg-emerald-600/10 transition-all duration-700"></div>
+        <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg flex-shrink-0">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-                Daily Activity Breakdown
-                <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities. Days with more activity show higher counts." />
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg sm:text-2xl font-black text-slate-800 flex items-center gap-1.5 sm:gap-2 truncate">
+                <span className="truncate">Daily Activity</span>
+                <div className="flex-shrink-0">
+                  <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities. Days with more activity show higher counts." />
+                </div>
               </h3>
-              <p className="text-sm text-slate-600 font-medium mt-1">
-                📅 Week view • Click any day to expand details
+              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5 sm:mt-1 truncate">
+                📅 Week view • Tap any day
               </p>
             </div>
           </div>
 
-          {/* Export Button - NEW VISIBLE FEATURE */}
+          {/* Export Button */}
           <button
             onClick={exportWeekToCSV}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all text-sm sm:text-base active:scale-95 flex-shrink-0"
           >
-            <Download className="w-5 h-5" />
-            Export Week
+            <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Export Week</span>
+            <span className="sm:hidden">Export</span>
           </button>
         </div>
 
@@ -197,7 +201,7 @@ const DailyBreakdown = ({
         )}
       </div>
 
-      <div className="p-6 space-y-3">
+      <div className="p-3 sm:p-6 space-y-2 sm:space-y-3">
         {weekDates.map((date) => {
           const dateStr = formatDate(date);
           const dayExpenses = getExpensesForDate(dateStr);
@@ -209,55 +213,51 @@ const DailyBreakdown = ({
           return (
             <div
               key={dateStr}
-              className="border-2 border-slate-200 rounded-2xl overflow-hidden hover:border-emerald-400 hover:shadow-lg transition-all bg-white"
+              className="glass-card !bg-white/5 border-white/5 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group"
             >
               <button
                 onClick={() => toggleDayExpansion(dateStr)}
-                className="w-full px-5 py-4 bg-gradient-to-r from-slate-50 to-white hover:from-emerald-50 hover:to-teal-50 flex items-center justify-between transition-all group"
+                className="w-full px-5 py-4 bg-transparent hover:bg-white/5 flex items-center justify-between transition-all active:scale-[0.99]"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
                   <div
-                    className={`p-2.5 rounded-xl transition-all ${
+                    className={`p-2.5 rounded-xl transition-all duration-500 flex-shrink-0 ${
                       isExpanded
-                        ? "bg-gradient-to-br from-emerald-600 to-teal-600 shadow-lg"
-                        : "bg-slate-200 group-hover:bg-emerald-100"
+                        ? "bg-emerald-500/20 text-emerald-400 rotate-12 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                        : "bg-slate-800 text-slate-500 group-hover:bg-slate-700"
                     }`}
                   >
-                    <Calendar
-                      className={`w-6 h-6 ${
-                        isExpanded
-                          ? "text-white"
-                          : "text-slate-600 group-hover:text-emerald-700"
-                      }`}
-                    />
+                    <Calendar className="w-6 h-6" />
                   </div>
-                  <div className="text-left">
-                    <span className="font-black text-lg text-slate-800 block">
+                  <div className="text-left min-w-0 flex-1">
+                    <span className="font-black text-lg text-white block tracking-tight">
                       {formatDateReadable(date)}
                     </span>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 flex-wrap">
                       <span
                         className={`px-3 py-1 ${
                           activityCount > 0
-                            ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                            : "bg-slate-200 text-slate-600"
-                        } text-xs rounded-full font-bold`}
+                            ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
+                            : "bg-slate-800/50 text-slate-500 border border-slate-700/50"
+                        } text-[10px] rounded-full font-bold uppercase tracking-wider whitespace-nowrap`}
                       >
                         {activityCount}{" "}
-                        {activityCount !== 1 ? "Activities" : "Activity"}
+                        <span>
+                          {activityCount !== 1 ? "Activities" : "Activity"}
+                        </span>
                       </span>
                       {dayTotal > 0 && (
-                        <span className="px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-bold">
+                        <span className="px-3 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] rounded-full font-bold uppercase tracking-wider whitespace-nowrap truncate max-w-[150px]">
                           {formatAmount(dayTotal, currentAccount?.currency)}{" "}
-                          spent
+                          <span>spent</span>
                         </span>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-shrink-0">
                   <ChevronDown
-                    className={`w-6 h-6 text-slate-400 group-hover:text-emerald-600 transition-all ${
+                    className={`w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-emerald-600 transition-all ${
                       isExpanded ? "rotate-180 text-emerald-600" : ""
                     }`}
                   />
@@ -265,16 +265,15 @@ const DailyBreakdown = ({
               </button>
 
               {isExpanded && (
-                <div className="p-5 bg-slate-50/50 space-y-3 border-t-2 border-slate-200">
+                <div className="p-5 bg-white/5 space-y-4 border-t border-white/5">
                   {activityCount === 0 && (
-                    <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
-                      <FileText className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                      <p className="font-bold text-slate-800 text-lg mb-2">
+                    <div className="text-center py-12 bg-white/5 rounded-2xl border-2 border-dashed border-white/5">
+                      <FileText className="w-16 h-16 mx-auto mb-4 text-slate-700" />
+                      <p className="font-bold text-white text-lg mb-2 px-4 tracking-tight">
                         No Activity Yet
                       </p>
-                      <p className="text-slate-500 text-sm">
-                        Add expenses or schedule activities for this day to see
-                        them here!
+                      <p className="text-slate-500 text-xs px-4 font-medium uppercase tracking-widest">
+                        Add expenses or schedule activities
                       </p>
                     </div>
                   )}
@@ -291,75 +290,78 @@ const DailyBreakdown = ({
                     {dayData?.expenses?.map((expense) => (
                       <div
                         key={expense._id}
-                        className="flex items-start justify-between p-3 bg-red-50 border-l-4 border-red-500 rounded-md group"
+                        className="flex flex-col sm:flex-row sm:items-start justify-between p-2.5 sm:p-3 bg-red-50 border-l-4 border-red-500 rounded-md group gap-2"
                       >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-lg font-bold text-slate-800">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 flex-wrap mb-2">
+                            <span className="text-xl font-black text-white tracking-tight">
                               {formatAmount(
                                 expense.amount,
                                 currentAccount?.currency,
                               )}
                             </span>
-                            <span className="px-2 py-0.5 bg-slate-700 text-white text-xs rounded-full">
+                            <span className="px-2 py-0.5 bg-white/10 text-slate-300 text-[10px] font-bold rounded uppercase tracking-widest border border-white/5">
                               {expense.category}
                             </span>
                             {expense.paymentSource === "bank" &&
                               expense.bankAccountId && (
-                                <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
-                                  <CreditCard className="w-3 h-3" />
-                                  {bankAccounts.find(
-                                    (ba) => ba._id === expense.bankAccountId,
-                                  )?.name || "Bank"}
+                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded uppercase tracking-widest border border-blue-500/20">
+                                  <CreditCard className="w-3 h-3 flex-shrink-0" />
+                                  <span className="truncate max-w-[80px]">
+                                    {bankAccounts.find(
+                                      (ba) => ba._id === expense.bankAccountId,
+                                    )?.name || "Bank"}
+                                  </span>
                                 </span>
                               )}
                             {expense.paymentSource === "cash" && (
-                              <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded-full">
+                              <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded uppercase tracking-widest border border-emerald-500/20">
                                 💵 Cash
                               </span>
                             )}
                           </div>
                           {expense.note && (
-                            <p className="text-sm text-slate-700 mt-1">
+                            <p className="text-sm text-slate-300 mb-2 leading-relaxed italic opacity-80">
                               "{expense.note}"
                             </p>
                           )}
-                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-600">
-                            <User className="w-3 h-3" />
-                            <span>{expense.user?.name || "Unknown"}</span>
-                            <Clock className="w-3 h-3 ml-2" />
-                            <span>{formatTime(expense.timestamp)}</span>
+                          <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest flex-wrap">
+                            <div className="flex items-center gap-1">
+                              <User className="w-3 h-3" />
+                              <span>{expense.user?.name || "System"}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{formatTime(expense.timestamp)}</span>
+                            </div>
                             {expense.photos?.length > 0 && (
-                              <>
-                                <Camera className="w-3 h-3 ml-2 text-emerald-600" />
-                                <span className="text-emerald-700 font-medium">
-                                  {expense.photos.length} proof
-                                  {expense.photos.length !== 1 ? "s" : ""}
-                                </span>
-                              </>
+                              <div className="flex items-center gap-1 text-emerald-500/80">
+                                <Camera className="w-3 h-3" />
+                                <span>{expense.photos.length} PROOF</span>
+                              </div>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 ml-2">
+                        <div className="flex items-center gap-2 self-end sm:self-center">
                           <button
                             onClick={() =>
                               setSelectedExpenseForPhoto(
                                 dayExpenses.find((e) => e._id === expense._id),
                               )
                             }
-                            className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded transition-all"
+                            className="p-2 text-emerald-400 hover:bg-emerald-500/20 rounded-xl transition-all"
                             title="View/Upload Photos"
                           >
-                            <Camera className="w-4 h-4" />
+                            <Camera className="w-5 h-5" />
                           </button>
                           {!currentWeek.isLocked &&
                             hasPermission("makeExpense") && (
                               <button
                                 onClick={() => handleDeleteExpense(expense._id)}
-                                className="p-1.5 text-red-600 hover:bg-red-100 rounded transition-all"
+                                className="p-2 text-rose-400 hover:bg-rose-500/20 rounded-xl transition-all"
                                 title="Delete"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-5 h-5" />
                               </button>
                             )}
                         </div>
@@ -379,39 +381,43 @@ const DailyBreakdown = ({
                     {dayData?.shifts?.map((shift) => (
                       <div
                         key={shift._id}
-                        className={`p-3 rounded-md border-l-4 ${shift.status === "assigned" ? "bg-blue-50 border-blue-500" : shift.status === "cancelled" ? "bg-gray-100 border-gray-400" : "bg-amber-50 border-amber-500"}`}
+                        className="p-4 bg-indigo-500/5 border-l-4 border-indigo-500/50 rounded-r-xl"
                       >
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-slate-800">
+                        <div className="flex items-center gap-3 flex-wrap mb-2">
+                          <span className="font-black text-white tracking-tight">
                             {shift.type.label}
                           </span>
-                          <span className="text-sm text-slate-600">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                             {shift.type.startTime} - {shift.type.endTime}
                           </span>
                           <span
-                            className={`px-2 py-0.5 text-white text-xs rounded-full font-bold ${shift.status === "assigned" ? "bg-blue-600" : shift.status === "cancelled" ? "bg-gray-600" : "bg-amber-600"}`}
+                            className={`px-2 py-0.5 text-[10px] rounded font-black uppercase tracking-widest border ${
+                              shift.status === "assigned" 
+                                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" 
+                                : shift.status === "cancelled" 
+                                  ? "bg-slate-500/10 text-slate-400 border-slate-500/20" 
+                                  : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                            }`}
                           >
-                            {shift.status.toUpperCase()}
+                            {shift.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 text-xs text-slate-600">
+                        <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                           {shift.assignedTo && (
-                            <>
+                            <div className="flex items-center gap-1">
                               <User className="w-3 h-3" />
-                              <span className="font-medium">
-                                {shift.assignedTo.name}
-                              </span>
-                            </>
+                              <span>{shift.assignedTo.name}</span>
+                            </div>
                           )}
                           {shift.createdBy && (
-                            <span className="ml-2 opacity-60">
-                              Created by: {shift.createdBy.name}
-                            </span>
+                            <div className="flex items-center gap-1 opacity-60">
+                              <span>BY {shift.createdBy.name}</span>
+                            </div>
                           )}
                         </div>
                         {shift.notes && (
-                          <p className="text-sm text-slate-700 mt-1">
-                            {shift.notes}
+                          <p className="text-xs text-slate-300 mt-2 italic opacity-80">
+                            "{shift.notes}"
                           </p>
                         )}
                       </div>
@@ -425,23 +431,25 @@ const DailyBreakdown = ({
                     icon={UserCheck}
                     title="Check-Ins"
                     count={dayData?.checkIns?.length || 0}
-                    color="green"
+                    color="emerald"
                   >
                     {dayData?.checkIns?.map((checkIn) => (
                       <div
                         key={checkIn._id}
-                        className="p-3 bg-green-50 border-l-4 border-green-500 rounded-md"
+                        className="p-4 bg-emerald-500/5 border-l-4 border-emerald-500/50 rounded-r-xl"
                       >
-                        <div className="font-bold text-slate-800 mb-1">
-                          {checkIn.member?.name || "Unknown"} checked in
+                        <div className="font-bold text-white mb-2 tracking-tight">
+                          {checkIn.member?.name || "Member"} checked in
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-600">
-                          <Clock className="w-3 h-3" />
-                          <span className="font-semibold">
-                            {formatTime(checkIn.checkInTime)}
-                          </span>
-                          <Camera className="w-3 h-3 ml-2 text-emerald-600" />
-                          <span className="text-emerald-700">Photo proof</span>
+                        <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-emerald-400" />
+                            <span>{formatTime(checkIn.checkInTime)}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-emerald-400/80">
+                            <Camera className="w-3 h-3" />
+                            <span>PHOTO PROOF</span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -454,23 +462,25 @@ const DailyBreakdown = ({
                     icon={UserX}
                     title="Check-Outs"
                     count={dayData?.checkOuts?.length || 0}
-                    color="orange"
+                    color="amber"
                   >
                     {dayData?.checkOuts?.map((checkOut) => (
                       <div
                         key={checkOut._id}
-                        className="p-3 bg-orange-50 border-l-4 border-orange-500 rounded-md"
+                        className="p-4 bg-amber-500/5 border-l-4 border-amber-500/50 rounded-r-xl"
                       >
-                        <div className="font-bold text-slate-800 mb-1">
-                          {checkOut.member?.name || "Unknown"} checked out
+                        <div className="font-bold text-white mb-2 tracking-tight">
+                          {checkOut.member?.name || "Member"} checked out
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-600">
-                          <Clock className="w-3 h-3" />
-                          <span className="font-semibold">
-                            {formatTime(checkOut.checkOutTime)}
-                          </span>
-                          <Camera className="w-3 h-3 ml-2 text-emerald-600" />
-                          <span className="text-emerald-700">Photo proof</span>
+                        <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-amber-400" />
+                            <span>{formatTime(checkOut.checkOutTime)}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-emerald-400/80">
+                            <Camera className="w-3 h-3" />
+                            <span>PHOTO PROOF</span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -491,26 +501,27 @@ const DailyBreakdown = ({
                       return (
                         <div
                           key={log._id}
-                          className="p-3 bg-purple-50 border-l-4 border-purple-500 rounded-md"
+                          className="p-4 bg-purple-500/5 border-l-4 border-purple-500/50 rounded-r-xl"
                         >
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-slate-800">
-                              {log.member?.name || "Unknown"}
+                          <div className="flex items-center gap-3 flex-wrap mb-2">
+                            <span className="font-black text-white tracking-tight">
+                              {log.member?.name || "Member"}
                             </span>
-                            <span className="text-sm text-slate-600">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                               {log.startTime} - {log.endTime}
                             </span>
-                            <span className="px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full font-bold">
-                              {hours}h {minutes}m
+                            <span className="px-2 py-0.5 bg-purple-500/10 text-purple-400 text-[10px] font-black rounded border border-purple-500/20 uppercase tracking-widest">
+                              {hours}H {minutes}M
                             </span>
                           </div>
                           {log.note && (
-                            <p className="text-sm text-slate-700 mt-1">
+                            <p className="text-sm text-slate-300 mb-2 italic opacity-80 leading-relaxed">
                               "{log.note}"
                             </p>
                           )}
-                          <div className="text-xs text-slate-600 mt-1">
-                            Logged by: {log.loggedBy?.name || "Unknown"}
+                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                            <User className="w-3 h-3" />
+                            <span>Logged by: {log.loggedBy?.name || "System"}</span>
                           </div>
                         </div>
                       );
@@ -524,14 +535,15 @@ const DailyBreakdown = ({
                     icon={FileText}
                     title="Other Activities"
                     count={dayData?.activities?.length || 0}
-                    color="indigo"
+                    color="violet"
                   >
                     {dayData?.activities?.map((activity) => {
                       const getActivityStyle = (action) => {
                         if (action.includes("bank") || action.includes("cash"))
                           return {
-                            bg: "bg-emerald-50",
-                            border: "border-emerald-500",
+                            bg: "bg-emerald-500/10",
+                            border: "border-emerald-500/30",
+                            text: "text-emerald-400",
                             icon: "💰",
                           };
                         if (
@@ -539,37 +551,43 @@ const DailyBreakdown = ({
                           action.includes("member")
                         )
                           return {
-                            bg: "bg-blue-50",
-                            border: "border-blue-500",
+                            bg: "bg-indigo-500/10",
+                            border: "border-indigo-500/30",
+                            text: "text-indigo-400",
                             icon: "👥",
                           };
                         if (action.includes("week"))
                           return {
-                            bg: "bg-amber-50",
-                            border: "border-amber-500",
+                            bg: "bg-amber-500/10",
+                            border: "border-amber-500/30",
+                            text: "text-amber-400",
                             icon: "📅",
                           };
                         if (action.includes("category"))
                           return {
-                            bg: "bg-pink-50",
-                            border: "border-pink-500",
+                            bg: "bg-rose-500/10",
+                            border: "border-rose-500/30",
+                            text: "text-rose-400",
                             icon: "🏷️",
                           };
                         if (action.includes("ownership"))
                           return {
-                            bg: "bg-red-50",
-                            border: "border-red-500",
+                            bg: "bg-red-500/10",
+                            border: "border-red-500/30",
+                            text: "text-red-400",
                             icon: "👑",
                           };
                         if (action.includes("shift_type"))
                           return {
-                            bg: "bg-cyan-50",
-                            border: "border-cyan-500",
+                            bg: "bg-cyan-500/10",
+                            border: "border-cyan-500/30",
+                            text: "text-cyan-400",
                             icon: "⏰",
                           };
                         return {
-                          bg: "bg-slate-50",
-                          border: "border-slate-500",
+                          bg: "bg-slate-500/10",
+                          border: "border-slate-500/30",
+                          text: "text-slate-400",
                           icon: "📝",
                         };
                       };
@@ -577,21 +595,25 @@ const DailyBreakdown = ({
                       return (
                         <div
                           key={activity._id}
-                          className={`p-3 ${style.bg} border-l-4 ${style.border} rounded-md`}
+                          className={`p-4 ${style.bg} border-l-4 ${style.border} rounded-r-xl group/activity`}
                         >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">{style.icon}</span>
-                            <span className="font-bold text-slate-800">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-xl group-hover/activity:scale-125 transition-transform duration-300">{style.icon}</span>
+                            <span className="font-bold text-white tracking-tight">
                               {activity.description}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-slate-600">
-                            <User className="w-3 h-3" />
-                            <span>{activity.actorName}</span>
-                            <Clock className="w-3 h-3 ml-2" />
-                            <span>{formatTime(activity.timestamp)}</span>
-                            <span className="px-2 py-0.5 bg-slate-200 text-slate-700 rounded text-xs ml-2">
-                              {activity.action.replace(/_/g, " ").toUpperCase()}
+                          <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            <div className="flex items-center gap-1">
+                              <User className="w-3 h-3" />
+                              <span>{activity.actorName}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{formatTime(activity.timestamp)}</span>
+                            </div>
+                            <span className={`px-2 py-0.5 bg-white/5 ${style.text} rounded text-[8px] border border-white/5`}>
+                              {activity.action.replace(/_/g, " ")}
                             </span>
                           </div>
                         </div>

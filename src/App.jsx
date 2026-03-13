@@ -9,6 +9,7 @@ import PasswordGate from "./components/PasswordGate";
 import UpgradePrompt from "./components/UpgradePrompt";
 import ScheduleScreen from "./components/schedule/ScheduleScreen";
 import Header from "./components/layout/Header";
+import Sidebar from "./components/layout/Sidebar";
 import NotificationBanner from "./components/layout/NotificationBanner";
 import ToastNotification from "./components/layout/ToastNotification";
 import OnboardingTour from "./components/layout/OnboardingTour";
@@ -220,6 +221,8 @@ function App() {
   const [showNotificationSettings, setShowNotificationSettings] =
     useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("accounting");
   const [highlightNotificationId, setHighlightNotificationId] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
@@ -596,8 +599,8 @@ function App() {
 
         {/* Create Account Modal */}
         {showCreateAccountModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
-            <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] animate-fadeIn">
+            <div className="bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl p-5 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto transform transition-all animate-slideUp">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   {accountKind === ""
@@ -1290,40 +1293,63 @@ function App() {
   const weekStartDate = new Date(currentWeek.startDate);
   const weekEndDate = new Date(currentWeek.endDate);
   const weekDates = getWeekDates(weekStartDate);
+  const canOpenAddExpense =
+    !currentWeek.isLocked && hasPermission("makeExpense");
+  const showMobileBottomNav =
+    !showSettings &&
+    !showReports &&
+    !showSchedule &&
+    !showNotificationCenter &&
+    !showNotificationSettings &&
+    !activeModal &&
+    !showCreateAccountModal &&
+    !selectedExpenseForPhoto;
 
   return (
-    <div className="min-h-screen h-full bg-slate-50">
-      <Header
-        user={user}
-        currentMember={currentMember}
-        hasPermission={hasPermission}
-        setShowSettings={setShowSettings}
-        setShowCreateAccountModal={setShowCreateAccountModal}
-        logout={logout}
-        onOpenNotificationCenter={openNotificationCenter}
-        onShowOnboarding={() => setShowOnboarding(true)}
-        expenses={expenses}
-        onExpenseClick={(expense) => {
-          // Scroll to expense or highlight it
-          console.log("Navigate to expense:", expense);
-        }}
-        onShowReports={() => setShowReports(true)}
+    <div className="min-h-screen bg-slate-950 font-inter text-slate-300 antialiased overflow-x-hidden">
+      {/* Sidebar - Desktop: Fixed, Mobile: Overlay */}
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
-      <NotificationBanner success={success} error={error} setError={setError} />
-      <ToastNotification onOpenCenter={openNotificationCenter} />
-      {/* Onboarding Tour */}
-      {showOnboarding && (
-        <OnboardingTour
-          onComplete={() => setShowOnboarding(false)}
-          onSkip={() => setShowOnboarding(false)}
+
+      {/* Main Content Area */}
+      <div className={`transition-all duration-300 min-h-screen ${isSidebarOpen ? 'lg:pl-64' : 'lg:pl-0'}`}>
+        <Header
+          user={user}
+          currentMember={currentMember}
+          hasPermission={hasPermission}
+          setShowSettings={setShowSettings}
+          setShowCreateAccountModal={setShowCreateAccountModal}
+          logout={logout}
+          onOpenNotificationCenter={openNotificationCenter}
+          onShowOnboarding={() => setShowOnboarding(true)}
+          expenses={expenses}
+          onExpenseClick={(expense) => {
+            console.log("Navigate to expense:", expense);
+          }}
+          onShowReports={() => setShowReports(true)}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
-      )}
-      {/* Main Content - Full Width */}
-      <div className="w-full bg-slate-50">
+
+        <NotificationBanner success={success} error={error} setError={setError} />
+        <ToastNotification onOpenCenter={openNotificationCenter} />
+
+        {/* Onboarding Tour */}
+        {showOnboarding && (
+          <OnboardingTour
+            onComplete={() => setShowOnboarding(false)}
+            onSkip={() => setShowOnboarding(false)}
+          />
+        )}
+
+        <main className="p-4 lg:p-8 max-w-[1600px] mx-auto">
         {/* Top Action Bar - Modern Design */}
-        <div className="bg-white shadow-sm border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-3">
+        <div className="bg-white shadow-sm border-b border-slate-200 px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-slate-800">
+            <h2 className="text-base sm:text-xl font-bold text-slate-800">
               {showHistoryTab
                 ? "📋 Activity History"
                 : showSchedule
@@ -1334,7 +1360,7 @@ function App() {
           <div className="flex gap-3">
             <button
               onClick={() => setShowHistoryTab(!showHistoryTab)}
-              className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm hover:shadow-md ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm hover:shadow-md text-sm sm:text-base ${
                 showHistoryTab
                   ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-lg"
                   : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
@@ -1346,7 +1372,7 @@ function App() {
 
             <button
               onClick={() => setShowSchedule(true)}
-              className="px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 hover:shadow-lg"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 hover:shadow-lg text-sm sm:text-base"
             >
               <Calendar className="w-5 h-5" />
               <span className="hidden sm:inline">Schedule</span>
@@ -1636,8 +1662,8 @@ function App() {
             />
           </>
         )}
-      </div>
-      {/* Reports Screen - NEW VISIBLE FEATURE */}
+        </main>
+        {/* Reports Screen - NEW VISIBLE FEATURE */}
       {showReports && (
         <ReportsScreen
           onClose={() => setShowReports(false)}
@@ -1646,10 +1672,75 @@ function App() {
           people={people}
         />
       )}
+      {/* Mobile Bottom Navigation */}
+      {showMobileBottomNav && (
+        <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+          <div className="grid grid-cols-5 gap-1 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+            <button
+              onClick={() => {
+                setShowHistoryTab(false);
+              }}
+              className={`flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all ${
+                !showHistoryTab
+                  ? "text-indigo-600 bg-indigo-50"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span className="text-[11px] font-semibold">Dashboard</span>
+            </button>
+
+            <button
+              onClick={() => setShowHistoryTab(true)}
+              className={`flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all ${
+                showHistoryTab
+                  ? "text-indigo-600 bg-indigo-50"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              <History className="w-5 h-5" />
+              <span className="text-[11px] font-semibold">History</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (canOpenAddExpense) {
+                  setActiveModal("addExpense");
+                }
+              }}
+              disabled={!canOpenAddExpense}
+              className={`flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all ${
+                canOpenAddExpense
+                  ? "text-white bg-gradient-to-br from-indigo-600 to-purple-600 shadow-md"
+                  : "text-slate-300 bg-slate-100 cursor-not-allowed"
+              }`}
+            >
+              <Plus className="w-5 h-5" />
+              <span className="text-[11px] font-semibold">Add</span>
+            </button>
+
+            <button
+              onClick={() => setShowSchedule(true)}
+              className="flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all text-slate-500 hover:text-slate-700"
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="text-[11px] font-semibold">Schedule</span>
+            </button>
+
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex flex-col items-center justify-center gap-1 px-1 py-2 rounded-xl transition-all text-slate-500 hover:text-slate-700"
+            >
+              <Settings className="w-5 h-5" />
+              <span className="text-[11px] font-semibold">Settings</span>
+            </button>
+          </div>
+        </div>
+      )}
       {/* Modals */}
       {activeModal === "bankAccounts" && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
-          <div className="bg-white shadow-2xl rounded-2xl w-full max-w-xl overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] animate-fadeIn">
+          <div className="bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl w-full max-w-xl max-h-[92vh] overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b-2 border-blue-700">
               <div className="flex items-center gap-3">
@@ -1760,8 +1851,8 @@ function App() {
         </div>
       )}
       {activeModal === "addCash" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white shadow-xl max-w-md w-full">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+          <div className="bg-white shadow-xl max-w-md w-full rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
               <div className="flex items-center gap-3">
                 <div className="bg-green-600 p-2.5 rounded-lg">
@@ -1793,7 +1884,7 @@ function App() {
                   value={addCashAmount}
                   onChange={(e) => setAddCashAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full px-4 py-3 border border-gray-300 text-lg font-semibold focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-lg font-semibold focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   autoFocus
                 />
               </div>
@@ -1807,14 +1898,14 @@ function App() {
                   onChange={(e) => setAddCashNote(e.target.value)}
                   placeholder="e.g. Cash from sales, daily collection..."
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-base"
                 />
               </div>
             </div>
-            <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={handleAddCash}
-                className="flex-1 bg-green-600 text-white px-6 py-3 hover:bg-green-700 transition-colors font-semibold"
+                className="flex-1 bg-green-600 text-white px-6 py-3.5 hover:bg-green-700 transition-colors font-semibold rounded-xl active:scale-[0.99]"
               >
                 Top Up Cash
               </button>
@@ -1824,7 +1915,7 @@ function App() {
                   setAddCashAmount("");
                   setAddCashNote("");
                 }}
-                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+                className="px-6 py-3.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -1833,8 +1924,8 @@ function App() {
         </div>
       )}
       {activeModal === "transfer" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+          <div className="bg-white shadow-2xl w-full max-w-md rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -1939,7 +2030,7 @@ function App() {
                 onChange={(e) => setTransferAmount(e.target.value)}
                 placeholder="0.00"
                 disabled={!selectedBankAccountForTransfer}
-                className="w-full px-4 py-3 border border-gray-300 text-lg font-semibold focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
+                className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-lg font-semibold focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
               />
               {selectedBankAccountForTransfer && (
                 <p className="text-xs text-gray-500 mt-1.5">
@@ -1957,11 +2048,11 @@ function App() {
             </div>
 
             {/* Footer */}
-            <div className="flex gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={handleTransferToCash}
                 disabled={!selectedBankAccountForTransfer || !transferAmount}
-                className="flex-1 bg-indigo-600 text-white px-6 py-3 hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-indigo-600 text-white px-6 py-3.5 hover:bg-indigo-700 transition-colors font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
               >
                 Transfer to Cash
               </button>
@@ -1971,7 +2062,7 @@ function App() {
                   setSelectedBankAccountForTransfer("");
                   setTransferAmount("");
                 }}
-                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+                className="px-6 py-3.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -1980,8 +2071,8 @@ function App() {
         </div>
       )}
       {activeModal === "addBankAccount" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
-          <div className="bg-white shadow-xl max-w-xl w-full p-6 my-8 rounded-2xl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] overflow-y-auto">
+          <div className="bg-white shadow-xl max-w-xl w-full p-4 sm:p-6 my-0 sm:my-8 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-gray-800">
                 Add Bank Account
@@ -2316,8 +2407,8 @@ function App() {
         </div>
       )}
       {activeModal === "topUpBankBalance" && !selectedBankForTopUp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white shadow-2xl max-w-lg w-full rounded-2xl overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+          <div className="bg-white shadow-2xl max-w-lg w-full rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-hidden">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur">
@@ -2409,8 +2500,8 @@ function App() {
         </div>
       )}
       {activeModal === "topUpBankBalance" && selectedBankForTopUp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white shadow-2xl max-w-md w-full rounded-2xl overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+          <div className="bg-white shadow-2xl max-w-md w-full rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-hidden">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-600 to-emerald-600">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur">
@@ -2566,8 +2657,8 @@ function App() {
         </div>
       )}
       {activeModal === "updateBankBalances" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
-          <div className="bg-white shadow-xl max-w-4xl w-full my-8">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] overflow-y-auto">
+          <div className="bg-white shadow-xl max-w-4xl w-full my-0 sm:my-8 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-blue-600">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2.5 rounded-lg backdrop-blur">
@@ -2749,8 +2840,8 @@ function App() {
         </div>
       )}
       {activeModal === "addExpense" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60] overflow-y-auto">
-          <div className="bg-white shadow-xl max-w-md w-full p-6 my-8">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] overflow-y-auto">
+          <div className="bg-white shadow-xl max-w-md w-full p-4 sm:p-6 my-0 sm:my-8 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-800">Add Expense</h3>
               <button
@@ -2762,7 +2853,7 @@ function App() {
             </div>
             <form onSubmit={handleAddExpense} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Date
                 </label>
                 <div className="relative">
@@ -2774,7 +2865,7 @@ function App() {
                     }
                     placeholder="YYYY-MM-DD or select from calendar"
                     pattern="\d{4}-\d{2}-\d{2}"
-                    className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3.5 pr-12 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     required
                   />
                   <input
@@ -2790,7 +2881,7 @@ function App() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Amount
                 </label>
                 <input
@@ -2801,12 +2892,12 @@ function App() {
                     setExpenseForm({ ...expenseForm, amount: e.target.value })
                   }
                   placeholder="0.00"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Category
                 </label>
                 <select
@@ -2814,7 +2905,7 @@ function App() {
                   onChange={(e) =>
                     setExpenseForm({ ...expenseForm, category: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   required
                 >
                   {categories.map((cat) => (
@@ -2825,7 +2916,7 @@ function App() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Note (optional)
                 </label>
                 <textarea
@@ -2835,7 +2926,7 @@ function App() {
                   }
                   placeholder="Add a note..."
                   rows="2"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -2843,7 +2934,7 @@ function App() {
                   <CreditCard className="w-4 h-4" />
                   Payment Source
                 </label>
-                <div className="border border-gray-200 divide-y divide-gray-100">
+                <div className="border border-gray-200 divide-y divide-gray-100 rounded-xl overflow-hidden">
                   {/* Cash option */}
                   <button
                     type="button"
@@ -2932,17 +3023,17 @@ function App() {
                   })}
                 </div>
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-indigo-600 text-white px-6 py-3 hover:bg-indigo-700 transition-colors font-semibold"
+                  className="flex-1 bg-indigo-600 text-white px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition-colors font-semibold active:scale-[0.99]"
                 >
                   Add Expense
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-6 py-3 border border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
@@ -2952,8 +3043,8 @@ function App() {
         </div>
       )}
       {activeModal === "lockWeek" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+          <div className="bg-white shadow-xl max-w-md w-full p-4 sm:p-6 rounded-t-3xl sm:rounded-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-800">Lock Week</h3>
               <button
@@ -2974,17 +3065,17 @@ function App() {
               placeholder="Enter unlock code"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-3">
               <button
                 onClick={handleLockWeek}
-                className="flex-1 bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-yellow-500 text-white px-6 py-3.5 rounded-xl hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2 active:scale-[0.99]"
               >
                 <Lock className="w-4 h-4" />
                 Lock Week
               </button>
               <button
                 onClick={() => setActiveModal(null)}
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-6 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
@@ -2994,8 +3085,8 @@ function App() {
       )}
       {/* Create Account Modal */}
       {showCreateAccountModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
-          <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60] animate-fadeIn">
+          <div className="bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl p-5 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto transform transition-all animate-slideUp">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 {accountKind === ""
@@ -3276,6 +3367,7 @@ function App() {
           onClose={() => setShowUpgradePrompt(false)}
         />
       )}
+      </div>
     </div>
   );
 }

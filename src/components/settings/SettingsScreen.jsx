@@ -141,12 +141,17 @@ const SettingsScreen = ({
       });
       if (response.data.success) {
         setCurrentSubscription(response.data.data);
-        setUpgradeSuccess(`✅ Successfully switched to ${selectedUpgradePlan} plan!`);
+        setUpgradeSuccess(
+          `✅ Successfully switched to ${selectedUpgradePlan} plan!`,
+        );
       } else {
         setUpgradeError(response.data.message || "Failed to update plan");
       }
     } catch (err) {
-      setUpgradeError(err?.response?.data?.message || "Failed to update plan. Please try again.");
+      setUpgradeError(
+        err?.response?.data?.message ||
+          "Failed to update plan. Please try again.",
+      );
     } finally {
       setUpgrading(false);
     }
@@ -462,65 +467,70 @@ const SettingsScreen = ({
 
   return (
     <>
-      <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      <div className="fixed inset-0 bg-slate-950 z-[100] flex flex-col animate-fadeIn">
+        {/* Animated background elements */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-float pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-float pointer-events-none" style={{ animationDelay: '-2s' }} />
+
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 xl:px-12 py-4 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 px-6 sm:px-12 py-6 flex items-center justify-between flex-shrink-0 relative z-10">
+          <div className="flex items-center gap-4 min-w-0">
             {settingsSection && (
               <button
                 onClick={() => setSettingsSection(null)}
-                className="p-2 hover:bg-gray-100 text-gray-500 transition-colors mr-1"
+                className="p-3 hover:bg-white/5 text-slate-400 hover:text-white transition-all mr-2 rounded-2xl group"
               >
-                <ChevronDown className="w-5 h-5 rotate-90" />
+                <ChevronDown className="w-6 h-6 rotate-90 group-active:scale-95 transition-transform" />
               </button>
             )}
-            <div className="bg-gray-900 p-2.5 rounded-lg">
-              <Settings className="w-5 h-5 text-white" />
+            <div className="bg-indigo-600 p-3 rounded-2xl shadow-[0_0_20px_rgba(79,70,229,0.3)]">
+              <Settings className="w-5 h-5 text-white animate-spin-slow" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {settingsSection === "users" && "Users"}
-              {settingsSection === "categories" && "Categories"}
-              {settingsSection === "bankAccounts" && "Bank Accounts"}
-              {settingsSection === "topUpBank" && "Top Up Bank"}
-              {settingsSection === "topUpCash" && "Top Up Cash"}
-              {settingsSection === "activityLog" && "Activity Log"}
-              {settingsSection === "notifications" && "Notifications"}
-              {!settingsSection && "Settings"}
-            </h1>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-widest uppercase truncate">
+                {settingsSection === "users" && "Neural Network"}
+                {settingsSection === "categories" && "Logic Classes"}
+                {settingsSection === "bankAccounts" && "Liquidity Nodes"}
+                {settingsSection === "topUpBank" && "Node Infusion"}
+                {settingsSection === "topUpCash" && "Reserve Injection"}
+                {settingsSection === "activityLog" && "Audit Protocol"}
+                {settingsSection === "notifications" && "Comm Link"}
+                {!settingsSection && "Control Center"}
+              </h1>
+              <p className="text-[10px] font-black uppercase text-indigo-400 tracking-[0.4em] mt-1 opacity-70">
+                System Profile // {settingsSection ? settingsSection.toUpperCase() : "ROOT"}
+              </p>
+            </div>
           </div>
           <button
             onClick={() => {
               setShowSettings(false);
               setSettingsSection(null);
             }}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors font-medium"
+            className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-widest active:scale-95"
           >
-            <X className="w-4 h-4" />
-            Close
+            <X className="w-5 h-5 transition-transform group-hover:rotate-90" />
+            <span>Abort Session</span>
           </button>
         </div>
 
         {/* Currency Display Banner */}
         {currentAccount?.currency && (
-          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-emerald-200 px-6 xl:px-12 py-3">
-            <div className="flex items-center gap-3">
-              <DollarSign className="w-5 h-5 text-emerald-700" />
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">
-                  Account Currency:
+          <div className="bg-indigo-600 border-b border-white/10 px-6 sm:px-12 py-4 relative group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <div className="flex items-center gap-4 relative z-10">
+              <DollarSign className="w-5 h-5 text-indigo-300" />
+              <div className="flex items-center gap-3 flex-wrap min-w-0">
+                <span className="text-[10px] font-black uppercase text-indigo-300 tracking-widest">
+                  Base Currency Context:
                 </span>
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-2xl font-black text-white tracking-widest">
                   {CURRENCIES.find((c) => c.code === currentAccount.currency)
-                    ?.symbol || ""}
+                    ?.symbol || ""} {currentAccount.currency}
                 </span>
-                <span className="text-lg font-bold text-gray-900">
-                  {currentAccount.currency}
-                </span>
-                <span className="text-sm text-gray-600">
-                  (
-                  {CURRENCIES.find((c) => c.code === currentAccount.currency)
+                <span className="text-[10px] font-black text-indigo-300/60 uppercase tracking-widest">
+                  // {CURRENCIES.find((c) => c.code === currentAccount.currency)
                     ?.name || currentAccount.currency}
-                  )
                 </span>
               </div>
             </div>
@@ -528,12 +538,11 @@ const SettingsScreen = ({
         )}
 
         {!currentAccount?.currency && (
-          <div className="bg-yellow-50 border-b border-yellow-200 px-6 xl:px-12 py-3">
+          <div className="bg-amber-500/10 border-b border-amber-500/20 px-6 sm:px-12 py-4">
             <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-700" />
-              <span className="text-sm font-medium text-yellow-800">
-                No currency set. Add your first bank account to set the account
-                currency.
+              <AlertCircle className="w-5 h-5 text-amber-500 animate-pulse" />
+              <span className="text-[10px] font-black uppercase text-amber-400 tracking-widest">
+                Currency Nullify // Interface bank account instantiation required for context initialization.
               </span>
             </div>
           </div>
@@ -541,23 +550,26 @@ const SettingsScreen = ({
 
         {/* Account Unique ID & Parent Link Section */}
         {currentAccount && !settingsSection && (
-          <div className="border-b border-gray-200 px-6 xl:px-12 py-4 space-y-4">
+          <div className="border-b border-white/5 px-6 sm:px-12 py-8 space-y-6 relative z-10">
             {/* Unique ID Display */}
-            <UniqueIdDisplay uniqueId={currentAccount.uniqueId} />
+            <div className="glass-panel p-6 rounded-[2rem] border border-white/5 shadow-inner">
+               <UniqueIdDisplay uniqueId={currentAccount.uniqueId} />
+            </div>
 
             {/* Parent Account Info or Link Button */}
             {currentAccount.parentAccountId && parentAccount ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-start justify-between">
+              <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-[2.5rem] p-8 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-16 bg-white/5 blur-[40px] rounded-full" />
+                <div className="flex items-center justify-between relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-blue-900 mb-1">
-                      Parent Account
+                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">
+                      Ascending Node Connection
                     </p>
-                    <p className="text-sm font-semibold text-blue-800">
+                    <p className="text-xl font-black text-white tracking-widest uppercase">
                       {parentAccount.accountName}
                     </p>
-                    <p className="text-xs text-blue-600 font-mono mt-1">
-                      {parentAccount.uniqueId}
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 flex items-center gap-2">
+                       <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" /> Linked Logic State // {parentAccount.uniqueId}
                     </p>
                   </div>
                   {currentMember?.role === "owner" && (
@@ -585,9 +597,9 @@ const SettingsScreen = ({
                           }
                         }
                       }}
-                      className="text-xs px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded transition-colors"
+                      className="px-6 py-3 bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest active:scale-95"
                     >
-                      Unlink
+                      Sever Link
                     </button>
                   )}
                 </div>
@@ -596,10 +608,10 @@ const SettingsScreen = ({
               currentMember?.role === "owner" && (
                 <button
                   onClick={() => setShowLinkParentModal(true)}
-                  className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm flex items-center justify-center gap-2 text-sm font-medium"
+                  className="w-full px-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-3xl hover:shadow-[0_20px_40px_rgba(79,70,229,0.3)] transition-all flex items-center justify-center gap-4 text-[11px] font-black uppercase tracking-[0.3em] active:scale-[0.98]"
                 >
-                  <Building2 className="w-4 h-4" />
-                  Link to Parent Account
+                  <Building2 className="w-5 h-5 animate-pulse" />
+                  Establish Parent Link Protocol
                 </button>
               )
             )}
@@ -610,64 +622,64 @@ const SettingsScreen = ({
         <div className="flex-1 overflow-y-auto">
           {/* Landing: 4 buttons */}
           {!settingsSection && (
-            <div className="max-w-lg mx-auto px-6 py-12 space-y-6">
-              <div className="space-y-3">
+            <div className="max-w-4xl mx-auto px-6 py-12 space-y-8 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
                   {
                     key: "users",
-                    icon: <User className="w-6 h-6" />,
-                    label: "Users",
-                    desc: "Manage access & team members",
+                    icon: <UserPlus className="w-7 h-7" />,
+                    label: "Neural Network",
+                    desc: "Personnel Dispatch & Authorization",
                     color: "bg-indigo-600",
                   },
                   {
                     key: "categories",
-                    icon: <BarChart3 className="w-6 h-6" />,
-                    label: "Categories",
-                    desc: "View & manage expense categories",
+                    icon: <BarChart3 className="w-7 h-7" />,
+                    label: "Logic Classes",
+                    desc: "Categorical Taxonomy Management",
                     color: "bg-purple-600",
                   },
                   {
                     key: "bankAccounts",
-                    icon: <Building2 className="w-6 h-6" />,
-                    label: "Add Bank Account",
-                    desc: "Link and manage bank accounts",
+                    icon: <Building2 className="w-7 h-7" />,
+                    label: "Liquidity Nodes",
+                    desc: "Asset Repository Orchestration",
                     color: "bg-blue-600",
                   },
                   {
                     key: "topUpBank",
-                    icon: <Building2 className="w-6 h-6" />,
-                    label: "Top Up Bank",
-                    desc: "Add funds to bank account",
+                    icon: <Zap className="w-7 h-7" />,
+                    label: "Node Infusion",
+                    desc: "Electronic Reserve Supplement",
                     color: "bg-slate-900",
                   },
                   {
                     key: "topUpCash",
-                    icon: <Wallet className="w-6 h-6" />,
-                    label: "Top Up Cash",
-                    desc: "Add funds to cash balance",
+                    icon: <Wallet className="w-7 h-7" />,
+                    label: "Reserve Injection",
+                    desc: "Physical Asset Reconciliation",
                     color: "bg-emerald-600",
                   },
                   {
                     key: "activityLog",
-                    icon: <History className="w-6 h-6" />,
-                    label: "Activity Log",
-                    desc: "View account audit trail",
+                    icon: <History className="w-7 h-7" />,
+                    label: "Audit Protocol",
+                    desc: "Sequential Log Transcription",
                     color: "bg-gray-700",
                   },
                   {
                     key: "notifications",
-                    icon: <Settings className="w-6 h-6" />,
-                    label: "Notifications",
-                    desc: "Configure notification preferences",
+                    icon: <Mail className="w-7 h-7" />,
+                    label: "Comm Link",
+                    desc: "Signal Transmission Preferences",
                     color: "bg-orange-600",
                   },
                   {
                     key: "subscription",
-                    icon: <Star className="w-6 h-6" />,
-                    label: "Subscription & Plan",
-                    desc: "View your plan, usage limits & upgrade",
-                    color: "bg-gradient-to-br from-amber-500 to-orange-600",
+                    icon: <Crown className="w-7 h-7" />,
+                    label: "Power Tier",
+                    desc: "System Capability & Escalation",
+                    color: "from-amber-500 to-orange-600 bg-gradient-to-br",
                   },
                 ].map((item) => (
                   <button
@@ -682,20 +694,23 @@ const SettingsScreen = ({
                         setSettingsSection(item.key);
                       }
                     }}
-                    className="w-full flex items-center gap-5 px-6 py-5 bg-white border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all text-left group"
+                    className="group glass-panel p-8 rounded-[2.5rem] border border-white/5 hover:border-white/20 transition-all duration-500 text-left flex items-center gap-8 relative overflow-hidden active:scale-[0.97]"
                   >
+                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div
-                      className={`${item.color} p-3 text-white flex-shrink-0`}
+                      className={`${item.color} w-16 h-16 rounded-3xl text-white flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-500`}
                     >
                       {item.icon}
                     </div>
-                    <div className="flex-1">
-                      <div className="text-lg font-bold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-lg font-black text-white tracking-widest uppercase truncate mb-1">
                         {item.label}
                       </div>
-                      <div className="text-sm text-gray-500">{item.desc}</div>
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        {item.desc}
+                      </div>
                     </div>
-                    <ChevronDown className="w-5 h-5 text-gray-400 -rotate-90 group-hover:text-gray-700 transition-colors" />
+                    <ChevronDown className="w-6 h-6 text-slate-600 -rotate-90 group-hover:text-white group-hover:translate-x-2 transition-all" />
                   </button>
                 ))}
               </div>
@@ -704,27 +719,28 @@ const SettingsScreen = ({
 
           {/* Users Screen */}
           {settingsSection === "users" && (
-            <div className="max-w-2xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10 gap-6">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">
-                    Account Members
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Neural Network
                   </h2>
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    {members.length} member{members.length !== 1 ? "s" : ""} in
-                    this account
+                  <p className="text-[10px] font-black uppercase text-indigo-400 mt-2 tracking-[0.4em] flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                    {members.length} Active Nodes Detected
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-4">
                   {hasPermission("addUser") && (
                     <button
                       onClick={() => {
                         setInitialInviteTab("team");
                         setShowInviteModal(true);
                       }}
-                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors rounded-lg shadow-sm"
+                      className="group flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all rounded-2xl shadow-[0_20px_40px_rgba(79,70,229,0.3)] active:scale-95"
                     >
-                      <UserPlus className="w-4 h-4" /> Invite Team Member
+                      <UserPlus className="w-4 h-4 group-hover:scale-110 transition-transform" /> 
+                      Dispatch Invite
                     </button>
                   )}
                   {currentMember?.role === "owner" && (
@@ -733,9 +749,10 @@ const SettingsScreen = ({
                         setInitialInviteTab("owner");
                         setShowInviteModal(true);
                       }}
-                      className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors rounded-lg shadow-sm"
+                      className="group flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/10 transition-all rounded-2xl active:scale-95"
                     >
-                      <Crown className="w-4 h-4" /> Transfer Ownership
+                      <Crown className="w-4 h-4 group-hover:rotate-12 transition-transform" /> 
+                      Transfer Authority
                     </button>
                   )}
                 </div>
@@ -749,15 +766,16 @@ const SettingsScreen = ({
 
               {/* Members list */}
               {membersLoading ? (
-                <div className="py-12 text-center text-gray-400 text-sm">
-                  Loading members…
+                <div className="py-24 text-center">
+                  <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+                  <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.4em]">Synchronizing Nodes...</p>
                 </div>
               ) : members.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 text-sm border border-gray-200">
-                  No members yet
+                <div className="py-24 text-center glass-panel rounded-[3rem] border border-white/5 border-dashed">
+                  <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.4em]">Zero Active Nodes Detected</p>
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100 border border-gray-200">
+                <div className="grid grid-cols-1 gap-4">
                   {members.map((member) => {
                     const isEditing = editingMember?._id === member._id;
                     const isSelf =
@@ -765,48 +783,48 @@ const SettingsScreen = ({
                       member.userId === user?._id;
                     const isOwner = member.role === "owner";
                     return (
-                      <div key={member._id} className="p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-center gap-3 min-w-0">
+                      <div key={member._id} className={`glass-panel p-6 rounded-[2.5rem] border transition-all duration-500 relative overflow-hidden group ${isEditing ? 'border-indigo-500/50 bg-indigo-500/5' : 'border-white/5 hover:border-white/20'}`}>
+                        <div className="flex items-center justify-between gap-6 relative z-10">
+                          <div className="flex items-center gap-5 min-w-0">
                             <div
-                              className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isOwner ? "bg-yellow-100" : "bg-gray-100"}`}
+                              className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-500 ${isOwner ? "bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]" : "bg-slate-800 text-slate-400 group-hover:bg-slate-700 group-hover:text-white"}`}
                             >
                               {isOwner ? (
-                                <Crown className="w-4 h-4 text-yellow-600" />
+                                <Crown className="w-6 h-6" />
                               ) : (
-                                <User className="w-4 h-4 text-gray-500" />
+                                <User className="w-6 h-6" />
                               )}
                             </div>
                             <div className="min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-gray-900 text-sm">
+                              <div className="flex items-center gap-3 mb-1">
+                                <span className="font-black text-white text-base tracking-widest uppercase truncate">
                                   {member.displayName ||
                                     member.userId?.email ||
                                     "—"}
                                 </span>
                                 {isOwner && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-yellow-100 text-yellow-700 font-medium">
-                                    Owner
+                                  <span className="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-500 font-black uppercase tracking-widest rounded-lg border border-amber-500/10">
+                                    Prime
                                   </span>
                                 )}
                                 {isSelf && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-indigo-100 text-indigo-700 font-medium">
-                                    You
+                                  <span className="text-[9px] px-2 py-0.5 bg-indigo-500/20 text-indigo-400 font-black uppercase tracking-widest rounded-lg border border-indigo-500/10">
+                                    Subject
                                   </span>
                                 )}
                                 {member.viewOnly && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-500 font-medium">
-                                    View Only
+                                  <span className="text-[9px] px-2 py-0.5 bg-slate-800 text-slate-500 font-black uppercase tracking-widest rounded-lg border border-white/5">
+                                    Observer
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                                <Mail className="w-3 h-3" />{" "}
-                                {member.userId?.email || "No email"}
+                              <div className="text-[10px] font-black text-slate-500 flex items-center gap-2 tracking-widest">
+                                <Mail className="w-3.5 h-3.5 text-slate-600" />{" "}
+                                {member.userId?.email?.toUpperCase() || "NO DATA LINK"}
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-3">
                             {!isEditing &&
                               !isOwner &&
                               hasPermission("addUser") && (
@@ -820,16 +838,16 @@ const SettingsScreen = ({
                                       );
                                       setEditError("");
                                     }}
-                                    className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                    className="p-3 bg-white/5 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 rounded-xl transition-all font-black text-[9px] uppercase tracking-widest border border-white/5"
                                   >
-                                    Edit
+                                    Reconfig
                                   </button>
                                   {!isSelf && (
                                     <button
                                       onClick={() =>
                                         handleRemoveMember(member._id)
                                       }
-                                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                      className="p-3 bg-white/5 hover:bg-rose-600/20 text-slate-400 hover:text-rose-400 rounded-xl transition-all border border-white/5 active:scale-90"
                                     >
                                       <UserMinus className="w-4 h-4" />
                                     </button>
@@ -842,9 +860,9 @@ const SettingsScreen = ({
                                   setInitialInviteTab("owner");
                                   setShowInviteModal(true);
                                 }}
-                                className="px-3 py-1.5 text-xs font-semibold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded transition-colors"
+                                className="px-5 py-2.5 text-[9px] font-black text-amber-500 bg-amber-500/10 hover:bg-amber-500 hover:text-white rounded-xl transition-all uppercase tracking-widest border border-amber-500/20 shadow-inner active:scale-95"
                               >
-                                Transfer Ownership
+                                Abdicate Authority
                               </button>
                             )}
                           </div>
@@ -852,13 +870,13 @@ const SettingsScreen = ({
 
                         {/* Edit panel */}
                         {isEditing && (
-                          <div className="mt-4 p-4 bg-gray-50 border-t border-gray-100">
-                            <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">
-                              Edit Member Permissions
+                          <div className="mt-8 p-8 bg-slate-900 border border-white/5 rounded-[2rem] shadow-inner animate-zoomIn">
+                            <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-6">
+                              Logic Permission Matrix
                             </h4>
-                            <div className="mb-4">
-                              <label className="block text-xs font-medium text-gray-600 mb-1">
-                                Display Name
+                            <div className="mb-8 group">
+                              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-2">
+                                Persona Designation
                               </label>
                               <input
                                 type="text"
@@ -866,70 +884,75 @@ const SettingsScreen = ({
                                 onChange={(e) =>
                                   setEditDisplayName(e.target.value)
                                 }
-                                className="w-full px-3 py-1.5 text-sm border border-gray-300 focus:ring-1 focus:ring-indigo-500"
+                                className="w-full bg-slate-950 border border-white/5 rounded-2xl px-6 py-4 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all shadow-inner uppercase tracking-widest"
                               />
                             </div>
-                            <div className="grid grid-cols-2 gap-y-2 gap-x-4 mb-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 mb-8">
                               {[
-                                { key: "makeExpense", label: "Make Expenses" },
+                                { key: "makeExpense", label: "Financial Injection" },
                                 {
                                   key: "calculateCash",
-                                  label: "Calculate Cash",
+                                  label: "Reserve Calculation",
                                 },
-                                { key: "addUser", label: "Manage Users" },
+                                { key: "addUser", label: "Network Orchestration" },
                                 {
                                   key: "addCategories",
-                                  label: "Manage Categories",
+                                  label: "Logic Taxonomy",
                                 },
                                 {
                                   key: "addBankAccount",
-                                  label: "Manage Bank Accounts",
+                                  label: "Node Initialization",
                                 },
                                 {
                                   key: "updateBankBalance",
-                                  label: "Update Bank Balances",
+                                  label: "Liquidity Sync",
                                 },
                                 {
                                   key: "createAccountDownward",
-                                  label: "Sub-Accounts",
+                                  label: "Descending Nodes",
                                 },
                                 {
                                   key: "createAccountUpward",
-                                  label: "Link Parent",
+                                  label: "Ascending Protocol",
                                 },
                               ].map(({ key, label }) => (
                                 <label
                                   key={key}
-                                  className="flex items-center gap-2 text-sm cursor-pointer"
+                                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer group/label ${!hasPermission(key) ? 'opacity-30 cursor-not-allowed grayscale' : 'hover:bg-white/5'} ${editPerms[key] ? 'border-indigo-500/30 bg-indigo-500/10' : 'border-white/5'}`}
                                 >
-                                  <input
-                                    type="checkbox"
-                                    checked={!!editPerms[key]}
-                                    disabled={!hasPermission(key)}
-                                    onChange={(e) => {
-                                      const checked = e.target.checked;
-                                      setEditPerms((prev) => {
-                                        const next = {
-                                          ...prev,
-                                          [key]: checked,
-                                        };
-                                        next.accessSettings = !!(
-                                          next.addUser ||
-                                          next.addCategories ||
-                                          next.addBankAccount ||
-                                          next.updateBankBalance
-                                        );
-                                        return next;
-                                      });
-                                    }}
-                                    className="w-4 h-4 accent-indigo-600"
-                                  />
+                                  <div className="relative flex items-center">
+                                    <input
+                                      type="checkbox"
+                                      checked={!!editPerms[key]}
+                                      disabled={!hasPermission(key)}
+                                      onChange={(e) => {
+                                        const checked = e.target.checked;
+                                        setEditPerms((prev) => {
+                                          const next = {
+                                            ...prev,
+                                            [key]: checked,
+                                          };
+                                          next.accessSettings = !!(
+                                            next.addUser ||
+                                            next.addCategories ||
+                                            next.addBankAccount ||
+                                            next.updateBankBalance
+                                          );
+                                          return next;
+                                        });
+                                      }}
+                                      className="sr-only"
+                                    />
+                                    <div className={`w-10 h-6 rounded-full transition-colors relative flex items-center px-1 ${editPerms[key] ? 'bg-indigo-600' : 'bg-slate-800'}`}>
+                                       <div className={`w-4 h-4 bg-white rounded-full transition-transform duration-300 ${editPerms[key] ? 'translate-x-4' : 'translate-x-0'}`} />
+                                    </div>
+                                  </div>
                                   <span
-                                    className={
+                                    className={`text-[10px] font-black uppercase tracking-widest ${
                                       !hasPermission(key)
-                                        ? "text-gray-400"
-                                        : "text-gray-700"
-                                    }
+                                        ? "text-slate-600"
+                                        : editPerms[key] ? "text-white" : "text-slate-500"
+                                    }`}
                                   >
                                     {label}
                                   </span>
@@ -937,26 +960,26 @@ const SettingsScreen = ({
                               ))}
                             </div>
                             {editError && (
-                              <p className="text-red-600 text-xs mb-3">
+                              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-widest mb-6 animate-pulse">
                                 {editError}
-                              </p>
+                              </div>
                             )}
-                            <div className="flex gap-2">
+                            <div className="flex gap-4">
                               <button
                                 onClick={handleUpdateMember}
                                 disabled={editSubmitting}
-                                className="px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 disabled:opacity-50"
+                                className="flex-[2] py-4 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all rounded-2xl active:scale-95 disabled:opacity-50"
                               >
-                                Save Changes
+                                {editSubmitting ? "Processing..." : "Commit Changes"}
                               </button>
                               <button
                                 onClick={() => {
                                   setEditingMember(null);
                                   setEditError("");
                                 }}
-                                className="px-3 py-1.5 border border-gray-300 text-gray-600 text-xs hover:bg-gray-100"
+                                className="flex-1 py-4 bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 rounded-2xl transition-all active:scale-95"
                               >
-                                Cancel
+                                Abort
                               </button>
                             </div>
                           </div>
@@ -969,27 +992,25 @@ const SettingsScreen = ({
 
               {/* Pending Invitations */}
               {pendingInvitations.length > 0 && (
-                <div className="mt-10">
-                  <h3 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-400" /> Pending
-                    Invitations
+                <div className="mt-16">
+                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-8 flex items-center gap-4">
+                    <Mail className="w-5 h-5 text-indigo-500" /> Awaiting Link Authorization
                   </h3>
-                  <div className="divide-y divide-gray-100 border border-gray-200">
+                  <div className="grid grid-cols-1 gap-4">
                     {pendingInvitations.map((inv) => (
                       <div
                         key={inv._id}
-                        className="p-4 flex items-center justify-between gap-4"
+                        className="glass-panel p-6 rounded-[2rem] border border-white/5 flex items-center justify-between gap-6 group hover:border-white/10 transition-all"
                       >
                         <div className="min-w-0">
-                          <div className="text-sm font-medium text-gray-900 truncate">
+                          <div className="text-sm font-black text-white tracking-widest uppercase truncate">
                             {inv.email}
                           </div>
-                          <div className="text-xs text-gray-500 mt-0.5">
-                            Invited on{" "}
-                            {new Date(inv.createdAt).toLocaleDateString()}
+                          <div className="text-[10px] font-black text-slate-500 mt-2 uppercase tracking-widest">
+                            Signal Transmitted // {new Date(inv.createdAt).toLocaleDateString()}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-4">
                           <button
                             onClick={() => {
                               const link = `${window.location.origin}/invite/${inv.token}`;
@@ -997,13 +1018,13 @@ const SettingsScreen = ({
                                 .writeText(link)
                                 .then(() => alert("Invite link copied!"));
                             }}
-                            className="text-xs font-medium text-indigo-600 hover:underline"
+                            className="text-[9px] font-black text-indigo-400 hover:text-white transition-all uppercase tracking-widest border border-indigo-400/20 hover:border-indigo-400/60 px-4 py-2 rounded-xl bg-indigo-400/5"
                           >
                             Copy Link
                           </button>
                           <button
                             onClick={() => handleCancelInvitation(inv._id)}
-                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            className="p-3 bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl transition-all border border-rose-500/10 active:scale-90"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -1016,30 +1037,26 @@ const SettingsScreen = ({
 
               {/* Transfer banner */}
               {transferStatus && (
-                <div className="mt-8 border-2 border-indigo-200 bg-indigo-50 p-6">
-                  <h3 className="text-lg font-bold text-indigo-900 mb-2 flex items-center gap-2">
-                    <ArrowRightLeft className="w-5 h-5" /> Account Ownership
-                    Transfer
+                <div className="mt-16 glass-panel p-8 rounded-[3rem] border border-indigo-500/30 bg-indigo-500/10 overflow-hidden relative group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full animate-pulse" />
+                  <h3 className="text-sm font-black text-white mb-3 flex items-center gap-3 uppercase tracking-widest relative z-10">
+                    <ArrowRightLeft className="w-5 h-5 text-indigo-400" /> Administrative Handover Protocol
                   </h3>
-                  <p className="text-sm text-indigo-800 mb-4">
-                    A transfer of this account to{" "}
-                    <span className="font-bold">
-                      {transferStatus.targetUserEmail}
-                    </span>{" "}
-                    is currently in progress.
+                  <p className="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-widest relative z-10">
+                    Authority transfer to <span className="text-white">{transferStatus.targetUserEmail}</span> is in progress.
                   </p>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-4 relative z-10">
                     <button
                       onClick={() => setShowInviteModal(true)}
-                      className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold shadow-md hover:bg-indigo-700 transition-colors"
+                      className="px-6 py-3 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-500 transition-all shadow-lg active:scale-95"
                     >
-                      View Invitation Status
+                      Audit Protocol Status
                     </button>
                     <button
                       onClick={() => setShowCorrectionModal(true)}
-                      className="px-4 py-2 bg-white text-indigo-600 border border-indigo-200 text-sm font-semibold hover:bg-indigo-100 transition-colors"
+                      className="px-6 py-3 bg-white/5 border border-white/10 text-slate-300 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all active:scale-95"
                     >
-                      Correct Contact Info
+                      Correct Datastream Info
                     </button>
                   </div>
                 </div>
@@ -1049,73 +1066,75 @@ const SettingsScreen = ({
 
           {/* Categories Screen */}
           {settingsSection === "categories" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-8">
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10 gap-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Expense Categories
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Logic Classes
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Manage categories for better tracking
+                  <p className="text-[10px] font-black uppercase text-purple-400 mt-2 tracking-[0.4em] flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
+                    Categorical Taxonomy Management
                   </p>
                 </div>
                 {hasPermission("addCategories") && !showAddCategoryForm && (
                   <button
                     onClick={() => setShowAddCategoryForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors shadow-sm"
+                    className="group flex items-center justify-center gap-3 px-8 py-4 bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-purple-500 transition-all rounded-2xl shadow-[0_20px_40px_rgba(147,51,234,0.3)] active:scale-95"
                   >
-                    <Plus className="w-4 h-4" /> Add Category
+                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" /> 
+                    Append Class
                   </button>
                 )}
               </div>
 
               {showAddCategoryForm && (
-                <div className="mb-6 p-4 bg-purple-50 border border-purple-100 rounded-xl">
-                  <label className="block text-xs font-bold text-purple-700 uppercase mb-2">
-                    Category Name
+                <div className="mb-10 p-8 glass-panel border border-purple-500/30 bg-purple-500/5 rounded-[2.5rem] animate-zoomIn">
+                  <label className="block text-[10px] font-black text-purple-400 uppercase tracking-widest mb-4 ml-2">
+                    Class Designation
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <input
                       type="text"
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
-                      placeholder="e.g. Marketing, Travel..."
-                      className="flex-1 px-3 py-2 border border-purple-200 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-lg text-sm"
+                      placeholder="E.G. INFRASTRUCTURE, LOGISTICS..."
+                      className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-6 py-4 text-sm font-black text-white focus:border-purple-500 outline-none transition-all shadow-inner uppercase tracking-widest"
                     />
                     <button
                       onClick={handleAddCategoryLocal}
                       disabled={categorySubmitting}
-                      className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                      className="px-8 py-4 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-purple-500 disabled:opacity-50 active:scale-95 transition-all shadow-lg"
                     >
-                      {categorySubmitting ? "Saving..." : "Save"}
+                      {categorySubmitting ? "Linking..." : "Commit"}
                     </button>
                     <button
                       onClick={() => setShowAddCategoryForm(false)}
-                      className="px-4 py-2 text-gray-500 text-sm hover:bg-white rounded-lg"
+                      className="px-6 py-4 bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-white/10 transition-all"
                     >
-                      Cancel
+                      Abort
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {categories.map((cat, i) => {
                   const isEditing = editingCategory?._id === cat._id;
                   return (
                     <div
                       key={cat._id || i}
-                      className="flex items-center justify-between p-4 bg-white border border-gray-100 hover:border-purple-200 transition-all shadow-sm rounded-xl group"
+                      className={`glass-panel p-6 rounded-[2rem] border transition-all duration-500 group flex items-center justify-between gap-6 ${isEditing ? 'border-purple-500/50 bg-purple-500/5 shadow-[0_0_30px_rgba(168,85,247,0.1)]' : 'border-white/5 hover:border-white/20'}`}
                     >
                       {isEditing ? (
-                        <div className="flex-1 flex items-center gap-2">
+                        <div className="flex-1 flex items-center gap-3">
                           <input
                             type="text"
                             value={editCategoryName}
                             onChange={(e) =>
                               setEditCategoryName(e.target.value)
                             }
-                            className="flex-1 px-3 py-2 border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg text-sm"
+                            className="flex-1 bg-slate-950 border border-purple-500/50 rounded-xl px-4 py-2 text-[10px] font-black text-white focus:outline-none uppercase tracking-widest shadow-inner"
                             autoFocus
                             onKeyDown={(e) => {
                               if (e.key === "Enter") handleEditCategory();
@@ -1128,8 +1147,7 @@ const SettingsScreen = ({
                           <button
                             onClick={handleEditCategory}
                             disabled={editCategorySubmitting}
-                            className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50"
-                            title="Save"
+                            className="p-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-400 disabled:opacity-50 transition-all shadow-lg active:scale-90"
                           >
                             <Check className="w-4 h-4" />
                           </button>
@@ -1138,24 +1156,25 @@ const SettingsScreen = ({
                               setEditingCategory(null);
                               setEditCategoryName("");
                             }}
-                            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
-                            title="Cancel"
+                            className="p-2.5 bg-white/5 text-slate-400 hover:text-white rounded-xl transition-all"
                           >
                             <X className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
                         <>
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-purple-400 group-hover:scale-125 transition-transform" />
-                            <span className="font-semibold text-gray-800">
-                              {cat.name}
-                            </span>
-                            {cat.isDefault && (
-                              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
-                                Default
+                          <div className="flex items-center gap-5 min-w-0">
+                            <div className="w-4 h-4 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] group-hover:scale-110 transition-transform" />
+                            <div className="min-w-0">
+                              <span className="font-black text-white tracking-widest uppercase truncate block">
+                                {cat.name}
                               </span>
-                            )}
+                              {cat.isDefault && (
+                                <span className="text-[8px] font-black text-purple-400 uppercase tracking-widest mt-1 block">
+                                  Default Root Class
+                                </span>
+                              )}
+                            </div>
                           </div>
                           {hasPermission("addCategories") && (
                             <button
@@ -1163,8 +1182,7 @@ const SettingsScreen = ({
                                 setEditingCategory(cat);
                                 setEditCategoryName(cat.name);
                               }}
-                              className="opacity-0 group-hover:opacity-100 p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
-                              title="Edit category name"
+                              className="p-3 bg-white/5 text-slate-400 hover:text-purple-400 rounded-xl border border-white/5 opacity-0 group-hover:opacity-100 transition-all active:scale-95"
                             >
                               <Edit2 className="w-4 h-4" />
                             </button>
@@ -1180,56 +1198,61 @@ const SettingsScreen = ({
 
           {/* Bank Accounts Screen */}
           {settingsSection === "bankAccounts" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-8">
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10 gap-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Linked Accounts
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Liquidity Nodes
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Bank balances used for transfers
+                  <p className="text-[10px] font-black uppercase text-blue-400 mt-2 tracking-[0.4em] flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                    Asset Repository Orchestration
                   </p>
                 </div>
                 {hasPermission("addBankAccount") && (
                   <button
                     onClick={() => setActiveModal("addBankAccount")}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+                    className="group flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-500 transition-all rounded-2xl shadow-[0_20px_40px_rgba(37,99,235,0.3)] active:scale-95"
                   >
-                    <Plus className="w-4 h-4" /> Add Bank
+                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" /> 
+                    Initialize Node
                   </button>
                 )}
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {bankAccounts.length === 0 ? (
-                  <div className="py-12 text-center text-gray-400">
-                    No bank accounts linked yet
+                  <div className="py-24 text-center glass-panel rounded-[3rem] border border-white/5 border-dashed">
+                    <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.4em]">Zero Liquidity Nodes Detected</p>
                   </div>
                 ) : (
                   bankAccounts.map((ba) => (
                     <div
                       key={ba._id}
-                      className="bg-white border-2 border-gray-100 p-5 shadow-sm hover:shadow-md transition-all rounded-2xl group flex items-center justify-between"
+                      className="glass-panel p-8 rounded-[2.5rem] border border-white/5 hover:border-white/20 transition-all duration-500 group flex items-center justify-between gap-6 relative overflow-hidden"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="bg-blue-50 p-3 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                          <Building2 className="w-6 h-6" />
+                      <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="flex items-center gap-6 min-w-0 relative z-10">
+                        <div className="bg-blue-500/10 p-5 rounded-3xl text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all transform group-hover:scale-110 duration-500">
+                          <Building2 className="w-8 h-8" />
                         </div>
-                        <div>
-                          <h4 className="font-bold text-gray-900">{ba.name}</h4>
-                          <div className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <div className="min-w-0">
+                          <h4 className="text-xl font-black text-white tracking-widest uppercase truncate mb-1">
+                            {ba.name}
+                          </h4>
+                          <div className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
                             {ba.bankName && <span>{ba.bankName}</span>}
                             {ba.lastFourDigits && (
-                              <span>•• {ba.lastFourDigits}</span>
+                              <span className="text-blue-500/60">•• {ba.lastFourDigits}</span>
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-xl font-black text-gray-900">
+                      <div className="text-right relative z-10">
+                        <div className="text-2xl font-black text-white tracking-tighter mb-1">
                           {formatAmount(ba.balance, currentAccount?.currency)}
                         </div>
-                        <div className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded inline-block uppercase tracking-tight">
+                        <div className="text-[8px] font-black text-blue-400 bg-blue-400/10 border border-blue-400/20 px-3 py-1 rounded-lg uppercase tracking-widest">
                           {ba.accountType}
                         </div>
                       </div>
@@ -1237,25 +1260,24 @@ const SettingsScreen = ({
                   ))
                 )}
                 {bankAccounts.length > 0 && (
-                  <>
-                    <div className="mt-8 p-6 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl text-white shadow-xl flex items-center justify-between overflow-hidden relative">
-                      <Building2 className="absolute -left-4 -bottom-4 w-32 h-32 opacity-10 rotate-12" />
-                      <div className="relative z-10">
-                        <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">
-                          Total Bank Liquidity
-                        </p>
-                        <h3 className="text-3xl font-black tracking-tight">
-                          {formatAmount(
-                            getExpectedBankAmount(),
-                            currentAccount?.currency,
-                          )}
-                        </h3>
-                      </div>
-                      <div className="relative z-10 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                        <CreditCard className="w-8 h-8" />
-                      </div>
+                  <div className="mt-12 p-10 bg-indigo-600 rounded-[3rem] text-white shadow-[0_30px_60px_rgba(79,70,229,0.3)] flex items-center justify-between overflow-hidden relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                    <Building2 className="absolute -left-8 -bottom-8 w-48 h-48 opacity-10 rotate-12 group-hover:scale-110 transition-transform duration-1000" />
+                    <div className="relative z-10">
+                      <p className="text-indigo-200 text-[10px] font-black uppercase tracking-[0.4em] mb-3">
+                        Total Combined Liquidity
+                      </p>
+                      <h3 className="text-5xl font-black tracking-tighter group-hover:scale-105 transition-transform origin-left">
+                        {formatAmount(
+                          getExpectedBankAmount(),
+                          currentAccount?.currency,
+                        )}
+                      </h3>
                     </div>
-                  </>
+                    <div className="relative z-10 bg-white/10 p-5 rounded-[2rem] border border-white/20 backdrop-blur-xl group-hover:rotate-12 transition-transform duration-500">
+                      <CreditCard className="w-10 h-10" />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -1263,44 +1285,47 @@ const SettingsScreen = ({
 
           {/* Top Up Bank Section */}
           {settingsSection === "topUpBank" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-slate-900 p-3 rounded-xl">
-                    <Building2 className="w-6 h-6 text-white" />
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="bg-indigo-600 p-4 rounded-3xl shadow-[0_0_20px_rgba(79,70,229,0.3)]">
+                    <Building2 className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900">
-                    Top Up Bank Account
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Node Infusion
                   </h2>
                 </div>
-                <p className="text-sm text-slate-600">
-                  Add funds to any of your linked bank accounts
+                <p className="text-[10px] font-black uppercase text-indigo-400 tracking-[0.4em] ml-2">
+                  Electronic Reserve Supplement Protocol
                 </p>
               </div>
 
               {hasPermission("updateBankBalance") ? (
                 <button
                   onClick={() => setActiveModal("topUpBankBalance")}
-                  className="w-full bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                  className="w-full glass-panel group p-10 rounded-[3rem] border border-white/5 hover:border-indigo-500/30 transition-all duration-500 text-left flex items-center justify-between gap-8 relative overflow-hidden active:scale-[0.98]"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
-                      <Building2 className="w-8 h-8" />
+                  <div className="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-8 relative z-10">
+                    <div className="bg-white/5 p-6 rounded-[2rem] group-hover:bg-indigo-600 group-hover:text-white transition-all transform group-hover:scale-110 duration-500">
+                      <Building2 className="w-10 h-10" />
                     </div>
-                    <div className="text-left">
-                      <h3 className="font-bold text-xl mb-1">Add Bank Funds</h3>
-                      <p className="text-sm text-slate-300">
-                        Select account and enter amount to top up
+                    <div>
+                      <h3 className="text-2xl font-black text-white tracking-widest uppercase mb-2">Supplement Funds</h3>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-loose">
+                        Target node selection and electronic asset injection <br/>
+                        Required for liquidity balance reconciliation.
                       </p>
                     </div>
                   </div>
-                  <ChevronDown className="w-6 h-6 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                  <ChevronDown className="w-8 h-8 text-slate-700 -rotate-90 group-hover:text-indigo-500 group-hover:translate-x-2 transition-all" />
                 </button>
               ) : (
-                <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl text-center">
-                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                  <p className="text-slate-600 font-medium">
-                    You don't have permission to update bank balances
+                <div className="glass-panel p-12 rounded-[3rem] border border-rose-500/20 text-center relative overflow-hidden">
+                   <div className="absolute inset-0 bg-rose-500/5" />
+                  <AlertCircle className="w-16 h-16 text-rose-500/50 mx-auto mb-6 animate-pulse" />
+                  <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.4em]">
+                    Authorization Failure // Insufficient permissions for liquidity sync.
                   </p>
                 </div>
               )}
@@ -1309,44 +1334,47 @@ const SettingsScreen = ({
 
           {/* Top Up Cash Section */}
           {settingsSection === "topUpCash" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-emerald-600 p-3 rounded-xl">
-                    <Wallet className="w-6 h-6 text-white" />
+            <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="bg-emerald-600 p-4 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                    <Wallet className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900">
-                    Top Up Cash Balance
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Reserve Injection
                   </h2>
                 </div>
-                <p className="text-sm text-slate-600">
-                  Add funds directly to your cash balance
+                <p className="text-[10px] font-black uppercase text-emerald-400 tracking-[0.4em] ml-2">
+                  Physical Asset Reconciliation Protocol
                 </p>
               </div>
 
               {hasPermission("calculateCash") ? (
                 <button
                   onClick={() => setActiveModal("addCash")}
-                  className="w-full bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                  className="w-full glass-panel group p-10 rounded-[3rem] border border-white/5 hover:border-emerald-500/30 transition-all duration-500 text-left flex items-center justify-between gap-8 relative overflow-hidden active:scale-[0.98]"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
-                      <Wallet className="w-8 h-8" />
+                  <div className="absolute inset-0 bg-emerald-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-8 relative z-10">
+                    <div className="bg-white/5 p-6 rounded-[2rem] group-hover:bg-emerald-600 group-hover:text-white transition-all transform group-hover:scale-110 duration-500">
+                      <Wallet className="w-10 h-10" />
                     </div>
-                    <div className="text-left">
-                      <h3 className="font-bold text-xl mb-1">Add Cash Funds</h3>
-                      <p className="text-sm text-emerald-100">
-                        Enter amount to add to cash balance
+                    <div>
+                      <h3 className="text-2xl font-black text-white tracking-widest uppercase mb-2">Supplement Reserve</h3>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-loose">
+                        Manual cash repository enhancement <br/>
+                        Required for sub-neural physical asset tracking.
                       </p>
                     </div>
                   </div>
-                  <ChevronDown className="w-6 h-6 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                  <ChevronDown className="w-8 h-8 text-slate-700 -rotate-90 group-hover:text-emerald-500 group-hover:translate-x-2 transition-all" />
                 </button>
               ) : (
-                <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl text-center">
-                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                  <p className="text-slate-600 font-medium">
-                    You don't have permission to add cash
+                <div className="glass-panel p-12 rounded-[3rem] border border-rose-500/20 text-center relative overflow-hidden">
+                   <div className="absolute inset-0 bg-rose-500/5" />
+                  <AlertCircle className="w-16 h-16 text-rose-500/50 mx-auto mb-6 animate-pulse" />
+                  <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.4em]">
+                    Authorization Failure // Insufficient clearance for asset reconciliation.
                   </p>
                 </div>
               )}
@@ -1355,94 +1383,89 @@ const SettingsScreen = ({
 
           {/* Activity Log Screen */}
           {settingsSection === "activityLog" && (
-            <div className="max-w-3xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10 gap-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Activity Log
+                  <h2 className="text-3xl font-black text-white tracking-widest uppercase">
+                    Audit Protocol
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Audit trail for this account
+                  <p className="text-[10px] font-black uppercase text-indigo-400 mt-2 tracking-[0.4em] flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                    Sequential Log Transcription
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                   <select
                     value={activityFilter}
                     onChange={(e) => {
                       setActivityFilter(e.target.value);
                       loadActivityLog(e.target.value);
                     }}
-                    className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full sm:w-64 bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 text-[10px] font-black text-white uppercase tracking-widest focus:border-indigo-500 outline-none transition-all shadow-inner"
                   >
-                    <option value="">All Actions</option>
-                    <option value="expense_created">Expenses Created</option>
-                    <option value="expense_updated">Expenses Updated</option>
-                    <option value="expense_deleted">Expenses Deleted</option>
-                    <option value="week_created">Week Actions</option>
-                    <option value="week_locked">Week Locked</option>
-                    <option value="bank_account_added">
-                      Bank Account Added
-                    </option>
-                    <option value="bank_account_removed">
-                      Bank Account Removed
-                    </option>
-                    <option value="account_settings_changed">
-                      Settings Changed
-                    </option>
-                    <option value="member_invited">Members Invited</option>
-                    <option value="member_removed">Members Removed</option>
-                    <option value="permission_granted">
-                      Permissions Granted
-                    </option>
-                    <option value="shift_created">Shifts Created</option>
+                    <option value="">All Log Sequences</option>
+                    <option value="expense_created">Financial Injections</option>
+                    <option value="expense_updated">Logic Modifications</option>
+                    <option value="expense_deleted">Asset Erasures</option>
+                    <option value="week_created">Temporal Blocks</option>
+                    <option value="week_locked">Temporal Seals</option>
+                    <option value="bank_account_added">Node Initialization</option>
+                    <option value="bank_account_removed">Node Decommissions</option>
+                    <option value="account_settings_changed">Protocol Reconfig</option>
+                    <option value="member_invited">Node Dispatch</option>
+                    <option value="member_removed">Node Erasure</option>
+                    <option value="permission_granted">Auth Escalation</option>
+                    <option value="shift_created">Temporal Dispatch</option>
                   </select>
                 </div>
               </div>
 
               {activityLoading ? (
-                <div className="py-12 text-center text-gray-400">
-                  Loading audit trail…
+                <div className="py-24 text-center">
+                  <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+                  <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.4em]">Decoding Log Streams...</p>
                 </div>
               ) : activityLogs.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 border border-dashed border-gray-200">
-                  No activity recorded for this filter
+                <div className="py-24 text-center glass-panel rounded-[3rem] border border-white/5 border-dashed">
+                    <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.4em]">Zero Log Sequences Recorded</p>
                 </div>
               ) : (
-                <div className="bg-white border border-gray-200 overflow-hidden shadow-sm">
-                  <div className="divide-y divide-gray-100">
+                <div className="glass-panel border border-white/5 rounded-[3rem] overflow-hidden shadow-2xl">
+                  <div className="divide-y divide-white/5">
                     {activityLogs.map((log) => (
                       <div
                         key={log._id}
-                        className="p-4 hover:bg-gray-50 transition-colors"
+                        className="p-8 hover:bg-white/5 transition-all duration-300 group"
                       >
-                        <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-8">
                           <div
-                            className={`mt-1 p-2 rounded-lg ${log.action.includes("deleted") ? "bg-red-50 text-red-600" : log.action.includes("created") ? "bg-green-50 text-green-600" : "bg-blue-50 text-blue-600"}`}
+                            className={`mt-1 p-5 rounded-2xl shadow-lg transition-transform group-hover:scale-110 ${log.action.includes("deleted") ? "bg-rose-500/10 text-rose-500 border border-rose-500/20" : log.action.includes("created") ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" : "bg-indigo-500/10 text-indigo-500 border border-indigo-500/20"}`}
                           >
                             {log.action.includes("expense") ? (
-                              <Receipt className="w-4 h-4" />
+                              <Receipt className="w-6 h-6" />
                             ) : log.action.includes("bank") ? (
-                              <Building2 className="w-4 h-4" />
+                              <Building2 className="w-6 h-6" />
                             ) : (
-                              <History className="w-4 h-4" />
+                              <History className="w-6 h-6" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-base font-black text-white tracking-widest uppercase mb-2">
                               {log.targetDescription}
                             </p>
-                            <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
-                              <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />{" "}
-                                {log.actorDisplayName || "System"}
+                            <div className="flex items-center gap-6">
+                              <span className="flex items-center gap-2 text-[10px] font-black text-indigo-400/80 uppercase tracking-widest">
+                                <User className="w-3.5 h-3.5" />{" "}
+                                {log.actorDisplayName?.toUpperCase() || "SYSTEM CORE"}
                               </span>
-                              <span>
-                                • {new Date(log.createdAt).toLocaleString()}
+                              <span className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <History className="w-3.5 h-3.5" />
+                                {new Date(log.createdAt).toLocaleString()}
                               </span>
                             </div>
                             {log.metadata &&
                               Object.keys(log.metadata).length > 0 && (
-                                <div className="mt-2 text-[10px] font-mono bg-gray-50 p-2 border border-gray-100 text-gray-400 overflow-x-auto">
+                                <div className="mt-6 text-[9px] font-mono bg-slate-950/50 p-6 rounded-2xl border border-white/5 text-slate-500 overflow-x-auto shadow-inner group-hover:border-indigo-500/20 transition-all">
                                   {JSON.stringify(log.metadata, null, 2)}
                                 </div>
                               )}
@@ -1458,7 +1481,7 @@ const SettingsScreen = ({
 
           {/* Subscription & Plan Section - NEW */}
           {settingsSection === "subscription" && (
-            <div className="max-w-2xl mx-auto px-6 py-8">
+            <div className="max-w-3xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                 <Star className="w-5 h-5 text-amber-500" />
                 Subscription & Plan
@@ -1472,14 +1495,16 @@ const SettingsScreen = ({
               ) : (
                 <>
                   {/* Current Plan Card */}
-                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 mb-6 text-white shadow-xl">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 sm:p-6 mb-6 text-white shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
                       <div className="flex items-center gap-3">
                         <div className="bg-amber-500 p-2.5 rounded-xl">
                           <Crown className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <p className="text-slate-300 text-xs font-bold uppercase tracking-wider">Current Plan</p>
+                          <p className="text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            Current Plan
+                          </p>
                           <p className="text-2xl font-black text-white capitalize">
                             {currentSubscription?.currentPlan || "Free"} Plan
                           </p>
@@ -1492,17 +1517,27 @@ const SettingsScreen = ({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4">
                       <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.teamMembersCount ?? 1}</p>
-                        <p className="text-xs text-slate-300 mt-1">Team Members</p>
+                        <p className="text-2xl font-black">
+                          {currentSubscription?.usage?.teamMembersCount ?? 1}
+                        </p>
+                        <p className="text-xs text-slate-300 mt-1">
+                          Team Members
+                        </p>
                       </div>
                       <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.expensesThisMonth ?? 0}</p>
-                        <p className="text-xs text-slate-300 mt-1">Expenses This Month</p>
+                        <p className="text-2xl font-black">
+                          {currentSubscription?.usage?.expensesThisMonth ?? 0}
+                        </p>
+                        <p className="text-xs text-slate-300 mt-1">
+                          Expenses This Month
+                        </p>
                       </div>
                       <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.accountsCount ?? 1}</p>
+                        <p className="text-2xl font-black">
+                          {currentSubscription?.usage?.accountsCount ?? 1}
+                        </p>
                         <p className="text-xs text-slate-300 mt-1">Accounts</p>
                       </div>
                     </div>
@@ -1522,13 +1557,40 @@ const SettingsScreen = ({
 
                   {/* Plan Selection */}
                   <div className="mb-6">
-                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-3">Choose a Plan</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-3">
+                      Choose a Plan
+                    </h3>
                     <div className="space-y-3">
                       {[
-                        { id: "free", name: "Starter", price: { monthly: 0, yearly: 0 }, desc: "1 account • 50 expenses/month", color: "border-slate-400" },
-                        { id: "professional", name: "Professional", price: { monthly: 12, yearly: 120 }, desc: "5 accounts • Unlimited expenses • 3 members", color: "border-blue-500", popular: true },
-                        { id: "business", name: "Business", price: { monthly: 29, yearly: 290 }, desc: "20 accounts • Unlimited everything • Unlimited members", color: "border-emerald-500" },
-                        { id: "enterprise", name: "Enterprise", price: { monthly: 79, yearly: 790 }, desc: "Unlimited everything • White-label • Dedicated support", color: "border-amber-500" },
+                        {
+                          id: "free",
+                          name: "Starter",
+                          price: { monthly: 0, yearly: 0 },
+                          desc: "1 account • 50 expenses/month",
+                          color: "border-slate-400",
+                        },
+                        {
+                          id: "professional",
+                          name: "Professional",
+                          price: { monthly: 12, yearly: 120 },
+                          desc: "5 accounts • Unlimited expenses • 3 members",
+                          color: "border-blue-500",
+                          popular: true,
+                        },
+                        {
+                          id: "business",
+                          name: "Business",
+                          price: { monthly: 29, yearly: 290 },
+                          desc: "20 accounts • Unlimited everything • Unlimited members",
+                          color: "border-emerald-500",
+                        },
+                        {
+                          id: "enterprise",
+                          name: "Enterprise",
+                          price: { monthly: 79, yearly: 790 },
+                          desc: "Unlimited everything • White-label • Dedicated support",
+                          color: "border-amber-500",
+                        },
                       ].map((plan) => (
                         <button
                           key={plan.id}
@@ -1539,33 +1601,53 @@ const SettingsScreen = ({
                               : "border-gray-200 bg-white hover:border-gray-300"
                           }`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              selectedUpgradePlan === plan.id ? "border-blue-600 bg-blue-600" : "border-gray-300"
-                            }`}>
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div
+                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                selectedUpgradePlan === plan.id
+                                  ? "border-blue-600 bg-blue-600"
+                                  : "border-gray-300"
+                              }`}
+                            >
                               {selectedUpgradePlan === plan.id && (
                                 <div className="w-2.5 h-2.5 bg-white rounded-full" />
                               )}
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-gray-900">{plan.name}</span>
+                                <span className="font-bold text-gray-900">
+                                  {plan.name}
+                                </span>
                                 {plan.popular && (
-                                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Popular</span>
+                                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">
+                                    Popular
+                                  </span>
                                 )}
-                                {plan.id === currentSubscription?.currentPlan && (
-                                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Current</span>
+                                {plan.id ===
+                                  currentSubscription?.currentPlan && (
+                                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">
+                                    Current
+                                  </span>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-500 mt-0.5">{plan.desc}</p>
+                              <p className="text-xs text-gray-500 mt-0.5 break-words">
+                                {plan.desc}
+                              </p>
                             </div>
                           </div>
-                          <div className="text-right shrink-0 ml-4">
+                          <div className="text-right shrink-0 ml-3 sm:ml-4">
                             <p className="font-black text-gray-900 text-lg">
-                              {plan.price[selectedBillingCycle] === 0 ? "Free" : `$${plan.price[selectedBillingCycle]}`}
+                              {plan.price[selectedBillingCycle] === 0
+                                ? "Free"
+                                : `$${plan.price[selectedBillingCycle]}`}
                             </p>
                             {plan.price[selectedBillingCycle] > 0 && (
-                              <p className="text-xs text-gray-400">/{selectedBillingCycle === "yearly" ? "yr" : "mo"}</p>
+                              <p className="text-xs text-gray-400">
+                                /
+                                {selectedBillingCycle === "yearly"
+                                  ? "yr"
+                                  : "mo"}
+                              </p>
                             )}
                           </div>
                         </button>
@@ -1574,8 +1656,10 @@ const SettingsScreen = ({
                   </div>
 
                   {/* Billing Cycle Toggle */}
-                  <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <span className="text-sm font-bold text-gray-700">Billing:</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span className="text-sm font-bold text-gray-700">
+                      Billing:
+                    </span>
                     <div className="flex bg-white rounded-lg border border-gray-200 overflow-hidden">
                       {["monthly", "yearly"].map((cycle) => (
                         <button
@@ -1601,15 +1685,19 @@ const SettingsScreen = ({
                   {/* Upgrade Button */}
                   <button
                     onClick={handleUpgradePlan}
-                    disabled={upgrading || selectedUpgradePlan === currentSubscription?.currentPlan}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      upgrading ||
+                      selectedUpgradePlan === currentSubscription?.currentPlan
+                    }
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-base disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
                   >
                     {upgrading ? (
                       <span className="flex items-center justify-center gap-2">
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Updating Plan...
                       </span>
-                    ) : selectedUpgradePlan === currentSubscription?.currentPlan ? (
+                    ) : selectedUpgradePlan ===
+                      currentSubscription?.currentPlan ? (
                       "✓ This is Your Current Plan"
                     ) : (
                       `🚀 Switch to ${selectedUpgradePlan?.charAt(0).toUpperCase() + selectedUpgradePlan?.slice(1)} Plan`
@@ -1618,16 +1706,37 @@ const SettingsScreen = ({
 
                   {/* Plan Features Summary */}
                   <div className="mt-6 space-y-2">
-                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">All Plans Include</h3>
+                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">
+                      All Plans Include
+                    </h3>
                     {[
-                      { icon: <Shield className="w-4 h-4 text-emerald-600" />, text: "Secure encrypted data storage" },
-                      { icon: <Zap className="w-4 h-4 text-blue-600" />, text: "Real-time expense tracking" },
-                      { icon: <TrendingUp className="w-4 h-4 text-purple-600" />, text: "Analytics & reports" },
-                      { icon: <Building2 className="w-4 h-4 text-amber-600" />, text: "Bank account management" },
+                      {
+                        icon: <Shield className="w-4 h-4 text-emerald-600" />,
+                        text: "Secure encrypted data storage",
+                      },
+                      {
+                        icon: <Zap className="w-4 h-4 text-blue-600" />,
+                        text: "Real-time expense tracking",
+                      },
+                      {
+                        icon: (
+                          <TrendingUp className="w-4 h-4 text-purple-600" />
+                        ),
+                        text: "Analytics & reports",
+                      },
+                      {
+                        icon: <Building2 className="w-4 h-4 text-amber-600" />,
+                        text: "Bank account management",
+                      },
                     ].map((feature, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100"
+                      >
                         {feature.icon}
-                        <span className="text-gray-700 text-sm font-medium">{feature.text}</span>
+                        <span className="text-gray-700 text-sm font-medium">
+                          {feature.text}
+                        </span>
                         <Check className="w-4 h-4 text-emerald-600 ml-auto" />
                       </div>
                     ))}

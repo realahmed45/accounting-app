@@ -220,10 +220,10 @@ const InviteModal = ({
     });
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl w-full max-w-md max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b flex-shrink-0">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b flex-shrink-0">
           <div className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-blue-600" />
             <h2 className="text-base font-semibold text-gray-900">
@@ -248,7 +248,7 @@ const InviteModal = ({
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex-1 py-2.5 text-xs font-medium border-b-2 transition-colors ${
+              className={`flex-1 py-3 text-[11px] font-semibold border-b-2 transition-colors ${
                 tab === t.id
                   ? "border-emerald-600 text-emerald-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
@@ -259,7 +259,7 @@ const InviteModal = ({
           ))}
         </div>
 
-        <div className="overflow-y-auto flex-1 p-5">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-5">
           {/* ── TEAM MEMBER TAB ───────────────────────────────────────────── */}
           {tab === "team" && (
             <div className="space-y-4">
@@ -336,7 +336,7 @@ const InviteModal = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="member@example.com"
-                      className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-10 pr-3 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -354,7 +354,7 @@ const InviteModal = ({
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="How they'll appear in the account"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -387,7 +387,10 @@ const InviteModal = ({
                       <div className="space-y-2">
                         {[
                           { key: "makeExpense", label: "Log expenses" },
-                          { key: "calculateCash", label: "Calculate cash flow" },
+                          {
+                            key: "calculateCash",
+                            label: "Calculate cash flow",
+                          },
                         ].map(({ key, label }) => (
                           <label
                             key={key}
@@ -402,7 +405,9 @@ const InviteModal = ({
                               disabled={viewOnly}
                               className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
                             />
-                            <span className="text-sm text-gray-700">{label}</span>
+                            <span className="text-sm text-gray-700">
+                              {label}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -417,7 +422,10 @@ const InviteModal = ({
                         {[
                           { key: "addUser", label: "Manage users" },
                           { key: "addCategories", label: "Manage categories" },
-                          { key: "addBankAccount", label: "Manage bank accounts" },
+                          {
+                            key: "addBankAccount",
+                            label: "Manage bank accounts",
+                          },
                           { key: "accessSettings", label: "Access settings" },
                         ].map(({ key, label }) => (
                           <label
@@ -433,7 +441,9 @@ const InviteModal = ({
                               disabled={viewOnly}
                               className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
                             />
-                            <span className="text-sm text-gray-700">{label}</span>
+                            <span className="text-sm text-gray-700">
+                              {label}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -446,8 +456,14 @@ const InviteModal = ({
                       </p>
                       <div className="space-y-2">
                         {[
-                          { key: "createAccountDownward", label: "Create sub-accounts" },
-                          { key: "createAccountUpward", label: "Link to parent accounts" },
+                          {
+                            key: "createAccountDownward",
+                            label: "Create sub-accounts",
+                          },
+                          {
+                            key: "createAccountUpward",
+                            label: "Link to parent accounts",
+                          },
                         ].map(({ key, label }) => (
                           <label
                             key={key}
@@ -462,7 +478,9 @@ const InviteModal = ({
                               disabled={viewOnly}
                               className="w-4 h-4 rounded text-emerald-600 border-gray-300 focus:ring-emerald-500"
                             />
-                            <span className="text-sm text-gray-700">{label}</span>
+                            <span className="text-sm text-gray-700">
+                              {label}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -473,7 +491,7 @@ const InviteModal = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full px-4 py-3.5 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-700 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <UserPlus className="w-4 h-4" />
                   {loading ? "Sending…" : "Send Invite"}
@@ -594,7 +612,7 @@ const InviteModal = ({
                         }}
                         placeholder="ACC-XXXXXX"
                         maxLength={10}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         Must be exactly 10 characters (e.g., ACC-A1B2C3)
@@ -635,7 +653,7 @@ const InviteModal = ({
                         }
                       }}
                       disabled={ownerLoading || ownerUniqueId.length !== 10}
-                      className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full px-4 py-3.5 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {ownerLoading ? (
                         <>
@@ -763,7 +781,7 @@ const InviteModal = ({
                         value={ownerWhatsApp}
                         onChange={(e) => setOwnerWhatsApp(e.target.value)}
                         placeholder="+1234567890 or username"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                     <div>
@@ -775,12 +793,12 @@ const InviteModal = ({
                         value={ownerTelegram}
                         onChange={(e) => setOwnerTelegram(e.target.value)}
                         placeholder="@username"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col-reverse sm:flex-row gap-2">
                     <button
                       type="button"
                       onClick={() => {
@@ -788,7 +806,7 @@ const InviteModal = ({
                         setOwnerUniqueId("");
                         setOwnerError("");
                       }}
-                      className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"
+                      className="flex-1 px-4 py-3.5 bg-gray-100 text-gray-700 rounded-xl text-sm hover:bg-gray-200"
                     >
                       Go Back
                     </button>
@@ -834,7 +852,7 @@ const InviteModal = ({
                         !ownerWhatsApp.trim() ||
                         !ownerTelegram.trim()
                       }
-                      className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-3.5 bg-red-600 text-white rounded-xl text-sm hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {transferLoading ? (
                         <>

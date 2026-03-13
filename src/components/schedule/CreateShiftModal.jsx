@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { X, Calendar, Clock, UserPlus, Info, AlertCircle, Save } from "lucide-react";
+import {
+  X,
+  Calendar,
+  Clock,
+  UserPlus,
+  Info,
+  AlertCircle,
+  Save,
+} from "lucide-react";
 import { shiftService, shiftTypeService } from "../../services/scheduleApi";
 import { memberService } from "../../services/api";
 
@@ -18,7 +26,7 @@ const CreateShiftModal = ({ accountId, date, onClose, onSuccess }) => {
     adHocStart: "09:00",
     adHocEnd: "17:00",
     adHocLabel: "Custom Shift",
-    isAdHoc: false
+    isAdHoc: false,
   });
 
   useEffect(() => {
@@ -29,14 +37,14 @@ const CreateShiftModal = ({ accountId, date, onClose, onSuccess }) => {
     try {
       const [typesRes, membersRes] = await Promise.all([
         shiftTypeService.getAll(accountId),
-        memberService.getAll(accountId)
+        memberService.getAll(accountId),
       ]);
       setShiftTypes(typesRes.data);
       setMembers(membersRes.data);
       if (typesRes.data.length > 0) {
-        setFormData(prev => ({ ...prev, shiftTypeId: typesRes.data[0]._id }));
+        setFormData((prev) => ({ ...prev, shiftTypeId: typesRes.data[0]._id }));
       } else {
-        setFormData(prev => ({ ...prev, isAdHoc: true }));
+        setFormData((prev) => ({ ...prev, isAdHoc: true }));
       }
     } catch (err) {
       setError("Failed to load options");
@@ -76,140 +84,226 @@ const CreateShiftModal = ({ accountId, date, onClose, onSuccess }) => {
   if (loading) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] bg-gray-900/40 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-200">
-        <div className="p-8 pb-4 flex items-center justify-between">
-           <div>
-              <h3 className="text-2xl font-black text-gray-900">New Shift Entry</h3>
-              <p className="text-[10px] font-black uppercase text-indigo-600 mt-1 tracking-widest bg-indigo-50 px-2 py-0.5 rounded-full inline-block">
-                Schedule Planning
-              </p>
-           </div>
-           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-400">
-             <X className="w-6 h-6" />
-           </button>
+    <div className="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 animate-fadeIn">
+      <div className="glass-modal w-full max-w-xl rounded-t-[3rem] sm:rounded-[4rem] overflow-hidden animate-zoomIn max-h-[92vh] flex flex-col relative">
+        <div className="absolute top-0 right-0 p-32 bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="p-10 pb-6 flex items-center justify-between relative z-10">
+          <div>
+            <h3 className="text-3xl font-black text-white tracking-widest uppercase">
+              Shift Matrix
+            </h3>
+            <p className="text-[10px] font-black uppercase text-indigo-400 mt-2 tracking-[0.4em] flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+              Scheduling Protocol // Initialization
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-4 hover:bg-white/5 rounded-2xl text-slate-500 hover:text-white transition-all hover:rotate-90"
+          >
+            <X className="w-7 h-7" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="p-10 pt-4 space-y-8 relative z-10 overflow-y-auto custom-scrollbar">
           {error && (
-            <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" /> {error}
+            <div className="p-5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 animate-pulse">
+              <AlertCircle className="w-5 h-5" /> {error}
             </div>
           )}
 
           {/* Type Toggle */}
-          <div className="flex bg-gray-100 p-1 rounded-2xl">
-             <button 
-               type="button"
-               onClick={() => setFormData(p => ({...p, isAdHoc: false}))}
-               className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!formData.isAdHoc ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-400'}`}
-             >
-               From Template
-             </button>
-             <button 
-               type="button"
-               onClick={() => setFormData(p => ({...p, isAdHoc: true}))}
-               className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.isAdHoc ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-400'}`}
-             >
-               Ad-Hoc / Custom
-             </button>
+          <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+            <button
+              type="button"
+              onClick={() => setFormData((p) => ({ ...p, isAdHoc: false }))}
+              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl transition-all duration-500 ${!formData.isAdHoc ? "bg-white/10 text-white shadow-2xl tracking-[0.4em]" : "text-slate-500 hover:text-slate-300"}`}
+            >
+              Blueprint
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData((p) => ({ ...p, isAdHoc: true }))}
+              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl transition-all duration-500 ${formData.isAdHoc ? "bg-white/10 text-white shadow-2xl tracking-[0.4em]" : "text-slate-500 hover:text-slate-300"}`}
+            >
+              Ad-Hoc
+            </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-               <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider flex items-center gap-1.5"><Calendar className="w-3 h-3" /> Date</label>
-               <input 
-                 type="date" required 
-                 className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white focus:border-indigo-500 transition-all"
-                 value={formData.date}
-                 onChange={e => setFormData(prev => ({...prev, date: e.target.value}))}
-               />
+          <div className="grid grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2 flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5 text-indigo-400" /> Temporal Pivot
+              </label>
+              <input
+                type="date"
+                required
+                className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-5 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all shadow-inner uppercase tracking-widest"
+                value={formData.date}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, date: e.target.value }))
+                }
+              />
             </div>
-            <div className="space-y-1">
-               <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider flex items-center gap-1.5"><UserPlus className="w-3 h-3" /> Assignment</label>
-               <select 
-                 className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white focus:border-indigo-500 transition-all"
-                 value={formData.assignedMemberId}
-                 onChange={e => setFormData(prev => ({...prev, assignedMemberId: e.target.value}))}
-               >
-                 <option value="">-- No Member --</option>
-                 {members.map(m => (
-                   <option key={m._id} value={m._id}>{m.displayName}</option>
-                 ))}
-               </select>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2 flex items-center gap-2">
+                <UserPlus className="w-3.5 h-3.5 text-purple-400" /> Active Entity
+              </label>
+              <select
+                className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-5 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all shadow-inner uppercase tracking-widest appearance-none cursor-pointer"
+                value={formData.assignedMemberId}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    assignedMemberId: e.target.value,
+                  }))
+                }
+              >
+                <option value="">AWAITING DISPATCH</option>
+                {members.map((m) => (
+                  <option key={m._id} value={m._id}>
+                    {m.displayName.toUpperCase()}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
           {!formData.isAdHoc ? (
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Select Template</label>
-              <div className="grid grid-cols-2 gap-2">
-                {shiftTypes.map(type => (
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2">
+                Logic Template selection
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {shiftTypes.map((type) => (
                   <button
                     key={type._id}
                     type="button"
-                    onClick={() => setFormData(prev => ({...prev, shiftTypeId: type._id}))}
-                    className={`p-3 rounded-2xl border-2 text-left transition-all ${
-                      formData.shiftTypeId === type._id ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-50 hover:border-gray-200'
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        shiftTypeId: type._id,
+                      }))
+                    }
+                    className={`p-6 rounded-3xl border transition-all duration-500 text-left group/btn relative overflow-hidden ${
+                      formData.shiftTypeId === type._id
+                        ? "border-indigo-500 bg-indigo-500/10 shadow-[0_10px_30px_rgba(79,70,229,0.2)]"
+                        : "border-white/5 bg-slate-900/50 hover:bg-slate-900 hover:border-white/10"
                     }`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: type.color }} />
-                      <span className="text-sm font-bold text-gray-900">{type.name}</span>
+                    <div className="flex items-center gap-4 mb-3 relative z-10">
+                      <div
+                        className="w-3.5 h-3.5 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                        style={{ backgroundColor: type.color }}
+                      />
+                      <span className="text-sm font-black text-white tracking-widest uppercase">
+                        {type.name}
+                      </span>
                     </div>
-                    <div className="text-[10px] font-black text-gray-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {type.startTime} - {type.endTime}
+                    <div className="text-[10px] font-black text-slate-500 flex items-center gap-2 relative z-10 tracking-[0.2em]">
+                      <Clock className="w-3.5 h-3.5 text-slate-600" />
+                      {type.startTime} // {type.endTime}
                     </div>
                   </button>
                 ))}
                 {shiftTypes.length === 0 && (
-                  <p className="col-span-2 text-[10px] text-gray-400 font-bold p-4 bg-gray-50 rounded-2xl text-center italic">No templates found. Use Ad-Hoc mode.</p>
+                  <div className="col-span-2 text-[10px] text-slate-600 font-black p-10 bg-slate-900/50 rounded-3xl text-center border border-white/5 border-dashed uppercase tracking-widest">
+                    No active logic templates detected.
+                  </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="space-y-4 animate-in slide-in-from-left-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Custom Label</label>
-                <input 
-                  type="text" className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-5 py-4 text-sm font-bold"
+            <div className="space-y-8 animate-fadeIn">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2">
+                  Ad-Hoc Designation
+                </label>
+                <input
+                  type="text"
+                  className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-5 text-sm font-black text-white uppercase tracking-widest focus:border-indigo-500 outline-none transition-all"
                   value={formData.adHocLabel}
-                  onChange={e => setFormData(prev => ({...prev, adHocLabel: e.target.value}))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      adHocLabel: e.target.value,
+                    }))
+                  }
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Start</label>
-                  <input type="time" className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-sm font-bold" value={formData.adHocStart} onChange={e => setFormData(prev => ({...prev, adHocStart: e.target.value}))} />
+              <div className="grid grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2">
+                    Start Window
+                  </label>
+                  <input
+                    type="time"
+                    className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-5 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all"
+                    value={formData.adHocStart}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        adHocStart: e.target.value,
+                      }))
+                    }
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider">End</label>
-                  <input type="time" className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-sm font-bold" value={formData.adHocEnd} onChange={e => setFormData(prev => ({...prev, adHocEnd: e.target.value}))} />
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2">
+                    End Window
+                  </label>
+                  <input
+                    type="time"
+                    className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-5 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all"
+                    value={formData.adHocEnd}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        adHocEnd: e.target.value,
+                      }))
+                    }
+                  />
                 </div>
               </div>
             </div>
           )}
 
-          <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Staff Notes (Optional)</label>
-            <textarea 
-              className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white focus:border-indigo-500 transition-all resize-none"
-              rows="2"
+          <div className="space-y-3">
+            <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] ml-2">
+              Mission Directives (Optional)
+            </label>
+            <textarea
+              className="w-full bg-slate-900 border border-white/5 rounded-[2rem] px-6 py-5 text-sm font-black text-white focus:border-indigo-500 outline-none transition-all shadow-inner resize-none min-h-[100px]"
+              placeholder="Inject tactical shift notes here..."
               value={formData.notes}
-              onChange={e => setFormData(prev => ({...prev, notes: e.target.value}))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, notes: e.target.value }))
+              }
             />
           </div>
 
-          <div className="pt-4 flex gap-3">
-             <button type="button" onClick={onClose} className="flex-1 py-4 bg-gray-100 text-gray-500 font-bold rounded-[1.5rem] hover:bg-gray-200 transition-all">Cancel</button>
-             <button 
-               type="submit" 
-               disabled={submitting}
-               className="flex-[2] py-4 bg-indigo-600 text-white font-black rounded-[1.5rem] shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-2"
-             >
-               {submitting ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Save className="w-5 h-5" /> Schedule Shift</>}
-             </button>
+          <div className="pt-8 flex gap-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-5 bg-white/5 text-slate-400 font-black rounded-2xl hover:bg-white/10 transition-all uppercase tracking-widest text-[10px] active:scale-95"
+            >
+              Abort
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-[2] py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-[0_20px_40px_rgba(79,70,229,0.3)] hover:bg-indigo-500 transition-all active:scale-95 flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-[11px]"
+            >
+              {submitting ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Save className="w-5 h-5" /> Execute Deployment
+                </>
+              )}
+            </button>
           </div>
         </form>
       </div>

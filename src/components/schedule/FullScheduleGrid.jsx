@@ -104,13 +104,13 @@ const FullScheduleGrid = ({ accountId }) => {
 
   if (loading)
     return (
-      <div className="flex flex-col items-center justify-center py-40">
-        <div className="w-16 h-16 relative">
-          <div className="absolute inset-0 bg-indigo-500 rounded-full blur-2xl opacity-20 animate-pulse" />
-          <div className="w-16 h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin relative z-10" />
+      <div className="flex flex-col items-center justify-center py-40 animate-fadeIn">
+        <div className="w-20 h-20 relative">
+          <div className="absolute inset-0 bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse" />
+          <div className="w-20 h-20 border-[6px] border-white/5 border-t-indigo-500 rounded-full animate-spin relative z-10 shadow-[0_0_20px_rgba(79,70,229,0.2)]" />
         </div>
-        <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-[10px] mt-8">
-          Parsing Neural Grid...
+        <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[10px] mt-10 opacity-70">
+          Syncing Neural Grid...
         </p>
       </div>
     );
@@ -118,137 +118,92 @@ const FullScheduleGrid = ({ accountId }) => {
   return (
     <div className="w-full space-y-8 animate-in fade-in duration-1000">
       <style>{`
-        .grid-header {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .staff-cell {
-          background: rgba(255, 255, 255, 0.02);
+        .grid-header-cell {
+          background: rgba(15, 23, 42, 0.8);
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
           border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .day-cell {
-          border-right: 1px solid rgba(255, 255, 255, 0.05);
+        .sticky-staff-cell {
+          background: rgba(15, 23, 42, 0.95);
+          backdrop-filter: blur(20px);
+          border-right: 2px solid rgba(79, 70, 229, 0.2);
         }
-        .day-cell:hover {
+        .grid-data-cell {
+          border-right: 1px solid rgba(255, 255, 255, 0.03);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+          transition: all 0.3s ease;
+        }
+        .grid-data-cell:hover {
           background: rgba(255, 255, 255, 0.02);
         }
-        .current-day {
-          background: rgba(99, 102, 241, 0.05) !important;
+        .grid-today-column {
+          background: rgba(79, 70, 229, 0.03) !important;
         }
       `}</style>
 
-      {/* 🎯 MANAGER INSTRUCTIONS */}
-      <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-2 border-purple-400/30 rounded-3xl p-6 backdrop-blur-sm">
-        <div className="flex items-start gap-4">
-          <div className="bg-purple-500 text-white p-3 rounded-xl flex-shrink-0">
-            <Lightbulb className="w-6 h-6" />
+      {/* 🎯 FLEET MANAGEMENT BRIEFING */}
+      <div className="glass-panel border-purple-500/20 bg-purple-500/5 group p-8 mb-12 animate-fadeIn">
+        <div className="flex items-start gap-6">
+          <div className="bg-purple-600 text-white p-4 rounded-2xl shadow-lg shadow-purple-600/20 group-hover:scale-110 transition-transform duration-500">
+            <Lightbulb className="w-7 h-7" />
           </div>
-          <div className="flex-1 space-y-4">
-            <h3 className="text-xl font-black text-white flex items-center gap-2">
-              <span className="text-red-500 text-2xl">!</span> Team Roster -
-              Manager Guide
+          <div className="flex-1">
+            <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-6 flex items-center gap-3">
+               Fleet Orchestration Protocol
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 1. Create Shifts
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all">
+                <h4 className="font-black text-purple-400 text-[10px] uppercase tracking-widest mb-2">
+                  01. Deployment Logic
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Click the blue "Initialize Shift" button to create a new
-                  shift. Select date, time, and shift type.
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Utilize "INITIALIZE SHIFT" to architect work windows. Define temporal parameters and associate with specialized shift templates.
                 </p>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 2. Assign Team Members
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-indigo-500/20 transition-all">
+                <h4 className="font-black text-indigo-400 text-[10px] uppercase tracking-widest mb-2">
+                  02. Entity Allocation
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Click on "Open Clusters" (unassigned shifts in orange) to
-                  assign them to team members from the list.
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Monitor "Open Clusters" for unallocated shifts. Execute assignment commands to bind personnel to active work cycles.
                 </p>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 3. Navigate Weeks
+              <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-emerald-500/20 transition-all">
+                <h4 className="font-black text-emerald-400 text-[10px] uppercase tracking-widest mb-2">
+                  03. Grid Navigation
                 </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Use arrow buttons to move between weeks. Click "Today" to
-                  return to current week instantly.
-                </p>
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 4. View Attendance
-                </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Click any assigned shift card to see check-in/out proof
-                  (camera photo + GPS location).
-                </p>
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 5. Grid Layout
-                </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Each row = one team member. Each column = one day. Colored
-                  cards = scheduled shifts.
-                </p>
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <h4 className="font-bold text-purple-300 mb-2 flex items-center gap-2">
-                  <span className="text-red-500">!</span> 6. Define Shift Types
-                </h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  Scroll down to "Shift Types" section to create reusable shift
-                  templates (Morning, Evening, etc.).
+                <p className="text-slate-400 text-xs font-medium leading-relaxed">
+                  Traverse future workstreams using the temporal offset controls. Synced live with the central mission database.
                 </p>
               </div>
             </div>
 
-            <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3 flex items-start gap-3">
-              <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1 space-y-2">
-                <p className="text-amber-200 text-xs font-semibold">
-                  <span className="text-red-500 font-bold">!</span> First Time
-                  Setup:
-                </p>
-                <ol className="text-amber-200 text-xs space-y-1 list-decimal list-inside ml-2">
-                  <li>
-                    Create shift types below (e.g., "Morning 9-5", "Night 10-6")
-                  </li>
-                  <li>
-                    Return here and click "Initialize Shift" to schedule them
-                  </li>
-                  <li>
-                    Assign shifts to team members by clicking orange cards
-                  </li>
-                  <li>Team members will see their shifts in "My Hub" tab</li>
-                </ol>
-              </div>
+            <div className="mt-8 pt-6 border-t border-white/10 flex items-center gap-4 text-amber-400/80">
+              <Info className="w-5 h-5 flex-shrink-0" />
+              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+                System Ready: Configure reusable blueprints in the "Shift Types" section below.
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Grid Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-2xl">
             <button
               onClick={() => setWeeksOffset((v) => v - 1)}
-              className="p-2 md:p-3 hover:bg-white/10 rounded-xl transition-all group"
+              className="p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
-              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white" />
+              <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-white" />
             </button>
-            <div className="px-3 md:px-6 py-2 flex items-center gap-2 md:gap-3 text-xs md:text-sm font-black text-white">
-              <CalendarIcon className="w-3 h-3 md:w-4 md:h-4 text-indigo-400" />
+            <div className="px-8 py-2 flex items-center gap-3 text-xs font-black text-white uppercase tracking-widest">
+              <CalendarIcon className="w-4 h-4 text-indigo-400" />
               {days[0]?.toLocaleDateString(undefined, {
                 month: "short",
                 day: "numeric",
@@ -262,46 +217,42 @@ const FullScheduleGrid = ({ accountId }) => {
             </div>
             <button
               onClick={() => setWeeksOffset((v) => v + 1)}
-              className="p-2 md:p-3 hover:bg-white/10 rounded-xl transition-all group"
+              className="p-3 hover:bg-white/10 rounded-xl transition-all group"
             >
-              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white" />
+              <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-white" />
             </button>
           </div>
           {weeksOffset !== 0 && (
             <button
               onClick={() => setWeeksOffset(0)}
-              className="px-4 md:px-6 py-2 md:py-3 bg-white/5 border border-white/10 rounded-2xl text-[9px] md:text-[10px] font-black text-indigo-300 hover:text-white uppercase tracking-widest transition-all"
+              className="px-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-indigo-400 hover:text-white uppercase tracking-widest transition-all shadow-xl"
             >
-              Today
+              Sync Present
             </button>
           )}
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="group relative px-4 md:px-8 py-3 md:py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-xs md:text-sm transition-all shadow-2xl hover:-translate-y-1 active:scale-95 overflow-hidden"
+          className="group relative px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-widest transition-all shadow-[0_20px_40px_rgba(79,70,229,0.3)] hover:-translate-y-1 active:scale-95 overflow-hidden"
         >
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"
-            style={{ backgroundSize: "200% 100%" }}
-          />
-          <div className="flex items-center gap-2 md:gap-3 relative z-10">
-            <Plus className="w-4 h-4 md:w-5 md:h-5" />
-            <span className="hidden sm:inline">Initialize Shift</span>
-            <span className="sm:hidden">New Shift</span>
+          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center gap-3 relative z-10">
+            <Plus className="w-5 h-5" />
+            <span>Initialize Logic Batch</span>
           </div>
         </button>
       </div>
 
       {/* The Mega Grid */}
-      <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden">
+      <div className="glass-panel rounded-[3rem] overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full border-collapse table-fixed lg:min-w-[1200px]">
+          <table className="w-full border-collapse table-fixed lg:min-w-[1400px]">
             <thead>
-              <tr className="grid-header">
-                <th className="w-64 sticky left-0 z-30 grid-header p-8 text-left">
-                  <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">
-                    Staff Matrix
+              <tr>
+                <th className="w-72 sticky left-0 z-40 grid-header-cell sticky-staff-cell p-8 text-left">
+                  <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">
+                    Entity Grid
                   </span>
                 </th>
                 {days.map((day, i) => {
@@ -310,26 +261,26 @@ const FullScheduleGrid = ({ accountId }) => {
                   return (
                     <th
                       key={i}
-                      className={`p-8 text-center day-cell ${isToday ? "current-day" : ""}`}
+                      className={`p-8 text-center grid-header-cell ${isToday ? "grid-today-column" : ""}`}
                     >
                       <div className="flex flex-col items-center">
-                        <span className="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3">
+                        <span className="text-[9px] uppercase font-black text-slate-500 tracking-[0.2em] mb-4">
                           {day.toLocaleDateString(undefined, {
-                            weekday: "long",
+                            weekday: "short",
                           })}
                         </span>
                         <div className="relative">
                           {isToday && (
-                            <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-40 animate-pulse" />
+                            <div className="absolute inset-0 bg-indigo-500 blur-xl opacity-30 animate-pulse" />
                           )}
                           <span
-                            className={`relative text-2xl font-black w-12 h-12 flex items-center justify-center rounded-2xl ${
+                            className={`relative text-2xl font-black w-14 h-14 flex items-center justify-center rounded-2xl transition-all duration-500 ${
                               isToday
-                                ? "bg-indigo-600 text-white shadow-xl shadow-indigo-900"
-                                : "text-white"
+                                ? "bg-indigo-600 text-white shadow-2xl shadow-indigo-900 border border-indigo-400/30 scale-110"
+                                : "text-white border border-white/5 bg-white/5"
                             }`}
                           >
-                            {day.getDate()}
+                            {day.getDate().toString().padStart(2, '0')}
                           </span>
                         </div>
                       </div>
@@ -338,21 +289,21 @@ const FullScheduleGrid = ({ accountId }) => {
                 })}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-white/5">
               {/* Open Shifts Row */}
-              <tr className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors">
-                <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-400 border border-orange-500/20 shadow-inner">
-                      <Shapes className="w-6 h-6" />
+              <tr className="group hover:bg-white/[0.02] transition-colors">
+                <td className="sticky left-0 z-30 sticky-staff-cell p-8">
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 bg-amber-500/10 rounded-[1.5rem] flex items-center justify-center text-amber-500 border border-amber-500/20 shadow-inner group-hover:scale-110 transition-transform">
+                      <Shapes className="w-7 h-7" />
                     </div>
                     <div>
-                      <div className="text-sm font-black text-white leading-none">
+                      <div className="text-[10px] font-black text-white leading-none uppercase tracking-widest">
                         Open Clusters
                       </div>
-                      <div className="text-[9px] text-orange-500 font-black uppercase mt-2 tracking-widest">
-                        Awaiting Command
-                      </div>
+                      <p className="text-[8px] text-amber-500 font-bold uppercase mt-2 tracking-[0.2em]">
+                        Pending Logic
+                      </p>
                     </div>
                   </div>
                 </td>
@@ -363,9 +314,9 @@ const FullScheduleGrid = ({ accountId }) => {
                   return (
                     <td
                       key={i}
-                      className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}
+                      className={`p-5 grid-data-cell align-top ${isToday ? "grid-today-column" : ""}`}
                     >
-                      <div className="space-y-3 min-h-[100px]">
+                      <div className="space-y-4 min-h-[120px]">
                         {dayShifts.map((shift) => (
                           <ShiftCard
                             key={shift._id}
@@ -378,9 +329,9 @@ const FullScheduleGrid = ({ accountId }) => {
                           />
                         ))}
                         {dayShifts.length === 0 && (
-                          <div className="h-20 flex flex-col items-center justify-center gap-2 opacity-5">
-                            <div className="w-px h-10 bg-white" />
-                            <div className="w-1 h-1 bg-white rounded-full" />
+                          <div className="h-24 flex flex-col items-center justify-center gap-3 opacity-20">
+                            <div className="w-[1px] h-12 bg-slate-800" />
+                            <div className="w-1.5 h-1.5 bg-slate-700 rounded-full" />
                           </div>
                         )}
                       </div>
@@ -393,23 +344,23 @@ const FullScheduleGrid = ({ accountId }) => {
               {members.map((member) => (
                 <tr
                   key={member._id}
-                  className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors"
+                  className="group hover:bg-white/[0.03] transition-colors"
                 >
-                  <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-8">
-                    <div className="flex items-center gap-4">
+                  <td className="sticky left-0 z-30 sticky-staff-cell p-8">
+                    <div className="flex items-center gap-5">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-white blur-md opacity-5" />
-                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white font-black text-sm border border-white/5 relative z-10">
+                        <div className="absolute inset-0 bg-indigo-500 blur-xl opacity-0 group-hover:opacity-10 transition-opacity" />
+                        <div className="w-14 h-14 bg-slate-800 rounded-[1.5rem] flex items-center justify-center text-white font-black text-[10px] border border-white/5 relative z-10 group-hover:border-indigo-500/30 transition-all">
                           {member.displayName.substring(0, 2).toUpperCase()}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm font-black text-white leading-none truncate max-w-[140px] group-hover:text-indigo-300 transition-colors">
+                        <div className="text-[10px] font-black text-white leading-none uppercase tracking-widest group-hover:text-indigo-400 transition-colors">
                           {member.displayName}
                         </div>
-                        <div className="text-[9px] text-gray-500 font-bold uppercase mt-2 tracking-widest">
-                          ID: {member._id.toString().slice(-6)}
-                        </div>
+                        <p className="text-[8px] text-slate-500 font-bold mt-2.5 tracking-[0.2em] font-mono">
+                          OPERATOR://{member._id.toString().slice(-6).toUpperCase()}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -420,9 +371,9 @@ const FullScheduleGrid = ({ accountId }) => {
                     return (
                       <td
                         key={i}
-                        className={`p-4 day-cell align-top ${isToday ? "current-day" : ""}`}
+                        className={`p-5 grid-data-cell align-top ${isToday ? "grid-today-column" : ""}`}
                       >
-                        <div className="space-y-3 min-h-[100px]">
+                        <div className="space-y-4 min-h-[120px]">
                           {dayShifts.map((shift) => (
                             <ShiftCard
                               key={shift._id}
@@ -434,8 +385,8 @@ const FullScheduleGrid = ({ accountId }) => {
                             />
                           ))}
                           {dayShifts.length === 0 && (
-                            <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-5 transition-opacity">
-                              <Plus className="w-10 h-10 text-white" />
+                            <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-5 transition-opacity duration-500 scale-50 group-hover:scale-100">
+                              <Plus className="w-12 h-12 text-white" />
                             </div>
                           )}
                         </div>
@@ -487,7 +438,7 @@ const FullScheduleGrid = ({ accountId }) => {
 const ShiftCard = ({ shift, isUnassigned, onClick }) => {
   const label = shift.shiftTypeId
     ? shift.shiftTypeId.name
-    : shift.adHocLabel || "Custom";
+    : shift.adHocLabel || "Custom Batch";
   const color = shift.shiftTypeId ? shift.shiftTypeId.color : "#6366f1";
   const start = shift.shiftTypeId
     ? shift.shiftTypeId.startTime
@@ -497,40 +448,43 @@ const ShiftCard = ({ shift, isUnassigned, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`relative p-4 rounded-3xl text-white shadow-2xl transition-all duration-300 hover:scale-[1.05] hover:-rotate-1 cursor-pointer group/card overflow-hidden border border-white/10 ${
+      className={`relative p-5 rounded-[2rem] text-white transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1 cursor-pointer group/card overflow-hidden border border-white/10 shadow-xl ${
         isUnassigned
-          ? "ring-2 ring-orange-500/50 ring-offset-4 ring-offset-[#0a0a0f]"
+          ? "ring-2 ring-amber-500/30 ring-offset-4 ring-offset-slate-900 shadow-amber-500/5 animate-pulse"
           : ""
       }`}
-      style={{ backgroundColor: `${color}cc`, backdropFilter: "blur(10px)" }}
+      style={{ 
+        background: `linear-gradient(135deg, ${color}33, ${color}66)`,
+        backdropFilter: "blur(12px)" 
+      }}
     >
-      <div className="absolute top-0 right-0 p-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
-        <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
-          <MoreVertical className="w-4 h-4" />
+      <div className="absolute top-0 right-0 p-4 opacity-0 group-hover/card:opacity-100 transition-opacity">
+        <div className="w-7 h-7 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/5">
+          <MoreVertical className="w-3.5 h-3.5" />
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 relative z-10">
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
+      <div className="flex flex-col gap-4 relative z-10">
+        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/70">
           {label}
         </span>
-        <div className="flex items-center gap-2 text-md font-black">
-          <Clock className="w-4 h-4 text-white/60" />
-          {start} — {end}
+        <div className="flex items-center gap-3 text-xs font-black">
+          <Clock className="w-3.5 h-3.5 text-white/60" />
+          <span className="tabular-nums tracking-tighter">{start} — {end}</span>
         </div>
 
         {isUnassigned && (
-          <div className="mt-2 pt-2 border-t border-white/10 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
-            <span className="text-[8px] font-black uppercase tracking-widest text-orange-200">
-              Unassigned
+          <div className="mt-2 pt-3 border-t border-white/10 flex items-center gap-3">
+            <div className="w-2 h-2 bg-amber-400 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+            <span className="text-[7px] font-black uppercase tracking-[0.2em] text-amber-200">
+              Awaiting Member
             </span>
           </div>
         )}
       </div>
 
       {/* Decorative Glow */}
-      <div className="absolute -bottom-10 -right-10 w-24 h-24 blur-[40px] opacity-40 rounded-full bg-white/20" />
+      <div className="absolute -bottom-10 -right-10 w-24 h-24 blur-[40px] opacity-20 rounded-full bg-white shadow-[0_0_50px_rgba(255,255,255,0.2)]" />
     </div>
   );
 };

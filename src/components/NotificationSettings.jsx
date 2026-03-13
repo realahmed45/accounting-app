@@ -117,10 +117,10 @@ const NotificationSettings = ({ onClose }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 pb-24 sm:pb-0">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
@@ -130,8 +130,8 @@ const NotificationSettings = ({ onClose }) => {
                 <X className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                  <Settings className="w-8 h-8" />
+                <h1 className="text-xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
+                  <Settings className="w-6 h-6 sm:w-8 sm:h-8" />
                   Notification Settings
                 </h1>
                 <p className="text-sm text-slate-600 mt-1">
@@ -143,7 +143,7 @@ const NotificationSettings = ({ onClose }) => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`flex items-center gap-2 px-6 py-3 ${
+              className={`hidden sm:flex items-center gap-2 px-6 py-3 ${
                 saved
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-slate-900 hover:bg-slate-800"
@@ -163,6 +163,31 @@ const NotificationSettings = ({ onClose }) => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Save Bar */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-200 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 ${
+            saved
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-slate-900 hover:bg-slate-800"
+          } text-white transition-colors rounded-xl font-semibold disabled:opacity-50`}
+        >
+          {saved ? (
+            <>
+              <Check className="w-5 h-5" />
+              Saved!
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              {saving ? "Saving..." : "Save Changes"}
+            </>
+          )}
+        </button>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">

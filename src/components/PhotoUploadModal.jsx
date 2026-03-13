@@ -69,25 +69,27 @@ const PhotoUpload = ({ expenseId, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h3 className="text-xl font-bold text-gray-800">Bill Photos</h3>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+            Bill Photos
+          </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Upload Buttons */}
-        <div className="p-6 border-b bg-gray-50">
+        <div className="p-4 sm:p-6 border-b bg-gray-50">
           <div className="flex gap-3 flex-wrap">
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm font-semibold"
               disabled={uploading}
             >
               <Camera className="w-4 h-4" />
@@ -104,7 +106,7 @@ const PhotoUpload = ({ expenseId, onClose }) => {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50 text-sm font-semibold"
               disabled={uploading}
             >
               <Upload className="w-4 h-4" />
@@ -119,7 +121,7 @@ const PhotoUpload = ({ expenseId, onClose }) => {
             />
 
             {uploading && (
-              <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded">
+              <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
                 <Loader className="w-4 h-4 text-blue-600 animate-spin" />
                 <span className="text-sm text-blue-700">Uploading...</span>
               </div>
@@ -131,7 +133,7 @@ const PhotoUpload = ({ expenseId, onClose }) => {
         </div>
 
         {/* Photos Grid */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <Loader className="w-8 h-8 text-gray-400 animate-spin" />
@@ -203,10 +205,10 @@ const PhotoUpload = ({ expenseId, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t bg-gray-50">
+        <div className="p-4 sm:p-6 border-t bg-gray-50">
           <button
             onClick={onClose}
-            className="w-full px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            className="w-full px-6 py-3.5 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors font-semibold"
           >
             Close
           </button>

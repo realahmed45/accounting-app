@@ -99,10 +99,10 @@ const LinkParentModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[60]">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-5 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
             <div className="bg-emerald-600 p-2.5 rounded-xl">
               <Link className="w-6 h-6 text-white" />
@@ -130,7 +130,7 @@ const LinkParentModal = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-5">
           {/* Instructional Banner */}
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
             <div className="flex items-start gap-3">
@@ -171,7 +171,7 @@ const LinkParentModal = ({
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Parent Account Unique ID
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={parentUniqueId}
@@ -183,7 +183,7 @@ const LinkParentModal = ({
                       }
                     }}
                     placeholder="ACC-XXXXXX"
-                    className="flex-1 px-4 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none font-mono text-lg tracking-wider"
+                    className="flex-1 px-4 py-3.5 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none font-mono text-base sm:text-lg tracking-wider"
                     maxLength={10}
                     autoFocus
                   />
@@ -194,7 +194,7 @@ const LinkParentModal = ({
                       !parentUniqueId.trim() ||
                       parentUniqueId.length !== 10
                     }
-                    className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold transition-all"
+                    className="px-4 sm:px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold transition-all"
                   >
                     <Search className="w-5 h-5" />
                     {verifying ? "Verifying..." : "Verify"}

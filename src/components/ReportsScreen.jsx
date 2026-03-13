@@ -132,41 +132,45 @@ const ReportsScreen = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden border-2 border-slate-700">
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xl flex items-center justify-center z-[100] p-4 overflow-y-auto animate-fadeIn font-inter">
+      <div className="glass-card w-full max-w-7xl max-h-[90vh] overflow-hidden border-white/5 flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-6 flex items-center justify-between sticky top-0 z-10">
+        <div className="bg-white/5 border-b border-white/5 px-8 py-6 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
-            <BarChart3 className="w-8 h-8 text-white" />
+            <div className="bg-indigo-600 p-3 rounded-xl shadow-lg shadow-indigo-500/20">
+              <BarChart3 className="w-8 h-8 text-white" />
+            </div>
             <div>
-              <h2 className="text-3xl font-black text-white">
-                Expense Reports & Analytics
+              <h2 className="text-3xl font-black text-white tracking-tighter uppercase">
+                Analytics Hub
               </h2>
-              <p className="text-emerald-100 text-sm font-medium mt-1">
-                Visualize your spending patterns and trends
+              <p className="text-slate-400 text-xs font-black tracking-widest mt-1 opacity-70">
+                Visualizing Spending Intelligence
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-xl transition-all text-white"
+            className="p-3 bg-white/5 hover:bg-rose-500/20 rounded-xl transition-all text-slate-400 hover:text-rose-400 border border-white/5"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="p-8 overflow-y-auto scrollbar-hide">
           {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-8 items-center bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5 text-blue-400" />
-              <label className="text-slate-300 font-bold text-sm">
-                Time Period:
-              </label>
+          <div className="flex flex-wrap gap-6 mb-10 items-center bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-indigo-400" />
+                <label className="text-slate-400 font-black text-[10px] tracking-widest uppercase">
+                  Time Period
+                </label>
+              </div>
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="bg-slate-700 text-white px-4 py-2 rounded-xl border-2 border-slate-600 font-semibold focus:outline-none focus:border-blue-500"
+                className="bg-slate-900/50 text-white px-4 py-2.5 rounded-xl border border-white/10 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-indigo-500 transition-all"
               >
                 <option value="7">Last 7 days</option>
                 <option value="14">Last 14 days</option>
@@ -177,15 +181,17 @@ const ReportsScreen = ({
               </select>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Filter className="w-5 h-5 text-purple-400" />
-              <label className="text-slate-300 font-bold text-sm">
-                Category:
-              </label>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-purple-400" />
+                <label className="text-slate-400 font-black text-[10px] tracking-widest uppercase">
+                  Category
+                </label>
+              </div>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-700 text-white px-4 py-2 rounded-xl border-2 border-slate-600 font-semibold focus:outline-none focus:border-purple-500"
+                className="bg-slate-900/50 text-white px-4 py-2.5 rounded-xl border border-white/10 font-black text-xs uppercase tracking-widest focus:outline-none focus:border-purple-500 transition-all"
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => {
@@ -201,106 +207,114 @@ const ReportsScreen = ({
 
             <button
               onClick={exportToCSV}
-              className="ml-auto flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transition-all"
+              className="ml-auto btn-primary px-8 py-3 text-xs font-black tracking-widest uppercase flex items-center gap-2 group"
             >
-              <Download className="w-5 h-5" />
+              <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
               Export CSV
             </button>
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <DollarSign className="w-8 h-8 text-white/80" />
-                <TrendingUp className="w-6 h-6 text-white/60" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div className="glass-card p-6 border-l-4 border-l-indigo-500 bg-indigo-500/5 group">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-indigo-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
+                  <DollarSign className="w-6 h-6 text-indigo-400" />
+                </div>
+                <TrendingUp className="w-5 h-5 text-indigo-400/50" />
               </div>
-              <p className="text-blue-100 text-sm font-bold uppercase tracking-wider mb-1">
-                Total Spent
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
+                Aggregate Spending
               </p>
-              <p className="text-4xl font-black text-white">
-                ${stats.total.toFixed(2)}
+              <p className="text-4xl font-black text-white tracking-tighter">
+                ${stats.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
-              <p className="text-blue-100 text-xs mt-2 font-medium">
-                in {dateRange} days
+              <p className="text-indigo-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
+                Last {dateRange} days
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <BarChart3 className="w-8 h-8 text-white/80" />
-                <PieChart className="w-6 h-6 text-white/60" />
+            <div className="glass-card p-6 border-l-4 border-l-purple-500 bg-purple-500/5 group">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-purple-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
+                  <BarChart3 className="w-6 h-6 text-purple-400" />
+                </div>
+                <PieChart className="w-5 h-5 text-purple-400/50" />
               </div>
-              <p className="text-purple-100 text-sm font-bold uppercase tracking-wider mb-1">
-                Total Expenses
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
+                Transaction Volume
               </p>
-              <p className="text-4xl font-black text-white">{stats.count}</p>
-              <p className="text-purple-100 text-xs mt-2 font-medium">
-                transactions recorded
+              <p className="text-4xl font-black text-white tracking-tighter">{stats.count}</p>
+              <p className="text-purple-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
+                Verified Records
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <TrendingDown className="w-8 h-8 text-white/80" />
-                <Calendar className="w-6 h-6 text-white/60" />
+            <div className="glass-card p-6 border-l-4 border-l-emerald-500 bg-emerald-500/5 group">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-emerald-500/20 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-500">
+                  <TrendingDown className="w-6 h-6 text-emerald-400" />
+                </div>
+                <Calendar className="w-5 h-5 text-emerald-400/50" />
               </div>
-              <p className="text-emerald-100 text-sm font-bold uppercase tracking-wider mb-1">
-                Average Expense
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
+                Average Value
               </p>
-              <p className="text-4xl font-black text-white">
-                ${stats.average.toFixed(2)}
+              <p className="text-4xl font-black text-white tracking-tighter">
+                ${stats.average.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
-              <p className="text-emerald-100 text-xs mt-2 font-medium">
-                per transaction
+              <p className="text-emerald-400/60 text-[10px] mt-2 font-black uppercase tracking-widest">
+                Per Transaction
               </p>
             </div>
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             {/* Expenses by Category */}
-            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <Tag className="w-6 h-6 text-amber-400" />
-                <h3 className="text-2xl font-black text-white">
-                  Top Categories
+            <div className="glass-panel p-8 group">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="bg-amber-500/20 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-500">
+                  <Tag className="w-6 h-6 text-amber-500" />
+                </div>
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                  Sector Distribution
                 </h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {stats.topCategories.length > 0 ? (
                   stats.topCategories.map(([category, data], index) => {
                     const percentage = (data.total / stats.total) * 100;
                     const barWidth = (data.total / maxCategoryValue) * 100;
                     const colors = [
-                      "from-blue-600 to-blue-700",
+                      "from-indigo-600 to-indigo-700",
                       "from-purple-600 to-purple-700",
                       "from-emerald-600 to-emerald-700",
                       "from-amber-600 to-amber-700",
-                      "from-red-600 to-red-700",
+                      "from-rose-600 to-rose-700",
                     ];
 
                     return (
-                      <div key={category}>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-white font-bold">
+                      <div key={category} className="group/item">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-slate-300 font-black text-xs uppercase tracking-widest">
                             {category}
                           </span>
-                          <div className="text-right">
-                            <span className="text-white font-black text-lg">
-                              ${data.total.toFixed(2)}
+                          <div className="text-right flex items-baseline gap-2">
+                            <span className="text-white font-black text-lg tracking-tighter">
+                              ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
-                            <span className="text-slate-400 text-sm ml-2">
-                              ({percentage.toFixed(1)}%)
+                            <span className="text-slate-500 font-bold text-[10px] uppercase">
+                              {percentage.toFixed(1)}%
                             </span>
                           </div>
                         </div>
-                        <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                        <div className="w-full bg-white/5 rounded-full h-3 overflow-hidden p-[2px]">
                           <div
-                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-500 flex items-center justify-end pr-2`}
-                            style={{ width: `${barWidth}%` }}
+                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-1000 flex items-center justify-end pr-2 rounded-full shadow-[0_0_15px_rgba(79,70,229,0.3)] animate-fadeIn`}
+                            style={{ width: `${barWidth}%`, animationDelay: `${index * 150}ms` }}
                           >
-                            <span className="text-white text-xs font-bold">
+                            <span className="text-white text-[8px] font-black">
                               {data.count}
                             </span>
                           </div>
@@ -309,51 +323,58 @@ const ReportsScreen = ({
                     );
                   })
                 ) : (
-                  <p className="text-slate-400 text-center py-8">
-                    No expense data for this period
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-12 opacity-30">
+                    <Filter className="w-12 h-12 mb-4" />
+                    <p className="text-slate-400 font-black text-xs uppercase tracking-widest">
+                      No matching records found
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Expenses by Person */}
-            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <Users className="w-6 h-6 text-blue-400" />
-                <h3 className="text-2xl font-black text-white">Top Spenders</h3>
+            <div className="glass-panel p-8 group">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="bg-blue-500/20 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-500">
+                  <Users className="w-6 h-6 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                  Elite Contributors
+                </h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {stats.topPeople.length > 0 ? (
                   stats.topPeople.map(([person, data], index) => {
                     const percentage = (data.total / stats.total) * 100;
                     const barWidth = (data.total / maxPersonValue) * 100;
                     const colors = [
-                      "from-emerald-600 to-emerald-700",
-                      "from-blue-600 to-blue-700",
-                      "from-purple-600 to-purple-700",
-                      "from-amber-600 to-amber-700",
-                      "from-pink-600 to-pink-700",
+                      "from-emerald-500 to-emerald-600",
+                      "from-blue-500 to-blue-600",
+                      "from-purple-500 to-purple-600",
+                      "from-amber-500 to-amber-600",
+                      "from-pink-500 to-pink-600",
                     ];
 
                     return (
-                      <div key={person}>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-white font-bold">{person}</span>
-                          <div className="text-right">
-                            <span className="text-white font-black text-lg">
-                              ${data.total.toFixed(2)}
+                      <div key={person} className="group/item">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-slate-300 font-black text-xs uppercase tracking-widest">{person}</span>
+                          <div className="text-right flex items-baseline gap-2">
+                            <span className="text-white font-black text-lg tracking-tighter">
+                              ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
-                            <span className="text-slate-400 text-sm ml-2">
-                              ({percentage.toFixed(1)}%)
+                            <span className="text-slate-500 font-bold text-[10px] uppercase">
+                              {percentage.toFixed(1)}%
                             </span>
                           </div>
                         </div>
-                        <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                        <div className="w-full bg-white/5 rounded-full h-3 overflow-hidden p-[2px]">
                           <div
-                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-500 flex items-center justify-end pr-2`}
-                            style={{ width: `${barWidth}%` }}
+                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-1000 flex items-center justify-end pr-2 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)] animate-fadeIn`}
+                            style={{ width: `${barWidth}%`, animationDelay: `${index * 150}ms` }}
                           >
-                            <span className="text-white text-xs font-bold">
+                            <span className="text-white text-[8px] font-black">
                               {data.count}
                             </span>
                           </div>
@@ -362,42 +383,41 @@ const ReportsScreen = ({
                     );
                   })
                 ) : (
-                  <p className="text-slate-400 text-center py-8">
-                    No expense data for this period
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-12 opacity-30">
+                    <Users className="w-12 h-12 mb-4" />
+                    <p className="text-slate-400 font-black text-xs uppercase tracking-widest">
+                      Awaiting contributor data
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
           {/* All Categories Table */}
-          <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-            <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
-              <PieChart className="w-6 h-6 text-purple-400" />
-              Complete Breakdown
-            </h3>
+          <div className="glass-panel p-8 mb-4">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="bg-purple-500/20 p-2.5 rounded-xl">
+                  <PieChart className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                  Comprehensive Breakdown
+                </h3>
+              </div>
+            </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full border-separate border-spacing-y-2">
                 <thead>
-                  <tr className="border-b-2 border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      Category
-                    </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      Count
-                    </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      Total
-                    </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      Avg
-                    </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      % of Total
-                    </th>
+                  <tr className="text-slate-500 font-black text-[10px] uppercase tracking-[0.2em]">
+                    <th className="text-left py-4 px-6 font-black">Categorization</th>
+                    <th className="text-right py-4 px-6 font-black">Volume</th>
+                    <th className="text-right py-4 px-6 font-black">Gross Total</th>
+                    <th className="text-right py-4 px-6 font-black">Mean Value</th>
+                    <th className="text-right py-4 px-6 font-black">Percentage</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="space-y-4">
                   {Object.entries(stats.byCategory)
                     .sort((a, b) => b[1].total - a[1].total)
                     .map(([category, data]) => {
@@ -405,22 +425,31 @@ const ReportsScreen = ({
                       return (
                         <tr
                           key={category}
-                          className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                          className="group bg-white/5 hover:bg-white/[0.08] transition-all duration-300"
                         >
-                          <td className="py-3 px-4 text-white font-semibold">
-                            {category}
+                          <td className="py-5 px-6 rounded-l-2xl border-y border-l border-white/5 group-hover:border-white/10">
+                            <div className="flex items-center gap-3">
+                              <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
+                              <span className="text-white font-bold tracking-tight">
+                                {category}
+                              </span>
+                            </div>
                           </td>
-                          <td className="text-right py-3 px-4 text-slate-300">
+                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10 font-black text-slate-400 text-xs">
                             {data.count}
                           </td>
-                          <td className="text-right py-3 px-4 text-white font-bold">
-                            ${data.total.toFixed(2)}
+                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10">
+                            <span className="text-white font-black tracking-tighter text-lg">
+                              ${data.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
                           </td>
-                          <td className="text-right py-3 px-4 text-slate-300">
-                            ${(data.total / data.count).toFixed(2)}
+                          <td className="text-right py-5 px-6 border-y border-white/5 group-hover:border-white/10 font-bold text-slate-400 text-xs">
+                            ${(data.total / data.count).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
-                          <td className="text-right py-3 px-4 text-emerald-400 font-bold">
-                            {percentage.toFixed(1)}%
+                          <td className="text-right py-5 px-6 rounded-r-2xl border-y border-r border-white/5 group-hover:border-white/10">
+                            <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-black tracking-widest">
+                              {percentage.toFixed(1)}%
+                            </span>
                           </td>
                         </tr>
                       );

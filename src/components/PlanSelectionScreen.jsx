@@ -126,75 +126,86 @@ const PlanSelectionScreen = ({ onSelectPlan, onSkip, userEmail }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-50">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950 font-inter text-slate-300">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Top bar */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-8 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
-            <span className="text-white font-black text-sm">$</span>
+      <div className="sticky top-0 z-10 bg-slate-900/50 backdrop-blur-xl border-b border-white/5 px-4 sm:px-12 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <span className="text-white font-black text-xl">$</span>
           </div>
-          <span className="font-bold text-gray-900 text-lg hidden sm:block">
+          <span className="font-black text-white text-xl tracking-tighter hidden sm:block uppercase">
             Weekly Accounting
           </span>
         </div>
-        {userEmail && (
-          <p className="text-sm text-gray-500 hidden sm:block">
-            <span className="font-medium text-gray-700">{userEmail}</span>
-          </p>
-        )}
-        {onSkip && (
-          <button
-            onClick={onSkip}
-            className="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors flex items-center gap-1"
-          >
-            Skip for now <ChevronRight className="w-4 h-4" />
-          </button>
-        )}
+        
+        <div className="flex items-center gap-6">
+          {userEmail && (
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-xs font-bold text-slate-400">{userEmail}</span>
+            </div>
+          )}
+          {onSkip && (
+            <button
+              onClick={onSkip}
+              className="text-sm text-slate-400 hover:text-white font-black tracking-widest uppercase transition-all flex items-center gap-2 group"
+            >
+              Skip
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-12 py-12 sm:py-20 relative z-10">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-10">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
-            Pick the right plan for you
+        <div className="text-center mb-16 animate-fadeIn">
+          <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 tracking-tight">
+            Elevate Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Financial Control</span>
           </h1>
-          <p className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto">
-            Start free, upgrade when you need more. Cancel anytime.
+          <p className="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto font-medium">
+            Join 10,000+ professionals managing their businesses with precision.
           </p>
 
           {/* Billing Toggle */}
-          <div className="inline-flex items-center mt-6 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+          <div className="inline-flex items-center mt-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl">
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+              className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all ${
                 billingCycle === "monthly"
-                  ? "bg-gray-900 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-indigo-600 text-white shadow-lg"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
-              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all flex items-center gap-3 ${
                 billingCycle === "yearly"
-                  ? "bg-gray-900 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-indigo-600 text-white shadow-lg"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
               Yearly
               <span
-                className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${billingCycle === "yearly" ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-700"}`}
+                className={`text-[10px] font-black px-2 py-0.5 rounded-full ${billingCycle === "yearly" ? "bg-white text-indigo-600" : "bg-indigo-500 text-white"}`}
               >
-                -17%
+                SAVE 17%
               </span>
             </button>
           </div>
         </div>
 
         {/* Plans Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
-          {plans.map((plan) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {plans.map((plan, idx) => {
             const PlanIcon = plan.icon;
             const isSelected = selectedPlan === plan.id;
             const price = getDisplayPrice(plan);
@@ -203,126 +214,101 @@ const PlanSelectionScreen = ({ onSelectPlan, onSkip, userEmail }) => {
               <div
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className={`relative flex flex-col bg-white rounded-2xl cursor-pointer transition-all duration-200 overflow-hidden ${
+                className={`group relative flex flex-col glass-card p-8 cursor-pointer border-2 animate-scaleIn ${
                   isSelected
-                    ? "ring-2 ring-violet-600 shadow-xl shadow-violet-100"
-                    : "ring-1 ring-gray-200 shadow-sm hover:shadow-md hover:ring-gray-300"
-                } ${plan.popular ? "sm:-mt-2" : ""}`}
+                    ? "border-indigo-500 bg-indigo-500/5 shadow-[0_0_40px_rgba(79,70,229,0.15)]"
+                    : "border-white/5 hover:border-white/10"
+                }`}
+                style={{ animationDelay: `${idx * 100}ms` }}
               >
-                {/* Popular ribbon */}
+                {/* Popular Badge */}
                 {plan.popular && (
-                  <div className="absolute top-0 right-0 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                  <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest shadow-lg">
                     {plan.badge}
                   </div>
                 )}
 
-                {/* Top accent bar */}
-                <div
-                  className="h-1.5 w-full"
-                  style={{ background: plan.accentColor }}
-                />
-
-                <div className="p-5 flex flex-col flex-1">
+                <div className="flex flex-col flex-1 relative z-10">
                   {/* Icon + name */}
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="mb-8">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center"
-                      style={{ background: `${plan.accentColor}18` }}
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500"
+                      style={{ background: `${plan.accentColor}20` }}
                     >
                       <PlanIcon
-                        className="w-5 h-5"
+                        className="w-7 h-7"
                         style={{ color: plan.accentColor }}
                       />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-gray-900 text-base leading-tight">
+                      <h3 className="text-2xl font-black text-white mb-2 uppercase tracking-tighter">
                         {plan.name}
                       </h3>
-                      <p className="text-xs text-gray-500 leading-tight">
+                      <p className="text-sm text-slate-400 font-medium">
                         {plan.tagline}
                       </p>
                     </div>
                   </div>
 
                   {/* Price */}
-                  <div className="mb-5">
-                    <div className="flex items-end gap-1">
-                      <span className="text-4xl font-black text-gray-900 leading-none">
+                  <div className="mb-8">
+                    <div className="flex items-end gap-2">
+                      <span className="text-5xl font-black text-white leading-none tracking-tighter">
                         {price}
                       </span>
                       {typeof plan.perMonth[billingCycle] === "number" &&
                         plan.perMonth[billingCycle] > 0 && (
-                          <span className="text-gray-400 text-sm mb-0.5">
-                            /mo
+                          <span className="text-slate-500 font-black text-sm mb-1 uppercase tracking-widest">
+                            / mo
                           </span>
                         )}
                     </div>
                     {billingCycle === "yearly" &&
                       typeof plan.price.yearly === "number" &&
                       plan.price.yearly > 0 && (
-                        <p className="text-xs text-emerald-600 font-semibold mt-1">
-                          Billed ${plan.price.yearly}/yr · saves $
-                          {(plan.perMonth.monthly - plan.perMonth.yearly) * 12}
-                          /yr
+                        <p className="text-xs text-emerald-400 font-bold mt-3 uppercase tracking-wider">
+                          Billed ${plan.price.yearly}/yr
                         </p>
                       )}
-                    {plan.price.monthly === 0 && (
-                      <p className="text-xs text-gray-400 mt-1">
-                        No credit card required
-                      </p>
-                    )}
                   </div>
 
-                  {/* Divider */}
-                  <div className="border-t border-gray-100 mb-4" />
-
                   {/* Features */}
-                  <ul className="space-y-2 flex-1">
+                  <ul className="space-y-4 flex-1 mb-10">
                     {plan.features.map((f, i) => (
                       <li
                         key={i}
-                        className="flex items-start gap-2 text-sm text-gray-700"
+                        className="flex items-start gap-3 text-sm text-slate-300 font-medium"
                       >
-                        <Check
-                          className="w-4 h-4 flex-shrink-0 mt-0.5"
-                          style={{ color: plan.accentColor }}
-                        />
+                        <div className="mt-1 w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-2.5 h-2.5 text-emerald-500 stroke-[4px]" />
+                        </div>
                         <span>{f}</span>
                       </li>
                     ))}
                     {plan.notIncluded.map((f, i) => (
                       <li
                         key={`no-${i}`}
-                        className="flex items-start gap-2 text-sm text-gray-400"
+                        className="flex items-start gap-3 text-sm text-slate-500 font-medium"
                       >
-                        <span className="w-4 h-4 flex-shrink-0 mt-0.5 flex items-center justify-center font-bold text-xs">
-                          —
-                        </span>
-                        <span className="line-through">{f}</span>
+                        <div className="mt-1 w-4 h-4 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
+                          <span className="text-[10px] font-black opacity-30">—</span>
+                        </div>
+                        <span className="opacity-50 line-through decoration-slate-600">{f}</span>
                       </li>
                     ))}
                   </ul>
 
                   {/* Select button */}
-                  <div className="mt-5">
-                    <button
-                      type="button"
-                      className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${
-                        isSelected
-                          ? "text-white shadow-md"
-                          : "text-gray-700 bg-gray-100 hover:bg-gray-200"
-                      }`}
-                      style={isSelected ? { background: plan.accentColor } : {}}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center justify-center gap-1.5">
-                          <Check className="w-4 h-4" /> Selected
-                        </span>
-                      ) : (
-                        `Choose ${plan.name}`
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                      isSelected
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                        : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5"
+                    }`}
+                  >
+                    {isSelected ? "ACTIVE PLAN" : `CHOOSE ${plan.name}`}
+                  </button>
                 </div>
               </div>
             );
@@ -330,31 +316,29 @@ const PlanSelectionScreen = ({ onSelectPlan, onSkip, userEmail }) => {
         </div>
 
         {/* CTA */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-6 mt-10">
           <button
             onClick={handleContinue}
-            className="flex items-center gap-2.5 px-8 py-4 rounded-2xl text-white font-bold text-base shadow-lg transition-all hover:opacity-90 hover:shadow-xl active:scale-95"
+            className="flex items-center gap-4 px-12 py-5 rounded-2xl text-white font-black text-lg shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98] animate-slideUp group"
             style={{
-              background: selectedPlanData?.accentColor || "#7c3aed",
+              background: `linear-gradient(135deg, ${selectedPlanData?.accentColor || "#6366f1"} 0%, ${selectedPlanData?.accentColor || "#4f46e5"}cc 100%)`,
+              boxShadow: `0 20px 40px ${selectedPlanData?.accentColor}30`
             }}
           >
-            {selectedPlanData?.cta || "Continue"}
-            <span className="font-normal opacity-90">
-              with {selectedPlanData?.name}
-            </span>
-            <ArrowRight className="w-5 h-5" />
+            START WITH {selectedPlanData?.name.toUpperCase()}
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
 
           {/* Trust row */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-2 text-xs text-gray-400">
-            <span className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5" /> Secure checkout
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[10px] font-black tracking-widest text-slate-500 uppercase">
+            <span className="flex items-center gap-2 group hover:text-slate-400 transition-colors">
+              <Shield className="w-4 h-4 text-emerald-500" /> AES-256 SECURE
             </span>
-            <span className="flex items-center gap-1.5">
-              <RefreshCw className="w-3.5 h-3.5" /> Cancel anytime
+            <span className="flex items-center gap-2 group hover:text-slate-400 transition-colors">
+              <RefreshCw className="w-4 h-4 text-indigo-500" /> NO COMMITMENT
             </span>
-            <span className="flex items-center gap-1.5">
-              <CreditCard className="w-3.5 h-3.5" /> No card needed for free
+            <span className="flex items-center gap-2 group hover:text-slate-400 transition-colors">
+              <CreditCard className="w-4 h-4 text-purple-500" /> NO CARD REQUIRED
             </span>
           </div>
         </div>

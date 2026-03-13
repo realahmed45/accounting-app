@@ -66,68 +66,67 @@ const TimeOffManager = ({ accountId }) => {
   if (loading) return null;
 
   return (
-    <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 shadow-3xl overflow-hidden h-full flex flex-col animate-in fade-in duration-500">
-      <div className="p-10 border-b border-white/5 flex items-center justify-between">
-         <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-teal-500 rounded-2xl flex items-center justify-center text-white shadow-2xl relative">
-               <div className="absolute inset-0 bg-green-400 blur-xl opacity-20 animate-pulse" />
-               <Sun className="w-8 h-8 relative z-10" />
+    <div className="glass-panel h-full flex flex-col animate-fadeIn border-white/5 overflow-hidden">
+      <div className="p-10 border-b border-white/5 flex items-center justify-between group">
+         <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-white shadow-[0_20px_40px_rgba(16,185,129,0.3)] group-hover:scale-110 transition-transform duration-500">
+               <Sun className="w-8 h-8" />
             </div>
             <div>
-               <h3 className="text-2xl font-black text-white tracking-tighter">Personnel Quotas</h3>
-               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Annual Leave Analytics ({year})</p>
+               <h3 className="text-2xl font-black text-white tracking-widest uppercase">Personnel Quotas</h3>
+               <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-3">Annual Leave Synchronization ({year})</p>
             </div>
          </div>
       </div>
 
-      <div className="flex-1 p-10 overflow-y-auto custom-scrollbar space-y-8">
+      <div className="flex-1 p-10 overflow-y-auto custom-scrollbar space-y-10">
         {members.map(member => {
           const balance = balances[member._id] || { annualAllowance: 0, usedDays: 0, extraEarnedDays: 0 };
           const remaining = (balance.annualAllowance + balance.extraEarnedDays) - balance.usedDays;
 
           return (
-            <div key={member._id} className="group bg-white/[0.03] hover:bg-white/[0.07] rounded-[2.5rem] p-8 border border-white/5 transition-all duration-500 shadow-xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-10 bg-green-500/5 blur-[40px] rounded-full" />
+            <div key={member._id} className="glass-panel p-10 group transition-all duration-700 hover:bg-white/[0.04] hover:scale-[1.01] relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-16 bg-emerald-500/5 blur-[80px] rounded-full group-hover:bg-emerald-500/10 transition-all duration-700" />
                
-               <div className="flex items-center gap-6 mb-8 relative z-10">
-                  <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white font-black text-sm border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
+               <div className="flex items-center gap-8 mb-10 relative z-10">
+                  <div className="w-16 h-16 bg-slate-800 rounded-[1.5rem] flex items-center justify-center text-white font-black text-sm border border-white/5 shadow-2xl group-hover:scale-110 group-hover:border-emerald-500/30 transition-all duration-500">
                     {member.displayName.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h5 className="text-xl font-black text-white tracking-tight uppercase">{member.displayName}</h5>
-                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] mt-1">{member.role}</p>
+                    <h5 className="text-xl font-black text-white tracking-widest uppercase group-hover:text-emerald-400 transition-colors">{member.displayName}</h5>
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mt-2">{member.role} // UNIT_0{member._id.toString().slice(-4).toUpperCase()}</p>
                   </div>
                   {saving === member._id && (
-                    <div className="ml-auto flex items-center gap-2">
-                       <div className="w-2 h-2 bg-indigo-500 rounded-full animate-ping" />
-                       <span className="text-[8px] font-black text-indigo-400 uppercase tracking-widest">Saving...</span>
+                    <div className="ml-auto flex items-center gap-3">
+                       <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                       <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Protocol Syncing...</span>
                     </div>
                   )}
                </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-                  <div className="space-y-4">
-                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 shadow-inner">
-                        <div className="flex items-center gap-3">
-                           <Target className="w-4 h-4 text-indigo-400" />
-                           <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Base Quota</span>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
+                  <div className="space-y-6">
+                     <div className="flex items-center justify-between p-6 bg-slate-900/50 rounded-2xl border border-white/5 shadow-inner group/input focus-within:border-indigo-500/30 transition-all">
+                        <div className="flex items-center gap-4">
+                           <Target className="w-5 h-5 text-indigo-400 group-hover/input:scale-110 transition-transform" />
+                           <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em]">Base Quota</span>
                         </div>
                         <input 
                           type="number" 
-                          className="w-16 bg-transparent border-none text-right font-black text-white text-lg focus:ring-0 appearance-none"
+                          className="w-20 bg-transparent border-none text-right font-black text-white text-2xl focus:ring-0 appearance-none tabular-nums"
                           value={balance.annualAllowance}
                           onChange={(e) => setBalances(p => ({...p, [member._id]: {...balance, annualAllowance: parseInt(e.target.value)||0}}))}
                           onBlur={() => handleUpdate(member._id, { annualAllowance: balance.annualAllowance })}
                         />
                      </div>
-                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 shadow-inner">
-                        <div className="flex items-center gap-3">
-                           <Zap className="w-4 h-4 text-purple-400" />
-                           <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Used Track</span>
+                     <div className="flex items-center justify-between p-6 bg-slate-900/50 rounded-2xl border border-white/5 shadow-inner group/input focus-within:border-purple-500/30 transition-all">
+                        <div className="flex items-center gap-4">
+                           <Zap className="w-5 h-5 text-purple-400 group-hover/input:scale-110 transition-transform" />
+                           <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em]">Used Track</span>
                         </div>
                         <input 
                           type="number" 
-                          className="w-16 bg-transparent border-none text-right font-black text-white text-lg focus:ring-0 appearance-none"
+                          className="w-20 bg-transparent border-none text-right font-black text-white text-2xl focus:ring-0 appearance-none tabular-nums"
                           value={balance.usedDays}
                           onChange={(e) => setBalances(p => ({...p, [member._id]: {...balance, usedDays: parseInt(e.target.value)||0}}))}
                           onBlur={() => handleUpdate(member._id, { usedDays: balance.usedDays })}
@@ -135,21 +134,21 @@ const TimeOffManager = ({ accountId }) => {
                      </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                     <div className="p-4 bg-indigo-900/10 rounded-2xl border border-indigo-500/10 flex flex-col justify-between group-hover:bg-indigo-900/20 transition-all duration-500 shadow-2xl shadow-indigo-900/20">
-                        <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Neural Bonus</span>
-                        <div className="mt-2 flex items-baseline gap-1">
-                           <span className="text-2xl font-black text-white">+{balance.extraEarnedDays}</span>
-                           <span className="text-[10px] font-black text-gray-600">DAYS</span>
+                  <div className="grid grid-cols-2 gap-6">
+                     <div className="p-6 bg-indigo-900/10 rounded-2xl border border-indigo-500/10 flex flex-col justify-between group-hover:bg-indigo-900/20 transition-all duration-700 shadow-[0_20px_40px_rgba(79,70,229,0.1)]">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Neural Bonus</span>
+                        <div className="mt-4 flex items-baseline gap-2">
+                           <span className="text-3xl font-black text-white tracking-widest">+{balance.extraEarnedDays}</span>
+                           <span className="text-[10px] font-black text-slate-700 uppercase tracking-tighter">DAYS</span>
                         </div>
                      </div>
-                     <div className={`p-4 rounded-2xl border flex flex-col justify-between transition-all duration-500 shadow-2xl ${
-                        remaining < 0 ? 'bg-red-900/20 border-red-500/20 shadow-red-900/20' : 'bg-green-900/20 border-green-500/20 shadow-green-900/20'
+                     <div className={`p-6 rounded-2xl border flex flex-col justify-between transition-all duration-700 shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${
+                        remaining < 0 ? 'bg-rose-900/20 border-rose-500/20' : 'bg-emerald-900/20 border-emerald-500/20'
                      }`}>
-                        <span className={`text-[9px] font-black uppercase tracking-widest ${remaining < 0 ? 'text-red-400' : 'text-green-400'}`}>Remaining</span>
-                        <div className="mt-2 flex items-baseline gap-1">
-                           <span className={`text-2xl font-black ${remaining < 0 ? 'text-red-400' : 'text-green-400'}`}>{remaining}</span>
-                           <span className="text-[10px] font-black text-gray-600 uppercase">Avail</span>
+                        <span className={`text-[10px] font-black uppercase tracking-[0.3em] ${remaining < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>Availability</span>
+                        <div className="mt-4 flex items-baseline gap-2">
+                           <span className={`text-3xl font-black tracking-widest ${remaining < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>{remaining}</span>
+                           <span className="text-[10px] font-black text-slate-700 uppercase tracking-tighter">READY</span>
                         </div>
                      </div>
                   </div>
@@ -159,11 +158,11 @@ const TimeOffManager = ({ accountId }) => {
         })}
       </div>
       
-      <div className="p-8 bg-black/20 flex items-center gap-4 border-t border-white/5">
-        <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center text-green-400">
-           <ShieldCheck className="w-5 h-5" />
+      <div className="p-8 bg-slate-900/50 flex flex-col sm:flex-row items-center gap-6 border-t border-white/5">
+        <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 border border-emerald-500/20 shrink-0">
+           <ShieldCheck className="w-6 h-6 animate-pulse" />
         </div>
-        <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-relaxed">Neural bonus days are auto-credited via approved overtime matrix synchronization.</p>
+        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] leading-relaxed text-center sm:text-left">Neural bonus days are auto-credited via approved overtime matrix synchronization protocols.</p>
       </div>
     </div>
   );

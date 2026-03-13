@@ -1401,7 +1401,7 @@ function App() {
       />
 
       {/* Main Content Area */}
-      <div className={`transition-all duration-300 min-h-screen ${isSidebarOpen ? 'lg:pl-64' : 'lg:pl-0'}`}>
+      <div className={`flex flex-col transition-all duration-300 min-h-screen ${isSidebarOpen ? 'lg:pl-64' : 'lg:pl-0'}`}>
         <Header
           user={user}
           currentMember={currentMember}
@@ -1429,8 +1429,8 @@ function App() {
           />
         )}
 
-        <main className={`flex-1 transition-all duration-500 overflow-hidden`}>
-          <div className="silk-container p-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-10">
+          <div className="max-w-7xl mx-auto space-y-8 animate-fadeIn">
             {renderContent()}
           </div>
         </main>

@@ -98,7 +98,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
   }, [expenses]);
 
   return (
-    <div className="glass-card-silk !bg-white/60 p-6 mb-6 overflow-hidden relative group shadow-md border-slate-200">
+    <div className="glass-card p-6 mb-6 overflow-hidden relative group border-white/5">
       {/* Dynamic Background Glow */}
       <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-[100px] group-hover:bg-indigo-500/10 transition-all duration-700"></div>
       <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/5 rounded-full blur-[100px] group-hover:bg-purple-500/10 transition-all duration-700"></div>
@@ -108,8 +108,8 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <Activity className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h3 className="text-2xl font-black text-slate-900">Quick Stats</h3>
-          <p className="text-slate-500 text-sm font-medium">
+          <h3 className="text-2xl font-black text-white">Quick Stats</h3>
+          <p className="text-slate-400 text-sm font-medium">
             This week's financial overview
           </p>
         </div>
@@ -117,7 +117,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Average Daily Spending */}
-        <div className="glass-card-silk !bg-white/40 border-slate-200 p-5 hover:border-blue-400 transition-all duration-500 group/stat shadow-sm">
+        <div className="glass-card border-white/5 p-5 hover:border-blue-500/30 transition-all duration-500 group/stat">
           <div className="flex items-center justify-between mb-4">
             <div className="bg-blue-500/20 p-2.5 rounded-xl text-blue-400 group-hover/stat:scale-110 transition-transform">
               <Calendar className="w-5 h-5" />
@@ -133,7 +133,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">
             Avg Daily
           </p>
-          <p className="text-3xl font-black text-slate-900 tracking-tight mb-1">
+          <p className="text-3xl font-black text-white tracking-tight mb-1">
             ${stats.avgDaily.toFixed(2)}
           </p>
           {trendPercentage !== 0 && (
@@ -149,7 +149,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
         </div>
 
         {/* Largest Expense */}
-        <div className="glass-card-silk !bg-white/40 border-slate-200 p-5 hover:border-amber-400 transition-all duration-500 group/stat shadow-sm">
+        <div className="glass-card border-white/5 p-5 hover:border-amber-500/30 transition-all duration-500 group/stat">
           <div className="flex items-center justify-between mb-4">
             <div className="bg-amber-500/20 p-2.5 rounded-xl text-amber-400 group-hover/stat:scale-110 transition-transform">
               <AlertCircle className="w-5 h-5" />
@@ -159,7 +159,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">
             Peak Spend
           </p>
-          <p className="text-3xl font-black text-slate-900 tracking-tight mb-1">
+          <p className="text-3xl font-black text-white tracking-tight mb-1">
             ${stats.largestExpense?.amount?.toFixed(2) || "0.00"}
           </p>
           {stats.largestExpense && (
@@ -170,7 +170,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
         </div>
 
         {/* Most Used Category */}
-        <div className="glass-card-silk !bg-white/40 border-slate-200 p-5 hover:border-purple-400 transition-all duration-500 group/stat shadow-sm">
+        <div className="glass-card border-white/5 p-5 hover:border-purple-500/30 transition-all duration-500 group/stat">
           <div className="flex items-center justify-between mb-4">
             <div className="bg-purple-500/20 p-2.5 rounded-xl text-purple-400 group-hover/stat:scale-110 transition-transform">
               <Award className="w-5 h-5" />
@@ -182,7 +182,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">
             Main Category
           </p>
-          <p className="text-3xl font-black text-slate-900 tracking-tight mb-1">
+          <p className="text-3xl font-black text-white tracking-tight mb-1">
             ${stats.topCategory?.total?.toFixed(2) || "0.00"}
           </p>
           {stats.topCategory && (

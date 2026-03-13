@@ -121,28 +121,28 @@ const DailyBreakdown = ({
     if (count === 0) return null;
 
     return (
-      <div className="glass-card-silk !bg-white/40 overflow-hidden hover:border-slate-300 transition-all duration-300 shadow-sm">
+      <div className="glass-card overflow-hidden hover:border-slate-700 transition-all duration-300">
         <button
           onClick={() => toggleSection(dateStr, section)}
           className={`w-full px-5 py-4 bg-transparent hover:bg-white/5 flex items-center justify-between transition-all group border-l-4 border-l-${color}-500/50`}
         >
           <div className="flex items-center gap-4">
             <ChevronRight
-              className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-90 text-slate-900" : ""}`}
+              className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-90 text-white" : ""}`}
             />
-            <div className={`p-2.5 rounded-xl bg-${color}-100 text-${color}-600 shadow-sm group-hover:scale-110 transition-transform`}>
+            <div className={`p-2.5 rounded-xl bg-${color}-500/20 text-${color}-400 shadow-sm group-hover:scale-110 transition-transform`}>
               <Icon className="w-5 h-5" />
             </div>
-            <span className="font-bold text-slate-900 text-base tracking-tight">{title}</span>
+            <span className="font-bold text-white text-base tracking-tight">{title}</span>
             <span
-              className={`px-2.5 py-0.5 bg-${color}-50 text-${color}-700 text-[10px] rounded-full font-black border border-${color}-200 uppercase tracking-widest`}
+              className={`px-2.5 py-0.5 bg-${color}-500/10 text-${color}-400 text-[10px] rounded-full font-black border border-${color}-500/20 uppercase tracking-widest`}
             >
               {count}
             </span>
           </div>
         </button>
         {isExpanded && (
-          <div className="p-5 bg-slate-50/50 space-y-4 border-t border-slate-100">
+          <div className="p-5 bg-white/5 space-y-4 border-t border-white/5">
             {children}
           </div>
         )}
@@ -153,7 +153,7 @@ const DailyBreakdown = ({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header with Instructions */}
-      <div className="p-6 glass-card-silk border-slate-200 relative overflow-hidden group shadow-md">
+      <div className="p-6 glass-card border-white/5 relative overflow-hidden group">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-600/5 rounded-full blur-[100px] group-hover:bg-emerald-600/10 transition-all duration-700"></div>
         <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4">
           <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
@@ -161,13 +161,13 @@ const DailyBreakdown = ({
               <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-lg sm:text-2xl font-black text-slate-800 flex items-center gap-1.5 sm:gap-2 truncate">
+              <h3 className="text-lg sm:text-2xl font-black text-white flex items-center gap-1.5 sm:gap-2 truncate">
                 <span className="truncate">Daily Activity</span>
                 <div className="flex-shrink-0">
                   <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities. Days with more activity show higher counts." />
                 </div>
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5 sm:mt-1 truncate">
+              <p className="text-xs sm:text-sm text-slate-400 font-medium mt-0.5 sm:mt-1 truncate">
                 📅 Week view • Tap any day
               </p>
             </div>
@@ -213,7 +213,7 @@ const DailyBreakdown = ({
           return (
             <div
               key={dateStr}
-              className="glass-card-silk !bg-white/60 border-slate-200 overflow-hidden hover:border-emerald-400 transition-all duration-300 group shadow-sm"
+              className="glass-card border-white/5 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group"
             >
               <button
                 onClick={() => toggleDayExpansion(dateStr)}
@@ -230,7 +230,7 @@ const DailyBreakdown = ({
                     <Calendar className="w-6 h-6" />
                   </div>
                   <div className="text-left min-w-0 flex-1">
-                    <span className="font-black text-lg text-slate-900 block tracking-tight">
+                    <span className="font-black text-lg text-white block tracking-tight">
                       {formatDateReadable(date)}
                     </span>
                     <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 flex-wrap">
@@ -267,12 +267,12 @@ const DailyBreakdown = ({
               {isExpanded && (
                 <div className="p-5 bg-white/5 space-y-4 border-t border-white/5">
                   {activityCount === 0 && (
-                    <div className="text-center py-12 bg-white/5 rounded-2xl border-2 border-dashed border-white/5">
+                    <div className="text-center py-12 bg-white/5 rounded-2xl border-2 border-dashed border-white/10">
                       <FileText className="w-16 h-16 mx-auto mb-4 text-slate-700" />
-                      <p className="font-bold text-slate-900 text-lg mb-2 px-4 tracking-tight">
+                      <p className="font-bold text-white text-lg mb-2 px-4 tracking-tight">
                         No Activity Yet
                       </p>
-                      <p className="text-slate-500 text-xs px-4 font-medium uppercase tracking-widest">
+                      <p className="text-slate-400 text-xs px-4 font-medium uppercase tracking-widest">
                         Add expenses or schedule activities
                       </p>
                     </div>
@@ -294,7 +294,7 @@ const DailyBreakdown = ({
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 flex-wrap mb-2">
-                            <span className="text-xl font-black text-slate-900 tracking-tight">
+                            <span className="text-xl font-black text-white tracking-tight">
                               {formatAmount(
                                 expense.amount,
                                 currentAccount?.currency,
@@ -321,7 +321,7 @@ const DailyBreakdown = ({
                             )}
                           </div>
                           {expense.note && (
-                            <p className="text-sm text-slate-600 mb-2 leading-relaxed italic opacity-80">
+                            <p className="text-sm text-slate-400 mb-2 leading-relaxed italic opacity-80">
                               "{expense.note}"
                             </p>
                           )}
@@ -384,7 +384,7 @@ const DailyBreakdown = ({
                         className="p-4 bg-indigo-500/5 border-l-4 border-indigo-500/50 rounded-r-xl"
                       >
                         <div className="flex items-center gap-3 flex-wrap mb-2">
-                          <span className="font-black text-slate-900 tracking-tight">
+                          <span className="font-black text-white tracking-tight">
                             {shift.type.label}
                           </span>
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -438,7 +438,7 @@ const DailyBreakdown = ({
                         key={checkIn._id}
                         className="p-4 bg-emerald-500/5 border-l-4 border-emerald-500/50 rounded-r-xl"
                       >
-                        <div className="font-bold text-slate-900 mb-2 tracking-tight">
+                        <div className="font-bold text-white mb-2 tracking-tight">
                           {checkIn.member?.name || "Member"} checked in
                         </div>
                         <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
@@ -504,7 +504,7 @@ const DailyBreakdown = ({
                           className="p-4 bg-purple-500/5 border-l-4 border-purple-500/50 rounded-r-xl"
                         >
                           <div className="flex items-center gap-3 flex-wrap mb-2">
-                            <span className="font-black text-slate-900 tracking-tight">
+                            <span className="font-black text-white tracking-tight">
                               {log.member?.name || "Member"}
                             </span>
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -599,7 +599,7 @@ const DailyBreakdown = ({
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <span className="text-xl group-hover/activity:scale-125 transition-transform duration-300">{style.icon}</span>
-                            <span className="font-bold text-slate-900 tracking-tight">
+                            <span className="font-bold text-white tracking-tight">
                               {activity.description}
                             </span>
                           </div>

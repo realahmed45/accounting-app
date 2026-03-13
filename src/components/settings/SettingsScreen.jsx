@@ -477,7 +477,7 @@ const SettingsScreen = ({
             {settingsSection && (
               <button
                 onClick={() => setSettingsSection(null)}
-                className="p-3 hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-all mr-2 rounded-2xl group border border-slate-100 shadow-sm"
+                className="p-3 hover:bg-white/5 text-slate-400 hover:text-white transition-all mr-2 rounded-2xl group border border-white/10 shadow-sm"
               >
                 <ChevronDown className="w-6 h-6 rotate-90 group-active:scale-95 transition-transform" />
               </button>
@@ -486,7 +486,7 @@ const SettingsScreen = ({
               <Settings className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase truncate">
+              <h1 className="text-2xl font-black text-white tracking-tight uppercase truncate">
                 {settingsSection === "users" && "Neural Network"}
                 {settingsSection === "categories" && "Logic Classes"}
                 {settingsSection === "bankAccounts" && "Liquidity Nodes"}
@@ -496,7 +496,7 @@ const SettingsScreen = ({
                 {settingsSection === "notifications" && "Comm Link"}
                 {!settingsSection && "Control Center"}
               </h1>
-              <p className="text-[10px] font-black uppercase text-indigo-600 tracking-[0.4em] mt-1 opacity-70">
+              <p className="text-[10px] font-black uppercase text-indigo-400 tracking-[0.4em] mt-1 opacity-70">
                 System Profile // {settingsSection ? settingsSection.toUpperCase() : "ROOT"}
               </p>
             </div>
@@ -564,10 +564,10 @@ const SettingsScreen = ({
                     <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">
                       Ascending Node Connection
                     </p>
-                    <p className="text-xl font-black text-slate-900 tracking-widest uppercase">
+                    <p className="text-xl font-black text-white tracking-widest uppercase">
                       {parentAccount.accountName}
                     </p>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
                        <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" /> Linked Logic State // {parentAccount.uniqueId}
                     </p>
                   </div>
@@ -702,14 +702,11 @@ const SettingsScreen = ({
                       {item.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-lg font-black text-slate-900 tracking-widest uppercase truncate mb-1">
-                        {item.label}
-                      </div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         {item.desc}
                       </div>
                     </div>
-                    <ChevronDown className="w-6 h-6 text-slate-600 -rotate-90 group-hover:text-white group-hover:translate-x-2 transition-all" />
+                    <ChevronDown className="w-6 h-6 text-slate-400 -rotate-90 group-hover:text-white group-hover:translate-x-2 transition-all" />
                   </button>
                 ))}
               </div>
@@ -992,7 +989,7 @@ const SettingsScreen = ({
               {/* Pending Invitations */}
               {pendingInvitations.length > 0 && (
                 <div className="mt-16">
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-8 flex items-center gap-4">
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">
                     <Mail className="w-5 h-5 text-indigo-500" /> Awaiting Link Authorization
                   </h3>
                   <div className="grid grid-cols-1 gap-4">

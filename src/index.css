@@ -99,7 +99,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Neural Deep (Core Dark) */
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --bg-dark: #020617;
@@ -111,14 +110,6 @@
   --text-secondary: #94a3b8;
   --accent-blue: #38bdf8;
   --accent-purple: #a855f7;
-
-  /* Neural Silk (Sophisticated Light) */
-  --silk-bg: #f8fafc;
-  --silk-panel: #ffffff;
-  --silk-text-primary: #0f172a;
-  --silk-text-secondary: #475569;
-  --silk-border: #e2e8f0;
-  --silk-glass: rgba(255, 255, 255, 0.8);
 }
 
 * {
@@ -131,23 +122,26 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-dark); /* Keep base dark for sidebar/modals */
+  background: var(--bg-dark);
   color: var(--text-primary);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Neural Silk Container - High Contrast Light Zone */
-.silk-container {
-  background: var(--silk-bg);
-  min-height: 100vh;
-  border-top-left-radius: 2.5rem;
-  border-bottom-left-radius: 2.5rem;
-  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.2);
-  color: var(--silk-text-primary);
-  position: relative;
-  z-index: 10;
+.glass-panel {
+  background: var(--glass-white);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
 }
 
 @media (max-width: 1024px) {

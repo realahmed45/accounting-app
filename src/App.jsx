@@ -16,10 +16,14 @@ import NotificationCenter from "./components/NotificationCenter";
 import NotificationSettings from "./components/NotificationSettings";
 import FinancialOverview from "./components/dashboard/FinancialOverview";
 import DailyBreakdown from "./components/dashboard/DailyBreakdown";
+import RecentActivity from "./components/dashboard/RecentActivity";
 import SettingsScreen from "./components/settings/SettingsScreen";
 import ReportsScreen from "./components/ReportsScreen"; // NEW
 import QuickStatsWidget from "./components/QuickStatsWidget"; // NEW
 import BulkOperationsBar from "./components/BulkOperationsBar"; // NEW
+import AddExpenseModal from "./components/AddExpenseModal";
+import ExpenseDetailModal from "./components/ExpenseDetailModal";
+import Sidebar from "./components/layout/Sidebar";
 import {
   weekService,
   expenseService,
@@ -60,6 +64,11 @@ import {
   Users,
   Search,
   Edit,
+  Home,
+  Bell,
+  LayoutGrid,
+  HelpCircle,
+  ArrowLeft,
 } from "lucide-react";
 
 // ==================== CURRENCIES ====================
@@ -232,10 +241,28 @@ function App() {
   const [showReports, setShowReports] = useState(false);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
 
+  // NEW: Sidebar & new modals state
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showNewAddExpense, setShowNewAddExpense] = useState(false);
+  const [selectedExpenseForDetail, setSelectedExpenseForDetail] =
+    useState(null);
+  const [showExpenseDetail, setShowExpenseDetail] = useState(false);
+  const [showMobileAccountMenu, setShowMobileAccountMenu] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 1024 : false,
+  );
+
   const openNotificationCenter = (notificationId = null) => {
     setHighlightNotificationId(notificationId);
     setShowNotificationCenter(true);
   };
+
+  // Mobile viewport detector
+  useEffect(() => {
+    const handler = () => setIsMobileView(window.innerWidth < 1024);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
 
   // Form States
   const [addCashAmount, setAddCashAmount] = useState("");
@@ -927,6 +954,98 @@ function App() {
     }); // end runIfAllowed
   };
 
+  // ==================== NEW EXPENSE SUBMIT (redesigned modal) ====================
+  const handleNewExpenseSubmit = async (formData) =>
+    runIfAllowed(async () => {
+      if (!canAddExpenseSubscription()) {
+        setShowUpgradePrompt(true);
+        setUpgradePromptConfig({
+          feature: "Add Expense",
+          requiredPlan: "starter",
+        });
+        return;
+      }
+
+      const amount = parseFloat(formData.amount);
+      if (isNaN(amount) || amount <= 0) {
+        setStatusModal({
+          show: true,
+          type: "error",
+          message: "Please enter a valid amount",
+        });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          5000,
+        );
+        return;
+      }
+
+      setLoading(true);
+      setLoadingMessage("Adding expense...");
+      try {
+        const response = await expenseService.create({
+          accountId: currentAccount._id,
+          weekId: currentWeek._id,
+          date: formData.date,
+          amount,
+          category: formData.paymentStatus || "Expense",
+          note: formData.description,
+          paymentSource: formData.paymentSource || "cash",
+          referenceNumber: formData.referenceNumber || null,
+          paymentMode: formData.paymentMode || "Cash",
+          paymentStatus: formData.paymentStatus || "Expense",
+          bankAccountId: formData.bankAccountId || null,
+        });
+
+        if (response.success) {
+          // Upload photo if provided
+          if (formData.photoFile) {
+            try {
+              await photoService.upload(response.data._id, formData.photoFile);
+            } catch (photoErr) {
+              console.error("Photo upload failed:", photoErr);
+            }
+          }
+          // Upload attachment document if provided (PDF/DOC saved same way)
+          if (formData.attachmentFile) {
+            try {
+              await photoService.upload(
+                response.data._id,
+                formData.attachmentFile,
+              );
+            } catch (attachErr) {
+              console.error("Attachment upload failed:", attachErr);
+            }
+          }
+
+          // Reload data
+          await loadExpenses(currentWeek._id);
+          await loadWeeks();
+          await loadBankAccounts();
+
+          setShowNewAddExpense(false);
+          setStatusModal({
+            show: true,
+            type: "success",
+            message: "Expense added successfully!",
+          });
+          setTimeout(
+            () => setStatusModal({ show: false, type: "", message: "" }),
+            5000,
+          );
+        }
+      } catch (err) {
+        const msg = err.response?.data?.message || "Failed to add expense";
+        setStatusModal({ show: true, type: "error", message: msg });
+        setTimeout(
+          () => setStatusModal({ show: false, type: "", message: "" }),
+          5000,
+        );
+      } finally {
+        setLoading(false);
+      }
+    });
+
   const handleDeleteExpense = async (expenseId) =>
     runIfAllowed(async () => {
       if (!window.confirm("Are you sure you want to delete this expense?")) {
@@ -1292,352 +1411,513 @@ function App() {
   const weekDates = getWeekDates(weekStartDate);
 
   return (
-    <div className="min-h-screen h-full bg-slate-50">
-      <Header
-        user={user}
-        currentMember={currentMember}
-        hasPermission={hasPermission}
-        setShowSettings={setShowSettings}
-        setShowCreateAccountModal={setShowCreateAccountModal}
-        logout={logout}
-        onOpenNotificationCenter={openNotificationCenter}
-        onShowOnboarding={() => setShowOnboarding(true)}
-        expenses={expenses}
-        onExpenseClick={(expense) => {
-          // Scroll to expense or highlight it
-          console.log("Navigate to expense:", expense);
-        }}
-        onShowReports={() => setShowReports(true)}
-      />
+    <div className="min-h-screen flex bg-gray-50">
+      {/* ========== SIDEBAR (web only) ========== */}
+      {!isMobileView && (
+        <Sidebar
+          isOpen={showSidebar}
+          onClose={() => setShowSidebar(false)}
+          onAddExpense={() => setShowNewAddExpense(true)}
+          onShowHistory={() => setShowHistoryTab(true)}
+          onShowBankAccounts={() => setActiveModal("bankAccounts")}
+          onShowReports={() => setShowReports(true)}
+          onShowSettings={() => setShowSettings(true)}
+          onSwitchBusiness={(acc) => switchAccount(acc._id)}
+          onCreateAccount={() => setShowCreateAccountModal(true)}
+          currentAccount={currentAccount}
+          accounts={accounts}
+        />
+      )}
+      {/* ========== MAIN AREA ========== */}
+      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+        {/* Web Header (desktop only) */}
+        {!isMobileView && (
+          <Header
+            user={user}
+            currentMember={currentMember}
+            hasPermission={hasPermission}
+            setShowSettings={setShowSettings}
+            setShowCreateAccountModal={setShowCreateAccountModal}
+            logout={logout}
+            onOpenNotificationCenter={openNotificationCenter}
+            onShowOnboarding={() => setShowOnboarding(true)}
+            expenses={expenses}
+            onExpenseClick={(expense) => {
+              setSelectedExpenseForDetail(expense);
+              setShowExpenseDetail(true);
+            }}
+            onShowReports={() => setShowReports(true)}
+            onToggleSidebar={() => setShowSidebar(!showSidebar)}
+            sidebarLayout={true}
+          />
+        )}
+
+        {isMobileView ? (
+          /* ==================== MOBILE HOME LAYOUT ==================== */
+          <div className="flex-1 flex flex-col bg-white overflow-hidden">
+            {/* Mobile Header */}
+            <div className="bg-white px-4 pt-10 pb-3 flex items-center justify-between border-b border-gray-100 relative">
+              <button
+                onClick={() => setShowMobileAccountMenu((p) => !p)}
+                className="flex items-center gap-1.5 px-2 py-1.5 -ml-2 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-base font-bold text-gray-900">
+                  {currentAccount?.accountName ||
+                    currentAccount?.name ||
+                    "Bakery Accounting"}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-600 transition-transform ${showMobileAccountMenu ? "rotate-180" : ""}`}
+                />
+              </button>
+              <button className="p-1.5 rounded-lg hover:bg-gray-100">
+                <HelpCircle className="w-5 h-5 text-gray-500" />
+              </button>
+
+              {/* Account switcher dropdown */}
+              {showMobileAccountMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowMobileAccountMenu(false)}
+                  />
+                  <div className="absolute top-full left-4 right-4 mt-1 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        Your Accounts ({accounts?.length || 0})
+                      </p>
+                    </div>
+                    {(accounts || []).map((acc) => (
+                      <button
+                        key={acc._id}
+                        onClick={async () => {
+                          await switchAccount(acc._id);
+                          setShowMobileAccountMenu(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${
+                          acc._id === currentAccount?._id
+                            ? "bg-blue-50 border-l-4 border-blue-600"
+                            : "hover:bg-gray-50 border-l-4 border-transparent"
+                        }`}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                            acc._id === currentAccount?._id
+                              ? "bg-blue-600"
+                              : "bg-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`text-xs font-bold ${
+                              acc._id === currentAccount?._id
+                                ? "text-white"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {(acc.accountName ||
+                              acc.name ||
+                              "")[0]?.toUpperCase() || "A"}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`text-sm font-semibold truncate ${
+                              acc._id === currentAccount?._id
+                                ? "text-blue-900"
+                                : "text-gray-800"
+                            }`}
+                          >
+                            {acc.accountName || acc.name}
+                          </p>
+                          {acc._id === currentAccount?._id && (
+                            <p className="text-xs text-blue-600 font-medium">
+                              ✓ Active
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                    <div className="border-t border-gray-100">
+                      <button
+                        onClick={() => {
+                          setShowMobileAccountMenu(false);
+                          handleCreateAccountClick();
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors text-left"
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center">
+                          <Plus className="w-4 h-4 text-emerald-600" />
+                        </div>
+                        Create New Account
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto pb-24 space-y-4 px-4 pt-4">
+              {/* Total Expense Card */}
+              <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <span className="text-white font-bold text-base">
+                    {(
+                      user?.firstName?.[0] ||
+                      user?.email?.[0] ||
+                      "U"
+                    ).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Total Expanse
+                  </p>
+                  <p className="text-xl font-bold text-gray-900">
+                    $
+                    {Number(
+                      expenses.reduce((s, e) => s + (e.amount || 0), 0),
+                    ).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              {/* Quick Actions Row */}
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => setShowNewAddExpense(true)}
+                  className="bg-white rounded-2xl p-4 flex flex-col items-center gap-2 shadow-sm border border-gray-100 active:bg-gray-50"
+                >
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700">
+                    New Expense
+                  </span>
+                </button>
+                <button
+                  onClick={() => setShowHistoryTab(true)}
+                  className="bg-white rounded-2xl p-4 flex flex-col items-center gap-2 shadow-sm border border-gray-100 active:bg-gray-50"
+                >
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                    <History className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700">
+                    History
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActiveModal("bankAccounts")}
+                  className="bg-white rounded-2xl p-4 flex flex-col items-center gap-2 shadow-sm border border-gray-100 active:bg-gray-50"
+                >
+                  <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                    <LayoutGrid className="w-5 h-5 text-green-600" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700">
+                    More
+                  </span>
+                </button>
+              </div>
+
+              {/* Recent Activity Section (mobile card list) */}
+              <RecentActivity
+                expenses={expenses}
+                weeks={weeks}
+                currentWeekIndex={currentWeekIndex}
+                onAddExpense={() => setShowNewAddExpense(true)}
+                onAddNewWeek={createNewWeek}
+                onViewDetails={(expense) => {
+                  setSelectedExpenseForDetail(expense);
+                  setShowExpenseDetail(true);
+                }}
+                onDeleteExpense={handleDeleteExpense}
+                onExport={() => {}}
+                onSeeAll={() => setShowHistoryTab(true)}
+                formatAmount={formatAmount}
+                currentAccount={currentAccount}
+                bankAccounts={bankAccounts}
+                isMobileEmbedded={true}
+              />
+            </div>
+
+            {/* Mobile Bottom Navigation */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center z-30">
+              <button className="flex-1 flex flex-col items-center py-3 gap-0.5 text-blue-600">
+                <Home className="w-5 h-5" />
+                <span className="text-[10px] font-semibold">Home</span>
+              </button>
+              <button
+                onClick={() => openNotificationCenter()}
+                className="flex-1 flex flex-col items-center py-3 gap-0.5 text-gray-400 hover:text-gray-600"
+              >
+                <Bell className="w-5 h-5" />
+                <span className="text-[10px] font-medium">Notify</span>
+              </button>
+              <button
+                onClick={createNewWeek}
+                className="flex-1 flex flex-col items-center pb-3 pt-1 gap-0.5 text-gray-400 hover:text-gray-600"
+              >
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg -mt-5">
+                  <Plus className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-[10px] font-medium mt-1">Week</span>
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="flex-1 flex flex-col items-center py-3 gap-0.5 text-gray-400 hover:text-gray-600"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-[10px] font-medium">Account</span>
+              </button>
+            </div>
+
+            {/* Activity History Full-Screen Overlay (mobile) */}
+            {showHistoryTab && (
+              <div className="fixed inset-0 bg-white z-50 flex flex-col">
+                <div className="flex items-center gap-3 px-4 pt-10 pb-3 border-b border-gray-100 bg-white sticky top-0">
+                  <button
+                    onClick={() => setShowHistoryTab(false)}
+                    className="p-2 rounded-lg hover:bg-gray-100"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <h2 className="text-base font-bold text-gray-900">
+                    Activity History
+                  </h2>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {expenses.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400">
+                      <FileText className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                      <p className="text-base font-medium">No activities yet</p>
+                    </div>
+                  ) : (
+                    [...expenses]
+                      .sort((a, b) => new Date(b.date) - new Date(a.date))
+                      .map((exp, idx) => {
+                        const status = exp.paymentStatus || "Expense";
+                        const isInflow = [
+                          "Deposit Received",
+                          "CASH box increased F acc",
+                          "CASH box increased W cash",
+                        ].includes(status);
+                        return (
+                          <div
+                            key={exp._id}
+                            onClick={() => {
+                              setSelectedExpenseForDetail(exp);
+                              setShowExpenseDetail(true);
+                              setShowHistoryTab(false);
+                            }}
+                            className="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3 shadow-sm"
+                          >
+                            <div
+                              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isInflow ? "bg-green-100" : "bg-red-100"}`}
+                            >
+                              {isInflow ? (
+                                <svg
+                                  className="w-5 h-5 text-green-600"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M7 11l5-5m0 0l5 5m-5-5v12"
+                                  />
+                                </svg>
+                              ) : (
+                                <svg
+                                  className="w-5 h-5 text-red-500"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17 13l-5 5m0 0l-5-5m5 5V6"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-gray-400 mb-0.5">
+                                #{exp._id?.slice(-4)?.toUpperCase()} ·{" "}
+                                {new Date(exp.date).toLocaleDateString()}
+                              </p>
+                              <p
+                                className={`text-xs font-medium ${isInflow ? "text-green-600" : "text-red-500"}`}
+                              >
+                                {status}
+                              </p>
+                              <p className="text-sm text-gray-700 truncate mt-0.5">
+                                {exp.note || exp.category || "Expense"}
+                              </p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p
+                                className={`font-bold text-sm ${isInflow ? "text-green-600" : "text-gray-900"}`}
+                              >
+                                ${Number(exp.amount || 0).toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* ==================== WEB HOME LAYOUT ==================== */
+          <div className="flex-1 overflow-auto flex flex-col">
+            {/* Activity History overlay for web (when sidebar History clicked) */}
+            {showHistoryTab && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-end">
+                <div className="bg-white h-full w-full max-w-2xl flex flex-col shadow-2xl">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setShowHistoryTab(false)}
+                        className="p-2 rounded-lg hover:bg-gray-100"
+                      >
+                        <ArrowLeft className="w-5 h-5 text-gray-600" />
+                      </button>
+                      <h2 className="text-xl font-bold text-gray-900">
+                        Activity History
+                      </h2>
+                    </div>
+                    <button
+                      onClick={() => setShowHistoryTab(false)}
+                      className="p-2 rounded-lg hover:bg-gray-100"
+                    >
+                      <X className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    {expenses.length === 0 ? (
+                      <div className="text-center py-16 text-gray-400">
+                        <FileText className="w-20 h-20 mx-auto mb-4 opacity-30" />
+                        <p className="text-lg font-medium">No activities yet</p>
+                      </div>
+                    ) : (
+                      [...expenses]
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .map((exp) => {
+                          const status = exp.paymentStatus || "Expense";
+                          const isInflow = [
+                            "Deposit Received",
+                            "CASH box increased F acc",
+                            "CASH box increased W cash",
+                          ].includes(status);
+                          return (
+                            <div
+                              key={exp._id}
+                              onClick={() => {
+                                setSelectedExpenseForDetail(exp);
+                                setShowExpenseDetail(true);
+                                setShowHistoryTab(false);
+                              }}
+                              className="flex items-center justify-between px-4 py-3 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={`w-9 h-9 rounded-full flex items-center justify-center ${isInflow ? "bg-green-100" : "bg-red-100"}`}
+                                >
+                                  <Receipt
+                                    className={`w-4 h-4 ${isInflow ? "text-green-600" : "text-red-500"}`}
+                                  />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-800">
+                                    {exp.note || exp.category || "Expense"}
+                                  </p>
+                                  <p className="text-xs text-gray-400">
+                                    {new Date(exp.date).toLocaleDateString()} ·{" "}
+                                    {status}
+                                  </p>
+                                </div>
+                              </div>
+                              <p
+                                className={`text-sm font-bold ${isInflow ? "text-green-600" : "text-gray-900"}`}
+                              >
+                                ${Number(exp.amount || 0).toFixed(2)}
+                              </p>
+                            </div>
+                          );
+                        })
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+            <RecentActivity
+              expenses={expenses}
+              weeks={weeks}
+              currentWeekIndex={currentWeekIndex}
+              onAddExpense={() => setShowNewAddExpense(true)}
+              onAddNewWeek={createNewWeek}
+              onViewDetails={(expense) => {
+                setSelectedExpenseForDetail(expense);
+                setShowExpenseDetail(true);
+              }}
+              onDeleteExpense={handleDeleteExpense}
+              onExport={() => {}}
+              onSeeAll={() => setShowHistoryTab(true)}
+              formatAmount={formatAmount}
+              currentAccount={currentAccount}
+              bankAccounts={bankAccounts}
+            />
+          </div>
+        )}
+      </div>
+      {/* ========== FIXED OVERLAYS ========== */}
       <NotificationBanner success={success} error={error} setError={setError} />
       <ToastNotification onOpenCenter={openNotificationCenter} />
-      {/* Onboarding Tour */}
       {showOnboarding && (
         <OnboardingTour
           onComplete={() => setShowOnboarding(false)}
           onSkip={() => setShowOnboarding(false)}
         />
       )}
-      {/* Main Content - Full Width */}
-      <div className="w-full bg-slate-50">
-        {/* Top Action Bar - Modern Design */}
-        <div className="bg-white shadow-sm border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-3">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-slate-800">
-              {showHistoryTab
-                ? "📋 Activity History"
-                : showSchedule
-                  ? "📅 Schedule View"
-                  : "💰 Dashboard"}
-            </h2>
-          </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setShowHistoryTab(!showHistoryTab)}
-              className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm hover:shadow-md ${
-                showHistoryTab
-                  ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-lg"
-                  : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-              }`}
-            >
-              <History className="w-5 h-5" />
-              <span className="hidden sm:inline">Activity Feed</span>
-            </button>
-
-            <button
-              onClick={() => setShowSchedule(true)}
-              className="px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold shadow-sm bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 hover:shadow-lg"
-            >
-              <Calendar className="w-5 h-5" />
-              <span className="hidden sm:inline">Schedule</span>
-            </button>
-          </div>
-        </div>
-
-        {showHistoryTab ? (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sm:p-8 m-6">
-            <h2 className="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-              <div className="bg-slate-900 p-3 rounded-xl">
-                <History className="w-8 h-8 text-white" />
-              </div>
-              Activity History
-            </h2>
-
-            {/* Activity Timeline */}
-            <div className="space-y-4">
-              {expenses.length === 0 &&
-                (!currentWeek?.cashTransactions ||
-                  currentWeek.cashTransactions.length === 0) && (
-                  <div className="text-center py-16 text-slate-400">
-                    <FileText className="w-20 h-20 mx-auto mb-4 opacity-30" />
-                    <p className="text-lg font-medium">No activities yet</p>
-                    <p className="text-sm mt-2">
-                      Start adding expenses, transfers, or cash to see activity
-                      history
-                    </p>
-                  </div>
-                )}
-
-              {/* Build unified activity list: expenses + cash transactions */}
-              {Object.entries(
-                [
-                  ...expenses.map((e) => ({
-                    type: "expense",
-                    data: e,
-                    timestamp: new Date(e.createdAt || e.date),
-                  })),
-                  ...(currentWeek?.cashTransactions || []).map((ct) => ({
-                    type: "cash",
-                    data: ct,
-                    timestamp: new Date(ct.createdAt || ct.date),
-                  })),
-                ]
-                  .sort((a, b) => b.timestamp - a.timestamp)
-                  .reduce((groups, activity) => {
-                    const date = formatDate(activity.timestamp);
-                    if (!groups[date]) groups[date] = [];
-                    groups[date].push(activity);
-                    return groups;
-                  }, {}),
-              ).map(([date, activities]) => (
-                <div
-                  key={date}
-                  className="border-l-4 border-slate-300 pl-6 pb-6"
-                >
-                  <div className="sticky top-0 bg-white pb-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <Calendar className="w-5 h-5 text-emerald-600" />
-                      <h3 className="text-lg font-bold text-slate-800">
-                        {formatDateReadable(new Date(date))}
-                      </h3>
-                      <span className="text-sm text-slate-500">
-                        ({activities.length} activities)
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {activities.map((activity, idx) => {
-                      if (activity.type === "expense") {
-                        const exp = activity.data;
-                        return (
-                          <div
-                            key={idx}
-                            className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-slate-300"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-red-50 p-2 rounded-lg">
-                                    <Receipt className="w-4 h-4 text-red-600" />
-                                  </div>
-                                  <span className="font-semibold text-slate-800">
-                                    Expense
-                                  </span>
-                                  <span className="text-xl font-bold text-red-600">
-                                    -
-                                    {formatAmount(
-                                      exp.amount,
-                                      currentAccount?.currency,
-                                    ).substring(
-                                      getCurrencySymbol(
-                                        currentAccount?.currency,
-                                      ).length,
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-2 ml-10">
-                                  <span className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">
-                                    {exp.category}
-                                  </span>
-                                  {exp.paymentSource === "bank" &&
-                                    exp.bankAccountId && (
-                                      <span className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
-                                        <CreditCard className="w-3 h-3" />
-                                        {bankAccounts.find(
-                                          (ba) => ba._id === exp.bankAccountId,
-                                        )?.name || "Bank"}
-                                      </span>
-                                    )}
-                                  {exp.paymentSource === "cash" && (
-                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full font-medium">
-                                      💵 Cash
-                                    </span>
-                                  )}
-                                </div>
-                                {exp.note && (
-                                  <p className="text-sm text-slate-600 mt-2 ml-10">
-                                    {exp.note}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                {formatTime(activity.timestamp)}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      if (activity.type === "cash") {
-                        const ct = activity.data;
-                        return (
-                          <div
-                            key={idx}
-                            className="bg-white border border-emerald-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-emerald-300"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <div className="bg-emerald-50 p-2 rounded-lg">
-                                    <Wallet className="w-4 h-4 text-emerald-600" />
-                                  </div>
-                                  <span className="font-semibold text-slate-800">
-                                    Cash Added
-                                  </span>
-                                  <span className="text-xl font-bold text-green-600">
-                                    +
-                                    {formatAmount(
-                                      ct.amount,
-                                      currentAccount?.currency,
-                                    ).substring(
-                                      getCurrencySymbol(
-                                        currentAccount?.currency,
-                                      ).length,
-                                    )}
-                                  </span>
-                                </div>
-                                {ct.note && (
-                                  <p className="text-sm text-gray-600 mt-1 ml-10">
-                                    {ct.note}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {formatTime(activity.timestamp)}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      return null;
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Week Navigation */}
-            <div className="bg-white border-b border-slate-200 p-6 mb-0">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-emerald-600 p-3 rounded-xl">
-                    <Calendar className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-900">
-                      Week {currentWeekIndex + 1} of {weeks.length}
-                    </h2>
-                    <p className="text-sm text-slate-600">
-                      {formatDateReadable(weekStartDate)} -{" "}
-                      {formatDateReadable(weekEndDate)}
-                    </p>
-                  </div>
-                </div>
-                {currentWeek.isLocked && (
-                  <span className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-semibold">
-                    <Lock className="w-4 h-4" />
-                    Locked
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-3 flex-wrap">
-                <button
-                  onClick={() =>
-                    setCurrentWeekIndex(Math.max(0, currentWeekIndex - 1))
-                  }
-                  disabled={currentWeekIndex === 0}
-                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
-                >
-                  <ChevronDown className="w-4 h-4 rotate-90" />
-                  Previous Week
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentWeekIndex(
-                      Math.min(weeks.length - 1, currentWeekIndex + 1),
-                    )
-                  }
-                  disabled={currentWeekIndex === weeks.length - 1}
-                  className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-300 font-semibold rounded-xl transition-all flex items-center gap-2"
-                >
-                  Next Week
-                  <ChevronUp className="w-4 h-4 rotate-90" />
-                </button>
-                {currentWeekIndex === 0 && !currentWeek.isLocked && (
-                  <button
-                    onClick={createNewWeek}
-                    className="px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2 font-semibold rounded-xl transition-all"
-                  >
-                    <Plus className="w-5 h-5" />
-                    New Week
-                  </button>
-                )}
-                {!currentWeek.isLocked && hasPermission("makeExpense") && (
-                  <button
-                    onClick={() => setActiveModal("lockWeek")}
-                    className="px-5 py-2.5 bg-yellow-500 text-white hover:bg-yellow-600 flex items-center gap-2 ml-auto font-semibold rounded-xl transition-all"
-                  >
-                    <Lock className="w-5 h-5" />
-                    Lock Week
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Stats Widget - NEW VISIBLE FEATURE */}
-            <div className="px-6 pt-6">
-              <QuickStatsWidget expenses={expenses} weekDates={weekDates} />
-            </div>
-
-            <FinancialOverview
-              bankAccounts={bankAccounts}
-              currentWeek={currentWeek}
-              hasPermission={hasPermission}
-              setActiveModal={setActiveModal}
-              getExpectedBankAmount={getExpectedBankAmount}
-              getExpectedCashAmount={getExpectedCashAmount}
-              getTotalExpenses={getTotalExpenses}
-              expenses={expenses}
-              currentAccount={currentAccount}
-              formatAmount={formatAmount}
-            />
-
-            <DailyBreakdown
-              weekDates={weekDates}
-              formatDate={formatDate}
-              formatDateReadable={formatDateReadable}
-              getExpensesForDate={getExpensesForDate}
-              getDayTotal={getDayTotal}
-              expandedDays={expandedDays}
-              toggleDayExpansion={toggleDayExpansion}
-              setSelectedExpenseForPhoto={setSelectedExpenseForPhoto}
-              currentAccount={currentAccount}
-              formatAmount={formatAmount}
-              handleDeleteExpense={handleDeleteExpense}
-              currentWeek={currentWeek}
-              hasPermission={hasPermission}
-              bankAccounts={bankAccounts}
-              dailyActivity={dailyActivity}
-            />
-          </>
-        )}
-      </div>
-      {/* Reports Screen - NEW VISIBLE FEATURE */}
+      {/* Add Expense Modal */}
+      {showNewAddExpense && (
+        <AddExpenseModal
+          onSubmit={handleNewExpenseSubmit}
+          onClose={() => setShowNewAddExpense(false)}
+          loading={loading}
+          expenseCount={expenses.length}
+          isMobile={isMobileView}
+          currentAccount={currentAccount}
+          currentAccountName={currentAccount?.name}
+          bankAccounts={bankAccounts}
+        />
+      )}
+      {/* Expense Detail Modal */}
+      {showExpenseDetail && selectedExpenseForDetail && (
+        <ExpenseDetailModal
+          expense={selectedExpenseForDetail}
+          expenseIndex={expenses.findIndex(
+            (e) => e._id === selectedExpenseForDetail._id,
+          )}
+          onClose={() => {
+            setShowExpenseDetail(false);
+            setSelectedExpenseForDetail(null);
+          }}
+          isMobile={isMobileView}
+          currentAccountName={currentAccount?.name || ""}
+          totalExpense={expenses.reduce((s, e) => s + (e.amount || 0), 0)}
+        />
+      )}
+      {/* Reports Screen */}
       {showReports && (
         <ReportsScreen
           onClose={() => setShowReports(false)}

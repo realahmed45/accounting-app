@@ -81,18 +81,18 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
   return (
     <div className="fixed inset-0 z-[100] bg-white flex flex-col overflow-y-auto">
       {/* Header Container - Fixed top but scrollable with page */}
-      <div className="sticky top-0 z-[110] bg-white border-b border-slate-200 px-4 md:px-12 py-6 flex items-center justify-between\">
-        <div className="flex items-center gap-4">
-          <div className="bg-emerald-600 p-3 rounded-xl\">
-            <Calendar className="w-7 h-7 text-white\" />
+      <div className="sticky top-0 z-[110] bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-emerald-600 p-2 sm:p-3 rounded-xl">
+            <Calendar className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight\">
+            <h1 className="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight">
               Scheduling Center
             </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full\" />
-              <p className="text-xs text-slate-600 font-semibold\">
+            <div className="hidden sm:flex items-center gap-2 mt-1">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+              <p className="text-xs text-slate-600 font-semibold">
                 Real-time Sync
               </p>
             </div>
@@ -101,34 +101,32 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
 
         <button
           onClick={onClose}
-          className="group p-3 bg-slate-100 hover:bg-red-500 rounded-xl transition-all duration-300 border border-slate-200 hover:border-red-400\"
+          className="group p-2 sm:p-3 bg-slate-100 hover:bg-red-500 rounded-xl transition-all duration-300 border border-slate-200 hover:border-red-400"
         >
-          <X className="w-6 h-6 text-slate-600 group-hover:text-white transition-colors\" />
+          <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600 group-hover:text-white transition-colors" />
         </button>
       </div>
 
       {/* Main Context Grid */}
       <div className="flex-1 flex flex-col items-center bg-slate-50">
-        <div className="w-full max-w-7xl px-4 md:px-12 py-10">
+        <div className="w-full max-w-7xl px-4 sm:px-6 py-4 sm:py-8">
           {/* Navigation Bar - Floating Design */}
-          <div className="flex justify-center mb-12">
-            <div className="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex gap-1 items-center">
+          <div className="flex justify-center mb-6 sm:mb-10">
+            <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-sm flex gap-0.5 sm:gap-1 items-center overflow-x-auto max-w-full">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex-shrink-0 ${
                     activeTab === tab.id
-                      ? "text-white bg-emerald-600 shadow-md"
+                      ? "text-white bg-emerald-600 shadow-sm"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  <div
-                    className={`transition-transform duration-300 ${activeTab === tab.id ? "scale-110" : "group-hover:scale-110"}`}
-                  >
-                    {tab.icon}
-                  </div>
-                  {tab.label}
+                  <span className="flex-shrink-0">{tab.icon}</span>
+                  <span className="hidden xs:inline sm:inline">
+                    {tab.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -166,7 +164,7 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
                       </span>
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                       {/* For Regular Users */}
                       <div className="bg-white p-4 rounded-xl border border-blue-200">
                         <h4 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
@@ -306,8 +304,8 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
 
           {/* Alert Handlers */}
           {error && (
-            <div className="mb-8 max-w-2xl mx-auto bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex items-center gap-4">
-              <AlertCircle className="w-6 h-6 flex-shrink-0" />
+            <div className="mb-4 sm:mb-8 max-w-2xl mx-auto bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <p className="text-sm font-semibold">{error}</p>
               <button
                 onClick={() => setError("")}
@@ -319,8 +317,8 @@ const ScheduleScreen = ({ accountId, currentMember, onClose }) => {
           )}
 
           {success && (
-            <div className="mb-8 max-w-2xl mx-auto bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-xl flex items-center gap-4">
-              <CheckCircle2 className="w-6 h-6 flex-shrink-0" />
+            <div className="mb-4 sm:mb-8 max-w-2xl mx-auto bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
               <p className="text-sm font-semibold">{success}</p>
               <button
                 onClick={() => setSuccess("")}

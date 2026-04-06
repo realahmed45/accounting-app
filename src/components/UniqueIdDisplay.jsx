@@ -88,7 +88,7 @@ const UniqueIdDisplay = ({ uniqueId }) => {
         </div>
 
         <div className="bg-white border-2 border-slate-300 rounded-xl p-4 mb-3">
-          <p className="text-3xl font-bold text-slate-900 tracking-wider font-mono text-center select-all">
+          <p className="text-xl sm:text-3xl font-bold text-slate-900 tracking-wider font-mono text-center select-all">
             {uniqueId}
           </p>
         </div>

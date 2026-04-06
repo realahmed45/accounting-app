@@ -51,7 +51,7 @@ const FinancialOverview = ({
       )}
 
       {/* Main Financial Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 sm:p-6">
         {/* Bank Balance Card */}
         <div className="group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-200">
           {/* Gradient Overlay */}
@@ -84,7 +84,7 @@ const FinancialOverview = ({
               onClick={() => setActiveModal("bankAccounts")}
               className="w-full text-left mb-4 group/amount"
             >
-              <div className="text-4xl font-black text-slate-900 group-hover/amount:text-blue-600 transition-colors mb-1">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 group-hover/amount:text-blue-600 transition-colors mb-1">
                 {formatAmount(bankBalance, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">
@@ -128,9 +128,9 @@ const FinancialOverview = ({
           {/* Gradient Overlay */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
 
-          <div className="relative p-6">
+          <div className="relative p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div className="flex items-center gap-3">
                 <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-3 rounded-xl shadow-lg">
                   <Wallet className="w-6 h-6 text-white" />
@@ -151,7 +151,7 @@ const FinancialOverview = ({
 
             {/* Amount Display */}
             <div className="mb-4">
-              <div className="text-4xl font-black text-slate-900 mb-1">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 mb-1">
                 {formatAmount(cashBalance, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">
@@ -175,9 +175,9 @@ const FinancialOverview = ({
           {/* Gradient Overlay */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-500/10 to-pink-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
 
-          <div className="relative p-6">
+          <div className="relative p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div className="flex items-center gap-3">
                 <div className="bg-gradient-to-br from-red-600 to-red-700 p-3 rounded-xl shadow-lg">
                   <Receipt className="w-6 h-6 text-white" />
@@ -199,7 +199,7 @@ const FinancialOverview = ({
 
             {/* Amount Display */}
             <div className="mb-4">
-              <div className="text-4xl font-black text-slate-900 mb-1">
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 mb-1">
                 {formatAmount(totalExpenses, currentAccount?.currency)}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-600">
@@ -231,7 +231,7 @@ const FinancialOverview = ({
       </div>
 
       {/* Net Balance Indicator */}
-      <div className="px-6 pb-6">
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
         <div
           className={`
           p-4 rounded-xl border-2 flex items-center justify-between

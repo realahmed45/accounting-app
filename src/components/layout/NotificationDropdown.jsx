@@ -115,7 +115,7 @@ const NotificationDropdown = ({ onClose, onOpenCenter }) => {
       {/* Notifications List */}
       <div className="max-h-[400px] overflow-y-auto">
         {notifications.length === 0 ? (
-          <div className="p-8 text-center">
+          <div className="p-6 text-center">
             <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
             <p className="text-slate-600 font-medium">No notifications yet</p>
             <p className="text-xs text-slate-500 mt-1">

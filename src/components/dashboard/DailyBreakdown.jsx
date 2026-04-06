@@ -153,30 +153,30 @@ const DailyBreakdown = ({
   return (
     <div className="bg-gradient-to-br from-white via-slate-50 to-white">
       {/* Header with Instructions */}
-      <div className="p-6 border-b border-slate-200 bg-white">
-        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+      <div className="p-4 sm:p-6 border-b border-slate-200 bg-white">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-3 rounded-xl shadow-lg">
-              <Calendar className="w-6 h-6 text-white" />
+            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-2 sm:p-3 rounded-xl shadow-lg">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-                Daily Activity Breakdown
-                <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities. Days with more activity show higher counts." />
+              <h3 className="text-lg sm:text-2xl font-black text-slate-800 flex items-center gap-2">
+                Daily Activity
+                <HelpIcon content="Click any day to expand and see all expenses, shifts, check-ins, and activities." />
               </h3>
-              <p className="text-sm text-slate-600 font-medium mt-1">
+              <p className="text-xs text-slate-600 font-medium mt-0.5 hidden sm:block">
                 📅 Week view • Click any day to expand details
               </p>
             </div>
           </div>
 
-          {/* Export Button - NEW VISIBLE FEATURE */}
+          {/* Export Button */}
           <button
             onClick={exportWeekToCSV}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-sm"
           >
-            <Download className="w-5 h-5" />
-            Export Week
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">Export </span>Week
           </button>
         </div>
 
@@ -197,7 +197,7 @@ const DailyBreakdown = ({
         )}
       </div>
 
-      <div className="p-6 space-y-3">
+      <div className="p-4 sm:p-6 space-y-3">
         {weekDates.map((date) => {
           const dateStr = formatDate(date);
           const dayExpenses = getExpensesForDate(dateStr);

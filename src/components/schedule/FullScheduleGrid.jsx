@@ -139,7 +139,7 @@ const FullScheduleGrid = ({ accountId }) => {
       `}</style>
 
       {/* 🎯 MANAGER INSTRUCTIONS */}
-      <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-2 border-purple-400/30 rounded-3xl p-6 backdrop-blur-sm">
+      <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-2 border-purple-400/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm">
         <div className="flex items-start gap-4">
           <div className="bg-purple-500 text-white p-3 rounded-xl flex-shrink-0">
             <Lightbulb className="w-6 h-6" />
@@ -294,12 +294,12 @@ const FullScheduleGrid = ({ accountId }) => {
       </div>
 
       {/* The Mega Grid */}
-      <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden">
+      <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full border-collapse table-fixed lg:min-w-[1200px]">
             <thead>
               <tr className="grid-header">
-                <th className="w-64 sticky left-0 z-30 grid-header p-8 text-left">
+                <th className="w-32 sm:w-64 sticky left-0 z-30 grid-header p-3 sm:p-8 text-left">
                   <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">
                     Staff Matrix
                   </span>
@@ -310,7 +310,7 @@ const FullScheduleGrid = ({ accountId }) => {
                   return (
                     <th
                       key={i}
-                      className={`p-8 text-center day-cell ${isToday ? "current-day" : ""}`}
+                      className={`p-3 sm:p-8 text-center day-cell ${isToday ? "current-day" : ""}`}
                     >
                       <div className="flex flex-col items-center">
                         <span className="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3">
@@ -341,7 +341,7 @@ const FullScheduleGrid = ({ accountId }) => {
             <tbody>
               {/* Open Shifts Row */}
               <tr className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors">
-                <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-8">
+                <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-3 sm:p-8">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-400 border border-orange-500/20 shadow-inner">
                       <Shapes className="w-6 h-6" />
@@ -395,7 +395,7 @@ const FullScheduleGrid = ({ accountId }) => {
                   key={member._id}
                   className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors"
                 >
-                  <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-8">
+                  <td className="sticky left-0 z-30 staff-cell group-hover:bg-[#1a1a24] p-3 sm:p-8">
                     <div className="flex items-center gap-4">
                       <div className="relative">
                         <div className="absolute inset-0 bg-white blur-md opacity-5" />

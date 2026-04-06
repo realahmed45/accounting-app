@@ -76,7 +76,7 @@ const DataExportPanel = ({ accountId }) => {
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="font-semibold text-gray-900 mb-4">Export Filters</h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               From Date
@@ -107,7 +107,7 @@ const DataExportPanel = ({ accountId }) => {
       </div>
 
       {/* Export Options */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {exportOptions.map((option) => {
           const Icon = option.icon;
 

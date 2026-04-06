@@ -191,7 +191,7 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-slate-900 flex items-center gap-2">
               <Filter className="w-5 h-5" />
@@ -271,12 +271,12 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
         {/* Notifications List */}
         <div className="space-y-3">
           {loading ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 sm:p-12 text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto mb-4" />
               <p className="text-slate-600">Loading notifications...</p>
             </div>
           ) : notifications?.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 sm:p-12 text-center">
               <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-slate-900 mb-2">
                 No notifications found
@@ -292,7 +292,7 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
               <div
                 key={notification._id}
                 id={`notification-${notification._id}`}
-                className={`bg-white rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
+                className={`bg-white rounded-xl shadow-sm border-2 p-4 sm:p-6 transition-all hover:shadow-md ${
                   !notification.isRead
                     ? "border-blue-300 bg-blue-50"
                     : "border-slate-200"
@@ -331,7 +331,7 @@ const NotificationCenter = ({ onClose, onOpenSettings, highlightId }) => {
                               <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                                 Details
                               </p>
-                              <div className="grid grid-cols-2 gap-2 text-sm">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                                 {Object.entries(notification.data || {}).map(
                                   ([key, value]) => (
                                     <div key={key}>

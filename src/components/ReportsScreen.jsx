@@ -132,41 +132,41 @@ const ReportsScreen = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden border-2 border-slate-700">
+    <div className="fixed inset-0 bg-white lg:bg-black/50 z-50 lg:flex lg:items-center lg:justify-center overflow-y-auto">
+      {/* Inner card — full-screen on mobile, centered modal on desktop */}
+      <div className="min-h-screen lg:min-h-0 w-full lg:max-w-5xl lg:max-h-[90vh] lg:overflow-hidden lg:rounded-2xl flex flex-col bg-white lg:shadow-2xl">
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-6 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-4">
-            <BarChart3 className="w-8 h-8 text-white" />
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="bg-emerald-600 p-2 rounded-lg flex-shrink-0">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
             <div>
-              <h2 className="text-3xl font-black text-white">
-                Expense Reports & Analytics
+              <h2 className="text-base sm:text-xl font-bold text-gray-900">
+                Reports &amp; Analytics
               </h2>
-              <p className="text-emerald-100 text-sm font-medium mt-1">
-                Visualize your spending patterns and trends
+              <p className="text-xs text-gray-500 hidden sm:block">
+                Visualize your spending patterns
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-xl transition-all text-white"
+            className="p-2 hover:bg-gray-100 rounded-xl text-gray-500 transition-colors"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-8 items-center bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5 text-blue-400" />
-              <label className="text-slate-300 font-bold text-sm">
-                Time Period:
-              </label>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="bg-slate-700 text-white px-4 py-2 rounded-xl border-2 border-slate-600 font-semibold focus:outline-none focus:border-blue-500"
+                className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
               >
                 <option value="7">Last 7 days</option>
                 <option value="14">Last 14 days</option>
@@ -176,16 +176,12 @@ const ReportsScreen = ({
                 <option value="365">Last year</option>
               </select>
             </div>
-
-            <div className="flex items-center gap-3">
-              <Filter className="w-5 h-5 text-purple-400" />
-              <label className="text-slate-300 font-bold text-sm">
-                Category:
-              </label>
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-700 text-white px-4 py-2 rounded-xl border-2 border-slate-600 font-semibold focus:outline-none focus:border-purple-500"
+                className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => {
@@ -198,202 +194,187 @@ const ReportsScreen = ({
                 })}
               </select>
             </div>
-
             <button
               onClick={exportToCSV}
-              className="ml-auto flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition-colors sm:ml-auto"
             >
-              <Download className="w-5 h-5" />
+              <Download className="w-4 h-4" />
               Export CSV
             </button>
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <DollarSign className="w-8 h-8 text-white/80" />
-                <TrendingUp className="w-6 h-6 text-white/60" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <DollarSign className="w-5 h-5 text-blue-600" />
+                <TrendingUp className="w-4 h-4 text-blue-400" />
               </div>
-              <p className="text-blue-100 text-sm font-bold uppercase tracking-wider mb-1">
+              <p className="text-xs text-blue-600 font-bold uppercase tracking-wide mb-1">
                 Total Spent
               </p>
-              <p className="text-4xl font-black text-white">
+              <p className="text-2xl font-black text-blue-900">
                 ${stats.total.toFixed(2)}
               </p>
-              <p className="text-blue-100 text-xs mt-2 font-medium">
-                in {dateRange} days
-              </p>
+              <p className="text-xs text-blue-500 mt-1">in {dateRange} days</p>
             </div>
-
-            <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <BarChart3 className="w-8 h-8 text-white/80" />
-                <PieChart className="w-6 h-6 text-white/60" />
+            <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <BarChart3 className="w-5 h-5 text-purple-600" />
+                <PieChart className="w-4 h-4 text-purple-400" />
               </div>
-              <p className="text-purple-100 text-sm font-bold uppercase tracking-wider mb-1">
+              <p className="text-xs text-purple-600 font-bold uppercase tracking-wide mb-1">
                 Total Expenses
               </p>
-              <p className="text-4xl font-black text-white">{stats.count}</p>
-              <p className="text-purple-100 text-xs mt-2 font-medium">
+              <p className="text-2xl font-black text-purple-900">
+                {stats.count}
+              </p>
+              <p className="text-xs text-purple-500 mt-1">
                 transactions recorded
               </p>
             </div>
-
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <TrendingDown className="w-8 h-8 text-white/80" />
-                <Calendar className="w-6 h-6 text-white/60" />
+            <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <TrendingDown className="w-5 h-5 text-emerald-600" />
+                <Calendar className="w-4 h-4 text-emerald-400" />
               </div>
-              <p className="text-emerald-100 text-sm font-bold uppercase tracking-wider mb-1">
+              <p className="text-xs text-emerald-600 font-bold uppercase tracking-wide mb-1">
                 Average Expense
               </p>
-              <p className="text-4xl font-black text-white">
+              <p className="text-2xl font-black text-emerald-900">
                 ${stats.average.toFixed(2)}
               </p>
-              <p className="text-emerald-100 text-xs mt-2 font-medium">
-                per transaction
-              </p>
+              <p className="text-xs text-emerald-500 mt-1">per transaction</p>
             </div>
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Expenses by Category */}
-            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <Tag className="w-6 h-6 text-amber-400" />
-                <h3 className="text-2xl font-black text-white">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Top Categories */}
+            <div className="bg-white border border-gray-200 p-4 sm:p-5 rounded-xl shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Tag className="w-4 h-4 text-amber-500" />
+                <h3 className="text-base font-bold text-gray-900">
                   Top Categories
                 </h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {stats.topCategories.length > 0 ? (
                   stats.topCategories.map(([category, data], index) => {
                     const percentage = (data.total / stats.total) * 100;
                     const barWidth = (data.total / maxCategoryValue) * 100;
                     const colors = [
-                      "from-blue-600 to-blue-700",
-                      "from-purple-600 to-purple-700",
-                      "from-emerald-600 to-emerald-700",
-                      "from-amber-600 to-amber-700",
-                      "from-red-600 to-red-700",
+                      "bg-blue-500",
+                      "bg-purple-500",
+                      "bg-emerald-500",
+                      "bg-amber-500",
+                      "bg-red-500",
                     ];
-
                     return (
                       <div key={category}>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-white font-bold">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-semibold text-gray-800 truncate mr-2">
                             {category}
                           </span>
-                          <div className="text-right">
-                            <span className="text-white font-black text-lg">
-                              ${data.total.toFixed(2)}
-                            </span>
-                            <span className="text-slate-400 text-sm ml-2">
+                          <span className="text-sm font-bold text-gray-900 flex-shrink-0">
+                            ${data.total.toFixed(2)}{" "}
+                            <span className="text-xs text-gray-400 font-normal">
                               ({percentage.toFixed(1)}%)
                             </span>
-                          </div>
+                          </span>
                         </div>
-                        <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                        <div className="w-full bg-gray-100 rounded-full h-2.5">
                           <div
-                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-500 flex items-center justify-end pr-2`}
+                            className={`h-full ${colors[index]} rounded-full transition-all duration-500`}
                             style={{ width: `${barWidth}%` }}
-                          >
-                            <span className="text-white text-xs font-bold">
-                              {data.count}
-                            </span>
-                          </div>
+                          />
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-slate-400 text-center py-8">
-                    No expense data for this period
+                  <p className="text-gray-400 text-center py-8 text-sm">
+                    No data for this period
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Expenses by Person */}
-            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <Users className="w-6 h-6 text-blue-400" />
-                <h3 className="text-2xl font-black text-white">Top Spenders</h3>
+            {/* Top Spenders */}
+            <div className="bg-white border border-gray-200 p-4 sm:p-5 rounded-xl shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-4 h-4 text-blue-500" />
+                <h3 className="text-base font-bold text-gray-900">
+                  Top Spenders
+                </h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {stats.topPeople.length > 0 ? (
                   stats.topPeople.map(([person, data], index) => {
                     const percentage = (data.total / stats.total) * 100;
                     const barWidth = (data.total / maxPersonValue) * 100;
                     const colors = [
-                      "from-emerald-600 to-emerald-700",
-                      "from-blue-600 to-blue-700",
-                      "from-purple-600 to-purple-700",
-                      "from-amber-600 to-amber-700",
-                      "from-pink-600 to-pink-700",
+                      "bg-emerald-500",
+                      "bg-blue-500",
+                      "bg-purple-500",
+                      "bg-amber-500",
+                      "bg-pink-500",
                     ];
-
                     return (
                       <div key={person}>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-white font-bold">{person}</span>
-                          <div className="text-right">
-                            <span className="text-white font-black text-lg">
-                              ${data.total.toFixed(2)}
-                            </span>
-                            <span className="text-slate-400 text-sm ml-2">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-semibold text-gray-800 truncate mr-2">
+                            {person}
+                          </span>
+                          <span className="text-sm font-bold text-gray-900 flex-shrink-0">
+                            ${data.total.toFixed(2)}{" "}
+                            <span className="text-xs text-gray-400 font-normal">
                               ({percentage.toFixed(1)}%)
                             </span>
-                          </div>
+                          </span>
                         </div>
-                        <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                        <div className="w-full bg-gray-100 rounded-full h-2.5">
                           <div
-                            className={`h-full bg-gradient-to-r ${colors[index]} transition-all duration-500 flex items-center justify-end pr-2`}
+                            className={`h-full ${colors[index]} rounded-full transition-all duration-500`}
                             style={{ width: `${barWidth}%` }}
-                          >
-                            <span className="text-white text-xs font-bold">
-                              {data.count}
-                            </span>
-                          </div>
+                          />
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-slate-400 text-center py-8">
-                    No expense data for this period
+                  <p className="text-gray-400 text-center py-8 text-sm">
+                    No data for this period
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* All Categories Table */}
-          <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-            <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
-              <PieChart className="w-6 h-6 text-purple-400" />
+          {/* Complete Breakdown Table */}
+          <div className="bg-white border border-gray-200 p-4 sm:p-5 rounded-xl shadow-sm">
+            <h3 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <PieChart className="w-4 h-4 text-purple-500" />
               Complete Breakdown
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[380px]">
                 <thead>
-                  <tr className="border-b-2 border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-300 font-bold uppercase text-xs">
+                  <tr className="border-b-2 border-gray-100">
+                    <th className="text-left py-2 px-3 text-gray-500 font-bold uppercase text-xs">
                       Category
                     </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
+                    <th className="text-right py-2 px-3 text-gray-500 font-bold uppercase text-xs">
                       Count
                     </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
+                    <th className="text-right py-2 px-3 text-gray-500 font-bold uppercase text-xs">
                       Total
                     </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
+                    <th className="text-right py-2 px-3 text-gray-500 font-bold uppercase text-xs hidden sm:table-cell">
                       Avg
                     </th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-bold uppercase text-xs">
-                      % of Total
+                    <th className="text-right py-2 px-3 text-gray-500 font-bold uppercase text-xs">
+                      %
                     </th>
                   </tr>
                 </thead>
@@ -405,21 +386,21 @@ const ReportsScreen = ({
                       return (
                         <tr
                           key={category}
-                          className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                          className="border-b border-gray-50 hover:bg-gray-50"
                         >
-                          <td className="py-3 px-4 text-white font-semibold">
+                          <td className="py-2.5 px-3 text-gray-900 font-semibold text-sm">
                             {category}
                           </td>
-                          <td className="text-right py-3 px-4 text-slate-300">
+                          <td className="text-right py-2.5 px-3 text-gray-600 text-sm">
                             {data.count}
                           </td>
-                          <td className="text-right py-3 px-4 text-white font-bold">
+                          <td className="text-right py-2.5 px-3 text-gray-900 font-bold text-sm">
                             ${data.total.toFixed(2)}
                           </td>
-                          <td className="text-right py-3 px-4 text-slate-300">
+                          <td className="text-right py-2.5 px-3 text-gray-500 text-sm hidden sm:table-cell">
                             ${(data.total / data.count).toFixed(2)}
                           </td>
-                          <td className="text-right py-3 px-4 text-emerald-400 font-bold">
+                          <td className="text-right py-2.5 px-3 text-emerald-600 font-bold text-sm">
                             {percentage.toFixed(1)}%
                           </td>
                         </tr>

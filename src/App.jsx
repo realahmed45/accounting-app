@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "./context/AuthContext";
 import { useAccount } from "./context/AccountContext";
-import { useSubscription } from "./hooks/useSubscription";
 import AuthScreen from "./components/AuthScreen";
 import AccountSwitcher from "./components/AccountSwitcher";
 import PhotoUploadModal from "./components/PhotoUploadModal";
 import PasswordGate from "./components/PasswordGate";
-import UpgradePrompt from "./components/UpgradePrompt";
 import ScheduleScreen from "./components/schedule/ScheduleScreen";
 import Header from "./components/layout/Header";
 import NotificationBanner from "./components/layout/NotificationBanner";
@@ -194,19 +192,6 @@ function App() {
     loading: accountLoading,
   } = useAccount();
 
-  // Subscription hook for feature gating
-  const {
-    subscription,
-    canCreateAccount: canCreateAccountSubscription,
-    canAddExpense: canAddExpenseSubscription,
-    canInviteMember: canInviteMemberSubscription,
-    canUseScheduling,
-    canUseAdvancedReports,
-    getExpensesRemaining,
-    getAccountsRemaining,
-    isFreePlan,
-  } = useSubscription();
-
   // State Management
   const [weeks, setWeeks] = useState([]);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
@@ -231,12 +216,6 @@ function App() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [highlightNotificationId, setHighlightNotificationId] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-  const [upgradePromptConfig, setUpgradePromptConfig] = useState({
-    feature: "",
-    requiredPlan: "professional",
-  });
-
   // NEW: State for new features
   const [showReports, setShowReports] = useState(false);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
@@ -370,16 +349,7 @@ function App() {
     }
   }, [currentWeekIndex, weeks, currentAccount]);
 
-  // Helper function to check subscription limits before creating account
   const handleCreateAccountClick = () => {
-    if (!canCreateAccountSubscription()) {
-      setShowUpgradePrompt(true);
-      setUpgradePromptConfig({
-        feature: "Multiple Accounts",
-        requiredPlan: "professional",
-      });
-      return;
-    }
     setShowCreateAccountModal(true);
   };
 
@@ -591,7 +561,7 @@ function App() {
     return (
       <>
         <div className="min-h-screen bg-white flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-12 max-w-lg w-full text-center">
+          <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-6 sm:p-12 max-w-lg w-full text-center">
             <div className="bg-slate-100 rounded-2xl p-5 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
               <Building2 className="w-10 h-10 text-slate-700" />
             </div>
@@ -624,7 +594,7 @@ function App() {
         {/* Create Account Modal */}
         {showCreateAccountModal && (
           <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
-            <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
+            <div className="bg-white shadow-2xl rounded-2xl p-4 sm:p-8 max-w-md w-full transform transition-all animate-slideUp">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   {accountKind === ""
@@ -876,16 +846,6 @@ function App() {
   const handleAddExpense = async (e) => {
     if (e) e.preventDefault();
 
-    // Check subscription limit before adding expense
-    if (!canAddExpenseSubscription()) {
-      setShowUpgradePrompt(true);
-      setUpgradePromptConfig({
-        feature: "Unlimited Expenses",
-        requiredPlan: "professional",
-      });
-      return;
-    }
-
     runIfAllowed(async () => {
       const amount = parseFloat(expenseForm.amount);
       if (isNaN(amount) || amount <= 0) {
@@ -957,15 +917,6 @@ function App() {
   // ==================== NEW EXPENSE SUBMIT (redesigned modal) ====================
   const handleNewExpenseSubmit = async (formData) =>
     runIfAllowed(async () => {
-      if (!canAddExpenseSubscription()) {
-        setShowUpgradePrompt(true);
-        setUpgradePromptConfig({
-          feature: "Add Expense",
-          requiredPlan: "starter",
-        });
-        return;
-      }
-
       const amount = parseFloat(formData.amount);
       if (isNaN(amount) || amount <= 0) {
         setStatusModal({
@@ -1385,7 +1336,7 @@ function App() {
   if (!currentWeek) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white shadow border border-gray-200 p-8 max-w-md w-full text-center">
+        <div className="bg-white shadow border border-gray-200 p-5 sm:p-8 max-w-md w-full text-center">
           <Calendar className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             No Weeks Created
@@ -1924,6 +1875,7 @@ function App() {
           expenses={expenses}
           categories={categories}
           people={people}
+          isMobile={isMobileView}
         />
       )}
       {/* Modals */}
@@ -3275,7 +3227,7 @@ function App() {
       {/* Create Account Modal */}
       {showCreateAccountModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-[60] animate-fadeIn">
-          <div className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full transform transition-all animate-slideUp">
+          <div className="bg-white shadow-2xl rounded-2xl p-4 sm:p-8 max-w-md w-full transform transition-all animate-slideUp">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 {accountKind === ""
@@ -3405,6 +3357,7 @@ function App() {
           getExpectedBankAmount={getExpectedBankAmount}
           runIfAllowed={runIfAllowed}
           formatAmount={formatAmount}
+          isMobile={isMobileView}
           onOpenNotificationSettings={() => {
             setShowSettings(false);
             setShowNotificationSettings(true);
@@ -3467,7 +3420,7 @@ function App() {
       {statusModal.show && (
         <div className="fixed inset-0 z-[70] bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4">
           <div
-            className={`bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative transform transition-all animate-bounce-in ${
+            className={`bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 sm:p-8 relative transform transition-all animate-bounce-in ${
               statusModal.type === "success"
                 ? "border-4 border-green-500"
                 : "border-4 border-red-500"
@@ -3531,7 +3484,7 @@ function App() {
       {/* Loading Modal */}
       {loading && (
         <div className="fixed inset-0 z-[75] bg-black bg-opacity-70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-5 sm:p-8 text-center">
             {/* Animated Spinner */}
             <div className="flex justify-center mb-6">
               <div className="relative w-20 h-20">
@@ -3547,14 +3500,6 @@ function App() {
             <p className="text-gray-500 text-sm">Please wait a moment</p>
           </div>
         </div>
-      )}
-      {/* Upgrade Prompt */}
-      {showUpgradePrompt && (
-        <UpgradePrompt
-          feature={upgradePromptConfig.feature}
-          requiredPlan={upgradePromptConfig.requiredPlan}
-          onClose={() => setShowUpgradePrompt(false)}
-        />
       )}
     </div>
   );

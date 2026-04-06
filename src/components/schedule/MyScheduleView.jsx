@@ -178,9 +178,9 @@ const MyScheduleView = ({ accountId }) => {
     );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-1000">
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-10 animate-in fade-in duration-1000">
       {/* 🎯 BEGINNER INSTRUCTIONS BOX */}
-      <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-2 border-blue-400/30 rounded-3xl p-6 backdrop-blur-sm">
+      <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-2 border-blue-400/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm">
         <div className="flex items-start gap-4">
           <div className="bg-blue-500 text-white p-3 rounded-xl flex-shrink-0">
             <Lightbulb className="w-6 h-6" />
@@ -280,12 +280,12 @@ const MyScheduleView = ({ accountId }) => {
       </div>
 
       {/* Roster Section */}
-      <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] p-10 border border-white/10 shadow-2xl overflow-hidden relative">
+      <div className="bg-white/5 backdrop-blur-3xl rounded-[2rem] sm:rounded-[3rem] p-4 sm:p-10 border border-white/10 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 right-0 p-20 bg-indigo-500/10 blur-[100px] -mr-40 -mt-40 rounded-full" />
 
-        <div className="relative z-10 mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative z-10 mb-6 sm:mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-4xl font-black text-white tracking-tighter">
+            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tighter">
               Mission Roster
             </h2>
             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mt-2">
@@ -371,19 +371,19 @@ const MyScheduleView = ({ accountId }) => {
               return (
                 <div
                   key={shift._id}
-                  className={`group relative p-8 rounded-[2.5rem] border-2 transition-all duration-500 hover:shadow-[0_0_40px_rgba(99,102,241,0.2)] ${
+                  className={`group relative p-4 sm:p-8 rounded-2xl sm:rounded-[2.5rem] border-2 transition-all duration-500 hover:shadow-[0_0_40px_rgba(99,102,241,0.2)] ${
                     isToday
                       ? "border-indigo-500/50 bg-indigo-500/5 shadow-2xl"
                       : "border-white/5 bg-white/[0.02] hover:border-white/20"
                   }`}
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                    <div className="flex items-center gap-8">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-8 relative z-10">
+                    <div className="flex items-center gap-4 sm:gap-8">
                       <div className="relative">
                         {isToday && (
                           <div className="absolute inset-0 bg-indigo-500 blur-xl opacity-40 animate-pulse" />
                         )}
-                        <div className="text-center p-4 rounded-3xl bg-white/5 backdrop-blur-md shadow-2xl border border-white/10 min-w-[100px] relative z-20">
+                        <div className="text-center p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-md shadow-2xl border border-white/10 min-w-[80px] sm:min-w-[100px] relative z-20">
                           <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
                             {shiftDate.toLocaleDateString(undefined, {
                               weekday: "short",
@@ -493,7 +493,7 @@ const MyScheduleView = ({ accountId }) => {
       </div>
 
       {/* Neural Privacy Notice */}
-      <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1a] rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between gap-10 border border-white/10 shadow-3xl overflow-hidden relative">
+      <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1a] rounded-2xl sm:rounded-[3rem] p-5 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 border border-white/10 shadow-3xl overflow-hidden relative">
         <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-500/10 blur-[50px] rounded-full" />
 
         <div className="relative z-10 flex gap-6 items-start">
@@ -514,7 +514,7 @@ const MyScheduleView = ({ accountId }) => {
 
         <div className="relative z-10 group cursor-pointer">
           <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-          <div className="bg-indigo-600/10 px-8 py-6 rounded-[2rem] border border-indigo-500/30 backdrop-blur-md relative z-10">
+          <div className="bg-indigo-600/10 px-4 sm:px-8 py-4 sm:py-6 rounded-[1.5rem] sm:rounded-[2rem] border border-indigo-500/30 backdrop-blur-md relative z-10">
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300 mb-3">
               Verification Badge
             </p>
@@ -530,25 +530,22 @@ const MyScheduleView = ({ accountId }) => {
 };
 
 const PremiumStatCard = ({ label, value, icon, gradient, sub }) => (
-  <div className="group relative bg-[#1a1a2e] rounded-[2.5rem] p-1 border border-white/5 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]">
+  <div className="group relative bg-[#1a1a2e] rounded-2xl sm:rounded-[2.5rem] p-1 border border-white/5 shadow-2xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2">
     <div
-      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity rounded-[2.5rem]`}
+      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity rounded-2xl sm:rounded-[2.5rem]`}
     />
-    <div className="bg-[#0f0f1a] rounded-[2.3rem] p-8 h-full relative z-10 border border-white/5">
+    <div className="bg-[#0f0f1a] rounded-[1.8rem] sm:rounded-[2.3rem] p-5 sm:p-8 h-full relative z-10 border border-white/5">
       <div
-        className={`w-14 h-14 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center text-white shadow-3xl mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}
+        className={`w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br ${gradient} rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg mb-4 sm:mb-6`}
       >
         {icon}
       </div>
-      <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">
+      <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">
         {label}
       </p>
-      <h3 className="text-3xl font-black text-white tracking-tighter">
+      <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
         {value}
       </h3>
-      <p className="text-xs font-bold text-indigo-400 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 uppercase tracking-widest">
-        {sub}
-      </p>
     </div>
   </div>
 );

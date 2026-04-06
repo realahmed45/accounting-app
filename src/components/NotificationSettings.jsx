@@ -120,21 +120,21 @@ const NotificationSettings = ({ onClose }) => {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                  <Settings className="w-8 h-8" />
+                <h1 className="text-lg sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+                  <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
                   Notification Settings
                 </h1>
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-xs sm:text-sm text-slate-600 mt-0.5 hidden sm:block">
                   Customize how you receive notifications
                 </p>
               </div>
@@ -143,21 +143,21 @@ const NotificationSettings = ({ onClose }) => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`flex items-center gap-2 px-6 py-3 ${
+              className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 ${
                 saved
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-slate-900 hover:bg-slate-800"
-              } text-white transition-colors rounded-lg font-semibold disabled:opacity-50`}
+              } text-white transition-colors rounded-lg font-semibold disabled:opacity-50 text-sm`}
             >
               {saved ? (
                 <>
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4" />
                   Saved!
                 </>
               ) : (
                 <>
-                  <Save className="w-5 h-5" />
-                  {saving ? "Saving..." : "Save Changes"}
+                  <Save className="w-4 h-4" />
+                  {saving ? "Saving..." : "Save"}
                 </>
               )}
             </button>
@@ -165,13 +165,13 @@ const NotificationSettings = ({ onClose }) => {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-6">
         {/* Email Notifications */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <div className="flex items-start justify-between mb-4 sm:mb-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Mail className="w-6 h-6" />
+              <h2 className="text-base sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Mail className="w-5 h-5" />
                 Email Notifications
               </h2>
               <p className="text-sm text-slate-600 mt-1">
@@ -236,11 +236,11 @@ const NotificationSettings = ({ onClose }) => {
         </div>
 
         {/* In-App Notifications */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <div className="flex items-start justify-between mb-4 sm:mb-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Bell className="w-6 h-6" />
+              <h2 className="text-base sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Bell className="w-5 h-5" />
                 In-App Notifications
               </h2>
               <p className="text-sm text-slate-600 mt-1">
@@ -288,11 +288,11 @@ const NotificationSettings = ({ onClose }) => {
         </div>
 
         {/* Quiet Hours */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-start justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <div className="flex items-start justify-between mb-4 sm:mb-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Clock className="w-6 h-6" />
+              <h2 className="text-base sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Clock className="w-5 h-5" />
                 Quiet Hours
               </h2>
               <p className="text-sm text-slate-600 mt-1">
@@ -311,7 +311,7 @@ const NotificationSettings = ({ onClose }) => {
           </div>
 
           {formData.quietHours.enabled && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Start Time
@@ -343,8 +343,8 @@ const NotificationSettings = ({ onClose }) => {
         </div>
 
         {/* Additional Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <h2 className="text-base sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6">
             Additional Settings
           </h2>
 

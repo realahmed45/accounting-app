@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { LogIn, UserPlus, Mail, Lock, User, Phone } from "lucide-react";
-import PlanSelectionScreen from "./PlanSelectionScreen";
 
 const AuthScreen = () => {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showPlanSelection, setShowPlanSelection] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -21,7 +19,6 @@ const AuthScreen = () => {
     firstName: "",
     familyName: "",
     phoneNumber: "",
-    selectedPlan: "free",
   });
 
   const handleLogin = async (e) => {
@@ -39,17 +36,10 @@ const AuthScreen = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-
-    // Show full-screen plan selection
-    setShowPlanSelection(true);
-  };
-
-  const handlePlanSelected = async (selectedPlan) => {
     setLoading(true);
-    const result = await register({ ...registerData, selectedPlan });
+    const result = await register(registerData);
     if (!result.success) {
       setError(result.message);
-      setShowPlanSelection(false);
     }
     setLoading(false);
   };
@@ -72,10 +62,10 @@ const AuthScreen = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Header */}
         <div className="text-center mb-8 animate-fadeIn">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-scaleIn">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-scaleIn">
             <span className="text-white text-4xl font-black">$</span>
           </div>
-          <h1 className="text-5xl font-black text-white mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-tight">
             Weekly Accounting
           </h1>
           <p className="text-slate-300 text-lg font-medium">
@@ -84,7 +74,7 @@ const AuthScreen = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 animate-slideUp">
+        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-5 sm:p-8 animate-slideUp">
           {/* Toggle Tabs */}
           <div className="flex gap-2 mb-6 p-1.5 bg-slate-100 rounded-2xl">
             <button
@@ -105,7 +95,6 @@ const AuthScreen = () => {
               onClick={() => {
                 setIsLogin(false);
                 setError("");
-                setShowPlanSelection(false); // Reset plan selection when switching to register
               }}
               className={`flex-1 py-3.5 rounded-xl font-bold transition-all ${
                 !isLogin
@@ -189,7 +178,7 @@ const AuthScreen = () => {
           ) : (
             /* Register Form */
             <form onSubmit={handleRegister} className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4 text-emerald-600" />
@@ -320,7 +309,7 @@ const AuthScreen = () => {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
               >
-                {loading ? "Processing..." : "Continue to Plan Selection →"}
+                {loading ? "Creating account..." : "Create Account →"}
               </button>
             </form>
           )}
@@ -331,15 +320,6 @@ const AuthScreen = () => {
           Manage multiple accounts • Track expenses • Upload bill photos
         </p>
       </div>
-
-      {/* Full-screen Plan Selection Component */}
-      {showPlanSelection && (
-        <PlanSelectionScreen
-          userEmail={registerData.email}
-          onSelectPlan={handlePlanSelected}
-          onSkip={() => handlePlanSelected("free")}
-        />
-      )}
     </div>
   );
 };

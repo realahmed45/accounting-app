@@ -129,7 +129,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
             Avg Daily Spend
           </p>
-          <p className="text-3xl font-black text-white mb-1">
+          <p className="text-xl sm:text-3xl font-black text-white mb-1">
             ${stats.avgDaily.toFixed(2)}
           </p>
           {trendPercentage !== 0 && (
@@ -155,7 +155,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
             Largest Expense
           </p>
-          <p className="text-3xl font-black text-white mb-1">
+          <p className="text-xl sm:text-3xl font-black text-white mb-1">
             ${stats.largestExpense?.amount?.toFixed(2) || "0.00"}
           </p>
           {stats.largestExpense && (
@@ -180,7 +180,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
             Top Category
           </p>
-          <p className="text-3xl font-black text-white mb-1">
+          <p className="text-xl sm:text-3xl font-black text-white mb-1">
             ${stats.topCategory?.total?.toFixed(2) || "0.00"}
           </p>
           {stats.topCategory && (
@@ -203,7 +203,7 @@ const QuickStatsWidget = ({ expenses = [], weekDates }) => {
           <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">
             Week Total
           </p>
-          <p className="text-4xl font-black text-white mb-1">
+          <p className="text-2xl sm:text-4xl font-black text-white mb-1">
             ${stats.totalSpent.toFixed(2)}
           </p>
           <p className="text-xs font-semibold text-emerald-100">

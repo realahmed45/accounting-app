@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   Plus,
+  X,
 } from "lucide-react";
 
 const Sidebar = ({
@@ -75,10 +76,16 @@ const Sidebar = ({
           lg:translate-x-0 lg:static lg:h-screen lg:z-auto`}
       >
         {/* Logo */}
-        <div className="px-5 py-5 border-b border-gray-100">
+        <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between">
           <span className="text-blue-600 font-black text-base tracking-wide uppercase">
             Weekly Accountings
           </span>
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Navigation */}
@@ -160,7 +167,10 @@ const Sidebar = ({
             </button>
           </NavItem>
 
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+          <button
+            onClick={() => window.open("mailto:support@weeklyaccounting.com")}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+          >
             <HelpCircle className="w-4 h-4 text-gray-500" />
             Help
           </button>
@@ -179,7 +189,7 @@ const Sidebar = ({
                   onClose?.();
                   setSwitchOpen(false);
                 }}
-                className={`w-full text-left pl-10 py-2 text-sm rounded-lg transition-colors ${
+                className={`w-full text-left pl-10 py-2 text-sm rounded-lg transition-colors truncate ${
                   acc._id === currentAccount?._id
                     ? "text-blue-600 font-semibold bg-blue-50"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"

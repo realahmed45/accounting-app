@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Settings,
   X,
@@ -22,10 +22,6 @@ import {
   Wallet,
   Edit2,
   Check,
-  Star,
-  Zap,
-  Shield,
-  TrendingUp,
 } from "lucide-react";
 import {
   memberService,
@@ -42,44 +38,44 @@ import LinkParentModal from "../LinkParentModal";
 // Currency list for display
 const CURRENCIES = [
   { code: "USD", symbol: "$", name: "US Dollar" },
-  { code: "EUR", symbol: "€", name: "Euro" },
-  { code: "GBP", symbol: "£", name: "British Pound" },
-  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  { code: "EUR", symbol: "â‚¬", name: "Euro" },
+  { code: "GBP", symbol: "Â£", name: "British Pound" },
+  { code: "JPY", symbol: "Â¥", name: "Japanese Yen" },
   { code: "CHF", symbol: "Fr", name: "Swiss Franc" },
   { code: "CAD", symbol: "$", name: "Canadian Dollar" },
   { code: "AUD", symbol: "$", name: "Australian Dollar" },
-  { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
-  { code: "INR", symbol: "₹", name: "Indian Rupee" },
-  { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
+  { code: "CNY", symbol: "Â¥", name: "Chinese Yuan" },
+  { code: "INR", symbol: "â‚¹", name: "Indian Rupee" },
+  { code: "AED", symbol: "Ø¯.Ø¥", name: "UAE Dirham" },
   { code: "SGD", symbol: "$", name: "Singapore Dollar" },
   { code: "HKD", symbol: "$", name: "Hong Kong Dollar" },
   { code: "NZD", symbol: "$", name: "New Zealand Dollar" },
   { code: "SEK", symbol: "kr", name: "Swedish Krona" },
   { code: "NOK", symbol: "kr", name: "Norwegian Krone" },
-  { code: "KRW", symbol: "₩", name: "South Korean Won" },
+  { code: "KRW", symbol: "â‚©", name: "South Korean Won" },
   { code: "MXN", symbol: "$", name: "Mexican Peso" },
   { code: "BRL", symbol: "R$", name: "Brazilian Real" },
   { code: "ZAR", symbol: "R", name: "South African Rand" },
-  { code: "RUB", symbol: "₽", name: "Russian Ruble" },
-  { code: "TRY", symbol: "₺", name: "Turkish Lira" },
-  { code: "SAR", symbol: "﷼", name: "Saudi Riyal" },
-  { code: "PLN", symbol: "zł", name: "Polish Zloty" },
-  { code: "THB", symbol: "฿", name: "Thai Baht" },
+  { code: "RUB", symbol: "â‚½", name: "Russian Ruble" },
+  { code: "TRY", symbol: "â‚º", name: "Turkish Lira" },
+  { code: "SAR", symbol: "ï·¼", name: "Saudi Riyal" },
+  { code: "PLN", symbol: "zÅ‚", name: "Polish Zloty" },
+  { code: "THB", symbol: "à¸¿", name: "Thai Baht" },
   { code: "IDR", symbol: "Rp", name: "Indonesian Rupiah" },
   { code: "MYR", symbol: "RM", name: "Malaysian Ringgit" },
-  { code: "PHP", symbol: "₱", name: "Philippine Peso" },
+  { code: "PHP", symbol: "â‚±", name: "Philippine Peso" },
   { code: "DKK", symbol: "kr", name: "Danish Krone" },
-  { code: "CZK", symbol: "Kč", name: "Czech Koruna" },
+  { code: "CZK", symbol: "KÄ", name: "Czech Koruna" },
   { code: "HUF", symbol: "Ft", name: "Hungarian Forint" },
-  { code: "ILS", symbol: "₪", name: "Israeli Shekel" },
+  { code: "ILS", symbol: "â‚ª", name: "Israeli Shekel" },
   { code: "CLP", symbol: "$", name: "Chilean Peso" },
-  { code: "PKR", symbol: "₨", name: "Pakistani Rupee" },
-  { code: "EGP", symbol: "£", name: "Egyptian Pound" },
-  { code: "QAR", symbol: "﷼", name: "Qatari Riyal" },
-  { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar" },
-  { code: "VND", symbol: "₫", name: "Vietnamese Dong" },
-  { code: "BDT", symbol: "৳", name: "Bangladeshi Taka" },
-  { code: "NGN", symbol: "₦", name: "Nigerian Naira" },
+  { code: "PKR", symbol: "â‚¨", name: "Pakistani Rupee" },
+  { code: "EGP", symbol: "Â£", name: "Egyptian Pound" },
+  { code: "QAR", symbol: "ï·¼", name: "Qatari Riyal" },
+  { code: "KWD", symbol: "Ø¯.Ùƒ", name: "Kuwaiti Dinar" },
+  { code: "VND", symbol: "â‚«", name: "Vietnamese Dong" },
+  { code: "BDT", symbol: "à§³", name: "Bangladeshi Taka" },
+  { code: "NGN", symbol: "â‚¦", name: "Nigerian Naira" },
   { code: "ARS", symbol: "$", name: "Argentine Peso" },
   { code: "COP", symbol: "$", name: "Colombian Peso" },
   { code: "PEN", symbol: "S/", name: "Peruvian Sol" },
@@ -100,57 +96,9 @@ const SettingsScreen = ({
   runIfAllowed,
   formatAmount,
   onOpenNotificationSettings,
+  isMobile = false,
 }) => {
-  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog" | "subscription"
-
-  // Subscription upgrade state
-  const [currentSubscription, setCurrentSubscription] = useState(null);
-  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
-  const [upgrading, setUpgrading] = useState(false);
-  const [upgradeSuccess, setUpgradeSuccess] = useState("");
-  const [upgradeError, setUpgradeError] = useState("");
-  const [selectedUpgradePlan, setSelectedUpgradePlan] = useState("");
-  const [selectedBillingCycle, setSelectedBillingCycle] = useState("monthly");
-
-  const loadSubscription = async () => {
-    setSubscriptionLoading(true);
-    try {
-      const { default: api } = await import("../../services/api");
-      const response = await api.get("/subscription");
-      if (response.data.success) {
-        setCurrentSubscription(response.data.data);
-        setSelectedUpgradePlan(response.data.data.currentPlan);
-      }
-    } catch (err) {
-      console.error("Failed to load subscription:", err);
-    } finally {
-      setSubscriptionLoading(false);
-    }
-  };
-
-  const handleUpgradePlan = async () => {
-    if (!selectedUpgradePlan) return;
-    setUpgrading(true);
-    setUpgradeError("");
-    setUpgradeSuccess("");
-    try {
-      const { default: api } = await import("../../services/api");
-      const response = await api.post("/subscription/subscribe", {
-        plan: selectedUpgradePlan,
-        billingCycle: selectedBillingCycle,
-      });
-      if (response.data.success) {
-        setCurrentSubscription(response.data.data);
-        setUpgradeSuccess(`✅ Successfully switched to ${selectedUpgradePlan} plan!`);
-      } else {
-        setUpgradeError(response.data.message || "Failed to update plan");
-      }
-    } catch (err) {
-      setUpgradeError(err?.response?.data?.message || "Failed to update plan. Please try again.");
-    } finally {
-      setUpgrading(false);
-    }
-  };
+  const [settingsSection, setSettingsSection] = useState(null); // "users" | "categories" | "bankAccounts" | "topUpBank" | "topUpCash" | "activityLog"
 
   // Members management state
   const [members, setMembers] = useState([]);
@@ -212,9 +160,6 @@ const SettingsScreen = ({
     }
     if (settingsSection === "activityLog" && currentAccount) {
       loadActivityLog();
-    }
-    if (settingsSection === "subscription") {
-      loadSubscription();
     }
   }, [settingsSection, currentAccount]);
 
@@ -464,20 +409,20 @@ const SettingsScreen = ({
     <>
       <div className="fixed inset-0 bg-white z-50 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 xl:px-12 py-4 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3">
-            {settingsSection && (
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 sticky top-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {settingsSection ? (
               <button
                 onClick={() => setSettingsSection(null)}
-                className="p-2 hover:bg-gray-100 text-gray-500 transition-colors mr-1"
+                className="p-2 hover:bg-gray-100 text-gray-500 transition-colors rounded-lg flex-shrink-0"
               >
-                <ChevronDown className="w-5 h-5 rotate-90" />
+                <ArrowRightLeft className="w-5 h-5 rotate-180" />
               </button>
-            )}
-            <div className="bg-gray-900 p-2.5 rounded-lg">
-              <Settings className="w-5 h-5 text-white" />
+            ) : null}
+            <div className="bg-gray-900 p-2 rounded-lg flex-shrink-0">
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
               {settingsSection === "users" && "Users"}
               {settingsSection === "categories" && "Categories"}
               {settingsSection === "bankAccounts" && "Bank Accounts"}
@@ -493,47 +438,38 @@ const SettingsScreen = ({
               setShowSettings(false);
               setSettingsSection(null);
             }}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors font-medium"
+            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 hover:bg-gray-100 transition-colors font-medium rounded-xl text-sm flex-shrink-0"
           >
             <X className="w-4 h-4" />
-            Close
+            {!isMobile && <span>Close</span>}
           </button>
         </div>
 
         {/* Currency Display Banner */}
         {currentAccount?.currency && (
-          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-emerald-200 px-6 xl:px-12 py-3">
-            <div className="flex items-center gap-3">
-              <DollarSign className="w-5 h-5 text-emerald-700" />
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">
-                  Account Currency:
-                </span>
-                <span className="text-2xl font-bold text-gray-900">
+          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-emerald-200 px-4 sm:px-6 py-2.5">
+            <div className="flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                Currency:
+                <span className="font-bold text-gray-900">
                   {CURRENCIES.find((c) => c.code === currentAccount.currency)
                     ?.symbol || ""}
                 </span>
-                <span className="text-lg font-bold text-gray-900">
+                <span className="font-bold text-gray-900">
                   {currentAccount.currency}
                 </span>
-                <span className="text-sm text-gray-600">
-                  (
-                  {CURRENCIES.find((c) => c.code === currentAccount.currency)
-                    ?.name || currentAccount.currency}
-                  )
-                </span>
-              </div>
+              </span>
             </div>
           </div>
         )}
 
         {!currentAccount?.currency && (
-          <div className="bg-yellow-50 border-b border-yellow-200 px-6 xl:px-12 py-3">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-700" />
-              <span className="text-sm font-medium text-yellow-800">
-                No currency set. Add your first bank account to set the account
-                currency.
+          <div className="bg-yellow-50 border-b border-yellow-200 px-4 sm:px-6 py-2.5">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-yellow-700 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium text-yellow-800">
+                No currency set. Add a bank account to configure.
               </span>
             </div>
           </div>
@@ -541,7 +477,7 @@ const SettingsScreen = ({
 
         {/* Account Unique ID & Parent Link Section */}
         {currentAccount && !settingsSection && (
-          <div className="border-b border-gray-200 px-6 xl:px-12 py-4 space-y-4">
+          <div className="border-b border-gray-200 px-4 sm:px-6 py-3 space-y-3">
             {/* Unique ID Display */}
             <UniqueIdDisplay uniqueId={currentAccount.uniqueId} />
 
@@ -610,8 +546,8 @@ const SettingsScreen = ({
         <div className="flex-1 overflow-y-auto">
           {/* Landing: 4 buttons */}
           {!settingsSection && (
-            <div className="max-w-lg mx-auto px-6 py-12 space-y-6">
-              <div className="space-y-3">
+            <div className="max-w-lg mx-auto px-4 sm:px-6 py-8 space-y-6">
+              <div className="space-y-2">
                 {[
                   {
                     key: "users",
@@ -662,13 +598,6 @@ const SettingsScreen = ({
                     desc: "Configure notification preferences",
                     color: "bg-orange-600",
                   },
-                  {
-                    key: "subscription",
-                    icon: <Star className="w-6 h-6" />,
-                    label: "Subscription & Plan",
-                    desc: "View your plan, usage limits & upgrade",
-                    color: "bg-gradient-to-br from-amber-500 to-orange-600",
-                  },
                 ].map((item) => (
                   <button
                     key={item.key}
@@ -682,20 +611,22 @@ const SettingsScreen = ({
                         setSettingsSection(item.key);
                       }
                     }}
-                    className="w-full flex items-center gap-5 px-6 py-5 bg-white border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all text-left group"
+                    className="w-full flex items-center gap-4 px-4 py-4 bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-left group rounded-xl"
                   >
                     <div
-                      className={`${item.color} p-3 text-white flex-shrink-0`}
+                      className={`${item.color} p-2.5 text-white flex-shrink-0 rounded-lg`}
                     >
                       {item.icon}
                     </div>
-                    <div className="flex-1">
-                      <div className="text-lg font-bold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm sm:text-base font-bold text-gray-900">
                         {item.label}
                       </div>
-                      <div className="text-sm text-gray-500">{item.desc}</div>
+                      <div className="text-xs text-gray-500 truncate">
+                        {item.desc}
+                      </div>
                     </div>
-                    <ChevronDown className="w-5 h-5 text-gray-400 -rotate-90 group-hover:text-gray-700 transition-colors" />
+                    <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90 flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -704,10 +635,10 @@ const SettingsScreen = ({
 
           {/* Users Screen */}
           {settingsSection === "users" && (
-            <div className="max-w-2xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900">
                     Account Members
                   </h2>
                   <p className="text-sm text-gray-500 mt-0.5">
@@ -715,16 +646,17 @@ const SettingsScreen = ({
                     this account
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                   {hasPermission("addUser") && (
                     <button
                       onClick={() => {
                         setInitialInviteTab("team");
                         setShowInviteModal(true);
                       }}
-                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors rounded-lg shadow-sm"
+                      className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white text-xs sm:text-sm font-medium hover:bg-emerald-700 transition-colors rounded-lg shadow-sm"
                     >
-                      <UserPlus className="w-4 h-4" /> Invite Team Member
+                      <UserPlus className="w-3.5 h-3.5" />{" "}
+                      <span className="hidden sm:inline">Invite</span> Member
                     </button>
                   )}
                   {currentMember?.role === "owner" && (
@@ -733,9 +665,11 @@ const SettingsScreen = ({
                         setInitialInviteTab("owner");
                         setShowInviteModal(true);
                       }}
-                      className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors rounded-lg shadow-sm"
+                      className="flex items-center gap-1.5 px-3 py-2 bg-amber-600 text-white text-xs sm:text-sm font-medium hover:bg-amber-700 transition-colors rounded-lg shadow-sm"
                     >
-                      <Crown className="w-4 h-4" /> Transfer Ownership
+                      <Crown className="w-3.5 h-3.5" />{" "}
+                      <span className="hidden sm:inline">Transfer</span>{" "}
+                      Ownership
                     </button>
                   )}
                 </div>
@@ -750,7 +684,7 @@ const SettingsScreen = ({
               {/* Members list */}
               {membersLoading ? (
                 <div className="py-12 text-center text-gray-400 text-sm">
-                  Loading members…
+                  Loading membersâ€¦
                 </div>
               ) : members.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 text-sm border border-gray-200">
@@ -782,7 +716,7 @@ const SettingsScreen = ({
                                 <span className="font-medium text-gray-900 text-sm">
                                   {member.displayName ||
                                     member.userId?.email ||
-                                    "—"}
+                                    "â€”"}
                                 </span>
                                 {isOwner && (
                                   <span className="text-xs px-1.5 py-0.5 bg-yellow-100 text-yellow-700 font-medium">
@@ -869,7 +803,7 @@ const SettingsScreen = ({
                                 className="w-full px-3 py-1.5 text-sm border border-gray-300 focus:ring-1 focus:ring-indigo-500"
                               />
                             </div>
-                            <div className="grid grid-cols-2 gap-y-2 gap-x-4 mb-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 mb-4">
                               {[
                                 { key: "makeExpense", label: "Make Expenses" },
                                 {
@@ -1049,13 +983,13 @@ const SettingsScreen = ({
 
           {/* Categories Screen */}
           {settingsSection === "categories" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-8">
+            <div className="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-base sm:text-xl font-bold text-gray-900">
                     Expense Categories
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-gray-500 mt-0.5">
                     Manage categories for better tracking
                   </p>
                 </div>
@@ -1180,10 +1114,10 @@ const SettingsScreen = ({
 
           {/* Bank Accounts Screen */}
           {settingsSection === "bankAccounts" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-8">
+            <div className="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-base sm:text-xl font-bold text-gray-900">
                     Linked Accounts
                   </h2>
                   <p className="text-sm text-gray-500 mt-1">
@@ -1220,7 +1154,7 @@ const SettingsScreen = ({
                           <div className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {ba.bankName && <span>{ba.bankName}</span>}
                             {ba.lastFourDigits && (
-                              <span>•• {ba.lastFourDigits}</span>
+                              <span>â€¢â€¢ {ba.lastFourDigits}</span>
                             )}
                           </div>
                         </div>
@@ -1263,7 +1197,7 @@ const SettingsScreen = ({
 
           {/* Top Up Bank Section */}
           {settingsSection === "topUpBank" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
+            <div className="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="bg-slate-900 p-3 rounded-xl">
@@ -1281,7 +1215,7 @@ const SettingsScreen = ({
               {hasPermission("updateBankBalance") ? (
                 <button
                   onClick={() => setActiveModal("topUpBankBalance")}
-                  className="w-full bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                  className="w-full bg-gradient-to-br from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white p-5 sm:p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-4">
                     <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
@@ -1309,7 +1243,7 @@ const SettingsScreen = ({
 
           {/* Top Up Cash Section */}
           {settingsSection === "topUpCash" && (
-            <div className="max-w-xl mx-auto px-6 py-8">
+            <div className="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="bg-emerald-600 p-3 rounded-xl">
@@ -1327,7 +1261,7 @@ const SettingsScreen = ({
               {hasPermission("calculateCash") ? (
                 <button
                   onClick={() => setActiveModal("addCash")}
-                  className="w-full bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
+                  className="w-full bg-gradient-to-br from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white p-5 sm:p-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-4">
                     <div className="bg-white/10 p-4 rounded-xl group-hover:bg-white/20 transition-all">
@@ -1355,24 +1289,24 @@ const SettingsScreen = ({
 
           {/* Activity Log Screen */}
           {settingsSection === "activityLog" && (
-            <div className="max-w-3xl mx-auto px-6 py-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-base sm:text-xl font-bold text-gray-900">
                     Activity Log
                   </h2>
                   <p className="text-sm text-gray-500 mt-1">
                     Audit trail for this account
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="w-full sm:w-auto">
                   <select
                     value={activityFilter}
                     onChange={(e) => {
                       setActivityFilter(e.target.value);
                       loadActivityLog(e.target.value);
                     }}
-                    className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full sm:w-auto px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                   >
                     <option value="">All Actions</option>
                     <option value="expense_created">Expenses Created</option>
@@ -1401,7 +1335,7 @@ const SettingsScreen = ({
 
               {activityLoading ? (
                 <div className="py-12 text-center text-gray-400">
-                  Loading audit trail…
+                  Loading audit trailâ€¦
                 </div>
               ) : activityLogs.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 border border-dashed border-gray-200">
@@ -1437,7 +1371,7 @@ const SettingsScreen = ({
                                 {log.actorDisplayName || "System"}
                               </span>
                               <span>
-                                • {new Date(log.createdAt).toLocaleString()}
+                                â€¢ {new Date(log.createdAt).toLocaleString()}
                               </span>
                             </div>
                             {log.metadata &&
@@ -1455,189 +1389,10 @@ const SettingsScreen = ({
               )}
             </div>
           )}
-
-          {/* Subscription & Plan Section - NEW */}
-          {settingsSection === "subscription" && (
-            <div className="max-w-2xl mx-auto px-6 py-8">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-500" />
-                Subscription & Plan
-              </h2>
-
-              {subscriptionLoading ? (
-                <div className="text-center py-12 text-gray-500">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                  Loading subscription...
-                </div>
-              ) : (
-                <>
-                  {/* Current Plan Card */}
-                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 mb-6 text-white shadow-xl">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-amber-500 p-2.5 rounded-xl">
-                          <Crown className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-slate-300 text-xs font-bold uppercase tracking-wider">Current Plan</p>
-                          <p className="text-2xl font-black text-white capitalize">
-                            {currentSubscription?.currentPlan || "Free"} Plan
-                          </p>
-                        </div>
-                      </div>
-                      <div className="bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-full">
-                        <span className="text-emerald-400 text-xs font-bold uppercase">
-                          {currentSubscription?.status || "Active"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mt-4">
-                      <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.teamMembersCount ?? 1}</p>
-                        <p className="text-xs text-slate-300 mt-1">Team Members</p>
-                      </div>
-                      <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.expensesThisMonth ?? 0}</p>
-                        <p className="text-xs text-slate-300 mt-1">Expenses This Month</p>
-                      </div>
-                      <div className="bg-white/10 rounded-xl p-3 text-center">
-                        <p className="text-2xl font-black">{currentSubscription?.usage?.accountsCount ?? 1}</p>
-                        <p className="text-xs text-slate-300 mt-1">Accounts</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Success / Error messages */}
-                  {upgradeSuccess && (
-                    <div className="bg-emerald-50 border-2 border-emerald-500 text-emerald-700 px-4 py-3 rounded-xl font-bold mb-4">
-                      {upgradeSuccess}
-                    </div>
-                  )}
-                  {upgradeError && (
-                    <div className="bg-red-50 border-2 border-red-500 text-red-700 px-4 py-3 rounded-xl font-bold mb-4">
-                      {upgradeError}
-                    </div>
-                  )}
-
-                  {/* Plan Selection */}
-                  <div className="mb-6">
-                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider mb-3">Choose a Plan</h3>
-                    <div className="space-y-3">
-                      {[
-                        { id: "free", name: "Starter", price: { monthly: 0, yearly: 0 }, desc: "1 account • 50 expenses/month", color: "border-slate-400" },
-                        { id: "professional", name: "Professional", price: { monthly: 12, yearly: 120 }, desc: "5 accounts • Unlimited expenses • 3 members", color: "border-blue-500", popular: true },
-                        { id: "business", name: "Business", price: { monthly: 29, yearly: 290 }, desc: "20 accounts • Unlimited everything • Unlimited members", color: "border-emerald-500" },
-                        { id: "enterprise", name: "Enterprise", price: { monthly: 79, yearly: 790 }, desc: "Unlimited everything • White-label • Dedicated support", color: "border-amber-500" },
-                      ].map((plan) => (
-                        <button
-                          key={plan.id}
-                          onClick={() => setSelectedUpgradePlan(plan.id)}
-                          className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left ${
-                            selectedUpgradePlan === plan.id
-                              ? `${plan.color} bg-blue-50 shadow-md`
-                              : "border-gray-200 bg-white hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              selectedUpgradePlan === plan.id ? "border-blue-600 bg-blue-600" : "border-gray-300"
-                            }`}>
-                              {selectedUpgradePlan === plan.id && (
-                                <div className="w-2.5 h-2.5 bg-white rounded-full" />
-                              )}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-gray-900">{plan.name}</span>
-                                {plan.popular && (
-                                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Popular</span>
-                                )}
-                                {plan.id === currentSubscription?.currentPlan && (
-                                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Current</span>
-                                )}
-                              </div>
-                              <p className="text-xs text-gray-500 mt-0.5">{plan.desc}</p>
-                            </div>
-                          </div>
-                          <div className="text-right shrink-0 ml-4">
-                            <p className="font-black text-gray-900 text-lg">
-                              {plan.price[selectedBillingCycle] === 0 ? "Free" : `$${plan.price[selectedBillingCycle]}`}
-                            </p>
-                            {plan.price[selectedBillingCycle] > 0 && (
-                              <p className="text-xs text-gray-400">/{selectedBillingCycle === "yearly" ? "yr" : "mo"}</p>
-                            )}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Billing Cycle Toggle */}
-                  <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <span className="text-sm font-bold text-gray-700">Billing:</span>
-                    <div className="flex bg-white rounded-lg border border-gray-200 overflow-hidden">
-                      {["monthly", "yearly"].map((cycle) => (
-                        <button
-                          key={cycle}
-                          onClick={() => setSelectedBillingCycle(cycle)}
-                          className={`px-4 py-2 text-sm font-bold transition-all capitalize ${
-                            selectedBillingCycle === cycle
-                              ? "bg-blue-600 text-white"
-                              : "text-gray-600 hover:bg-gray-50"
-                          }`}
-                        >
-                          {cycle}
-                        </button>
-                      ))}
-                    </div>
-                    {selectedBillingCycle === "yearly" && (
-                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                        Save ~17%!
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Upgrade Button */}
-                  <button
-                    onClick={handleUpgradePlan}
-                    disabled={upgrading || selectedUpgradePlan === currentSubscription?.currentPlan}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {upgrading ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Updating Plan...
-                      </span>
-                    ) : selectedUpgradePlan === currentSubscription?.currentPlan ? (
-                      "✓ This is Your Current Plan"
-                    ) : (
-                      `🚀 Switch to ${selectedUpgradePlan?.charAt(0).toUpperCase() + selectedUpgradePlan?.slice(1)} Plan`
-                    )}
-                  </button>
-
-                  {/* Plan Features Summary */}
-                  <div className="mt-6 space-y-2">
-                    <h3 className="font-bold text-gray-700 text-sm uppercase tracking-wider">All Plans Include</h3>
-                    {[
-                      { icon: <Shield className="w-4 h-4 text-emerald-600" />, text: "Secure encrypted data storage" },
-                      { icon: <Zap className="w-4 h-4 text-blue-600" />, text: "Real-time expense tracking" },
-                      { icon: <TrendingUp className="w-4 h-4 text-purple-600" />, text: "Analytics & reports" },
-                      { icon: <Building2 className="w-4 h-4 text-amber-600" />, text: "Bank account management" },
-                    ].map((feature, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                        {feature.icon}
-                        <span className="text-gray-700 text-sm font-medium">{feature.text}</span>
-                        <Check className="w-4 h-4 text-emerald-600 ml-auto" />
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Embedded Modals triggered from settings */}
 
       {/* Embedded Modals triggered from settings */}
       {showTransferModal && (

@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
   X,
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
   Calendar,
   PieChart,
   BarChart3,
@@ -159,83 +156,32 @@ const ReportsScreen = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {/* Date Picker */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-            <div className="flex items-center gap-2 flex-1">
-              <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
-              <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Select Date
-              </label>
+          {/* Total Spent Card with inline date picker */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-blue-50 border border-blue-100 p-5 rounded-xl">
+            <div>
+              <p className="text-xs text-blue-600 font-bold uppercase tracking-wide mb-1">
+                Total Spent
+              </p>
+              <p className="text-3xl font-black text-blue-900">
+                ${stats.total.toFixed(2)}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 max={toInputDate(new Date())}
-                className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="px-3 py-1.5 bg-white border border-blue-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 outline-none text-blue-800"
               />
-            </div>
-            <button
-              onClick={exportToCSV}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
-            </button>
-          </div>
-
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <DollarSign className="w-5 h-5 text-blue-600" />
-                <TrendingUp className="w-4 h-4 text-blue-400" />
-              </div>
-              <p className="text-xs text-blue-600 font-bold uppercase tracking-wide mb-1">
-                Total Spent
-              </p>
-              <p className="text-2xl font-black text-blue-900">
-                ${stats.total.toFixed(2)}
-              </p>
-              <p className="text-xs text-blue-500 mt-1">
-                {selectedDate
-                  ? new Date(selectedDate + "T00:00:00").toLocaleDateString(
-                      undefined,
-                      {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                      },
-                    )
-                  : "—"}
-              </p>
-            </div>
-            <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <BarChart3 className="w-5 h-5 text-purple-600" />
-                <PieChart className="w-4 h-4 text-purple-400" />
-              </div>
-              <p className="text-xs text-purple-600 font-bold uppercase tracking-wide mb-1">
-                Total Expenses
-              </p>
-              <p className="text-2xl font-black text-purple-900">
-                {stats.count}
-              </p>
-              <p className="text-xs text-purple-500 mt-1">
-                expense entries recorded
-              </p>
-            </div>
-            <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <TrendingDown className="w-5 h-5 text-emerald-600" />
-                <Calendar className="w-4 h-4 text-emerald-400" />
-              </div>
-              <p className="text-xs text-emerald-600 font-bold uppercase tracking-wide mb-1">
-                Average Expense
-              </p>
-              <p className="text-2xl font-black text-emerald-900">
-                ${stats.average.toFixed(2)}
-              </p>
-              <p className="text-xs text-emerald-500 mt-1">per transaction</p>
+              <button
+                onClick={exportToCSV}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Export</span>
+              </button>
             </div>
           </div>
 

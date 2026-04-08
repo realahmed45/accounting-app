@@ -8,10 +8,14 @@ import {
   PieChart,
   BarChart3,
   Download,
-  Filter,
   Users,
   Tag,
 } from "lucide-react";
+
+// Format a Date as YYYY-MM-DD for <input type="date">
+function toInputDate(d) {
+  return d.toISOString().slice(0, 10);
+}
 
 const ReportsScreen = ({
   onClose,
@@ -19,23 +23,19 @@ const ReportsScreen = ({
   categories = [],
   people = [],
 }) => {
-  const [dateRange, setDateRange] = useState("30"); // days
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  // Default to today
+  const [selectedDate, setSelectedDate] = useState(() =>
+    toInputDate(new Date()),
+  );
 
-  // Filter expenses by date range
+  // Filter expenses that fall on the selected date
   const filteredExpenses = useMemo(() => {
-    const daysAgo = parseInt(dateRange);
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
-
-    let filtered = expenses.filter((e) => new Date(e.date) >= cutoffDate);
-
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter((e) => e.category === selectedCategory);
-    }
-
-    return filtered;
-  }, [expenses, dateRange, selectedCategory]);
+    if (!selectedDate) return [];
+    return expenses.filter((e) => {
+      const d = new Date(e.date);
+      return toInputDate(d) === selectedDate;
+    });
+  }, [expenses, selectedDate]);
 
   // Calculate summary statistics
   const stats = useMemo(() => {
@@ -117,7 +117,7 @@ const ReportsScreen = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `expense-report-${dateRange}days-${Date.now()}.csv`;
+    link.download = `expense-report-${selectedDate}-${Date.now()}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -159,44 +159,24 @@ const ReportsScreen = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-            <div className="flex items-center gap-2">
+          {/* Date Picker */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <div className="flex items-center gap-2 flex-1">
               <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
+              <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Select Date
+              </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                max={toInputDate(new Date())}
                 className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-              >
-                <option value="7">Last 7 days</option>
-                <option value="14">Last 14 days</option>
-                <option value="30">Last 30 days</option>
-                <option value="60">Last 60 days</option>
-                <option value="90">Last 90 days</option>
-                <option value="365">Last year</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-500 flex-shrink-0" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-              >
-                <option value="all">All Categories</option>
-                {categories.map((cat) => {
-                  const catName = typeof cat === "string" ? cat : cat.name;
-                  return (
-                    <option key={catName} value={catName}>
-                      {catName}
-                    </option>
-                  );
-                })}
-              </select>
+              />
             </div>
             <button
               onClick={exportToCSV}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition-colors sm:ml-auto"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition-colors"
             >
               <Download className="w-4 h-4" />
               Export CSV
@@ -216,7 +196,18 @@ const ReportsScreen = ({
               <p className="text-2xl font-black text-blue-900">
                 ${stats.total.toFixed(2)}
               </p>
-              <p className="text-xs text-blue-500 mt-1">in {dateRange} days</p>
+              <p className="text-xs text-blue-500 mt-1">
+                {selectedDate
+                  ? new Date(selectedDate + "T00:00:00").toLocaleDateString(
+                      undefined,
+                      {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      },
+                    )
+                  : "—"}
+              </p>
             </div>
             <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
               <div className="flex items-center justify-between mb-2">
@@ -230,7 +221,7 @@ const ReportsScreen = ({
                 {stats.count}
               </p>
               <p className="text-xs text-purple-500 mt-1">
-                transactions recorded
+                expense entries recorded
               </p>
             </div>
             <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
